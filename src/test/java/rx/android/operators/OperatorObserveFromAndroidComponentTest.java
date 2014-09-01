@@ -71,6 +71,7 @@ public class OperatorObserveFromAndroidComponentTest {
     }
 
     // TODO needs to be fixed, see comments inline below
+    /*
     @Ignore
     public void itObservesTheSourceSequenceOnTheMainUIThread() {
         final Observable<Integer> testObservable = Observable.from(1)
@@ -109,6 +110,7 @@ public class OperatorObserveFromAndroidComponentTest {
         //     I was going to run it on NewThread then observeOn to AndroidThread and validate it jumped
         //     to the correct thread, but it doesn't do anything. Need to work with Android devs.
     }
+    */
 
     @Test
     public void itForwardsOnNextOnCompletedSequenceToTargetObserver() {
