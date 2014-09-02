@@ -35,6 +35,7 @@ Thumbs.db
 ################
 *~
 *.swp
+local.properties
 
 # Gradle Files #
 ################
