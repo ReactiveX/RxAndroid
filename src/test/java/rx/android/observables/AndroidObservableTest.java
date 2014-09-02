@@ -81,11 +81,6 @@ public class AndroidObservableTest {
         verify(observer).onCompleted();
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void itThrowsIfObjectPassedIsNotAFragment() {
-        AndroidObservable.bindFragment("not a fragment", Observable.never());
-    }
-
     @Test(expected = IllegalStateException.class)
     public void itThrowsIfObserverCallsFromFragmentFromBackgroundThread() throws Throwable {
         final Future<Object> future = Executors.newSingleThreadExecutor().submit(new Callable<Object>() {
