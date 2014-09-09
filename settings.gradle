@@ -1,1 +1,3 @@
-rootProject.name='rxandroid'
+rootProject.name='rxandroid-root'
+include 'rxandroid'
+include 'acceptance-tests'

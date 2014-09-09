@@ -1,16 +1,11 @@
 buildscript {
-  repositories {
-    jcenter()
-  }
-  dependencies {
-    classpath 'com.android.tools.build:gradle:0.12.+'
-  }
+  repositories { jcenter() }
+  dependencies { classpath 'com.android.tools.build:gradle:0.12.+' }
 }
 
 apply plugin: 'com.android.application'
 
 repositories {
-    mavenLocal()
     jcenter()
 }
 
@@ -30,5 +25,5 @@ android {
 }
 
 dependencies {
-    compile 'io.reactivex:rxandroid:0.1'
+    compile project(':rxandroid')
 }
