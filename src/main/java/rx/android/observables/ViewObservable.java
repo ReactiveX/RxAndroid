@@ -17,13 +17,11 @@ package rx.android.observables;
 
 import rx.Observable;
 import rx.operators.OperatorCompoundButtonInput;
-import rx.operators.OperatorEditTextInput;
 import rx.operators.OperatorTextViewInput;
 import rx.operators.OperatorViewClick;
 
 import android.view.View;
 import android.widget.CompoundButton;
-import android.widget.EditText;
 import android.widget.TextView;
 
 public class ViewObservable {
@@ -38,14 +36,6 @@ public class ViewObservable {
 
     public static <T extends TextView> Observable<T> text(final T input, final boolean emitInitialValue) {
         return Observable.create(new OperatorTextViewInput<T>(input, emitInitialValue));
-    }
-
-    /**
-     * @deprecated Use #text(android.widget.TextView, boolean)} (and map the values) instead.
-     */
-    @Deprecated
-    public static Observable<String> input(final EditText input, final boolean emitInitialValue) {
-        return Observable.create(new OperatorEditTextInput(input, emitInitialValue));
     }
 
     public static Observable<Boolean> input(final CompoundButton button, final boolean emitInitialValue) {
