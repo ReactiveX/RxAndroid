@@ -9,6 +9,8 @@ buildscript {
 apply plugin: 'rxjava-project'
 apply plugin: 'provided-base'
 
+version='0.1'
+
 dependencies {
     compile 'io.reactivex:rxjava:1.0.+'
     provided 'com.google.android:android:4.0.1.2'
