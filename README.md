@@ -16,7 +16,7 @@ Android applications easy and hassle free. More specifically, it
 
 ## Communication
 
-Since RxGroovy is part of the RxJava family the communication channels are similar:
+Since RxAndroid is part of the RxJava family the communication channels are similar:
 
 - Google Group: [RxJava](http://groups.google.com/d/forum/rxjava)
 - Twitter: [@RxJava](http://twitter.com/RxJava)
