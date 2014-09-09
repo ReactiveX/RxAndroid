@@ -24,16 +24,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
-import java.util.concurrent.Callable;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
-
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -42,7 +32,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
-
 import rx.Observable;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
@@ -52,7 +41,14 @@ import rx.observers.TestSubscriber;
 import rx.operators.OperatorObserveFromAndroidComponent;
 import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
+
 import android.app.Fragment;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
+import java.util.concurrent.atomic.AtomicReference;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(manifest = Config.NONE)
@@ -73,7 +69,7 @@ public class OperatorObserveFromAndroidComponentTest {
     // TODO needs to be fixed, see comments inline below
     @Ignore
     public void itObservesTheSourceSequenceOnTheMainUIThread() {
-        final Observable<Integer> testObservable = Observable.from(1)
+        final Observable<Integer> testObservable = Observable.just(1)
                 .observeOn(Schedulers.newThread())
                 .doOnNext(new Action1<Integer>() {
 
