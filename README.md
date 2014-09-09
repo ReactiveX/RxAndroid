@@ -1,6 +1,6 @@
-# rxjava-android
+# RxAndroid: Reactive Extensions for Android
 
-Android specific bindings for Rx.
+Android specific bindings for [RxJava](http://github.com/ReactiveX/RxJava).
 
 This module adds a number of classes to RxJava that make writing reactive components in 
 Android applications easy and hassle free. More specifically, it
@@ -10,6 +10,17 @@ Android applications easy and hassle free. More specifically, it
       `Fragment` and `Activity` life-cycle callbacks (coming soon)
 - provides reusable, self-contained reactive components for common Android use cases and UI concerns (coming soon)
 
+## Master Build Status
+
+<a href='https://travis-ci.org/ReactiveX/RxAndroid/builds'><img src='https://travis-ci.org/ReactiveX/RxAndroid.svg?branch=0.x'></a>
+
+## Communication
+
+Since RxGroovy is part of the RxJava family the communication channels are similar:
+
+- Google Group: [RxJava](http://groups.google.com/d/forum/rxjava)
+- Twitter: [@RxJava](http://twitter.com/RxJava)
+- [GitHub Issues](https://github.com/ReactiveX/RxAndroid/issues)
 
 # Binaries
 
@@ -30,6 +41,19 @@ and for Ivy:
 ```xml
 <dependency org="com.netflix.rxjava" name="rxjava-android" rev="0.10.1" />
 ```
+
+## Build
+
+To build:
+
+```
+$ git clone git@github.com:ReactiveX/RxAndroid.git
+$ cd RxAndroid/
+$ ./RxAndroid build
+```
+
+Futher details on building can be found on the RxJava [Getting Started](https://github.com/ReactiveX/RxJava/wiki/Getting-Started) page of the wiki.
+
 
 # Sample usage
 
@@ -78,3 +102,25 @@ scheduler:
 This will execute the Observable on a new thread and emit results through `onNext` on "custom-thread-1".
 (This example is contrived since you could as well call `observeOn(Schedulers.currentThread())` but it
 shall suffice to illustrate the idea.)
+
+
+## Bugs and Feedback
+
+For bugs, questions and discussions please use the [Github Issues](https://github.com/ReactiveX/RxAndroid/issues).
+
+
+## LICENSE
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+<http://www.apache.org/licenses/LICENSE-2.0>
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+
