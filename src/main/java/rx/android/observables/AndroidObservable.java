@@ -15,6 +15,14 @@
  */
 package rx.android.observables;
 
+import static rx.android.schedulers.AndroidSchedulers.mainThread;
+
+import rx.Observable;
+import rx.functions.Func1;
+import rx.operators.OperatorBroadcastRegister;
+import rx.operators.OperatorConditionalBinding;
+import rx.operators.OperatorLocalBroadcastRegister;
+
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
@@ -22,15 +30,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Handler;
-
-import rx.Observable;
-import rx.functions.Func1;
-import rx.operators.OperatorBroadcastRegister;
-import rx.operators.OperatorConditionalBinding;
-import rx.operators.OperatorLocalBroadcastRegister;
-import rx.operators.OperatorObserveFromAndroidComponent;
-
-import static rx.android.schedulers.AndroidSchedulers.mainThread;
 
 
 public final class AndroidObservable {
@@ -70,70 +69,6 @@ public final class AndroidObservable {
             };
 
     private AndroidObservable() {
-    }
-
-    /**
-     * Transforms a source observable to be attached to the given Activity, in such a way that notifications will always
-     * arrive on the main UI thread. Currently, this is equivalent to calling <code>observeOn(AndroidSchedulers.mainThread())</code>,
-     * but this behavior may change in the future, so it is encouraged to use this wrapper instead.
-     * <p/>
-     * You must unsubscribe from the returned observable in <code>onDestroy</code> to not leak the given Activity.
-     * <p/>
-     * Ex.:
-     * <pre>
-     *     // in any Activity
-     *     mSubscription = fromActivity(this, Observable.just("value")).subscribe(...);
-     *     // in onDestroy
-     *     mSubscription.unsubscribe();
-     * </pre>
-     *
-     * @param activity         the activity in which the source observable will be observed
-     * @param sourceObservable the observable sequence to observe from the given Activity
-     * @param <T>
-     * @return a new observable sequence that will emit notifications on the main UI thread
-     * @deprecated Use {@link #bindActivity(android.app.Activity, rx.Observable)} instead
-     */
-    @Deprecated
-    public static <T> Observable<T> fromActivity(Activity activity, Observable<T> sourceObservable) {
-        Assertions.assertUiThread();
-        return OperatorObserveFromAndroidComponent.observeFromAndroidComponent(sourceObservable, activity);
-    }
-
-    /**
-     * Transforms a source observable to be attached to the given fragment, in such a way that notifications will always
-     * arrive on the main UI thread. Moreover, it will be guaranteed that no notifications will be delivered to the
-     * fragment while it's in detached state (i.e. its host Activity was destroyed.) In other words, during calls
-     * to onNext, you may assume that fragment.getActivity() will never return null.
-     * <p/>
-     * This method accepts both native fragments and support library fragments in its first parameter. It will throw
-     * for unsupported types.
-     * <p/>
-     * You must unsubscribe from the returned observable in <code>onDestroy</code> to not leak the given fragment.
-     * <p/>
-     * Ex.:
-     * <pre>
-     *     // in any Fragment
-     *     mSubscription = fromFragment(this, Observable.just("value")).subscribe(...);
-     *     // in onDestroy
-     *     mSubscription.unsubscribe();
-     * </pre>
-     *
-     * @param fragment         the fragment in which the source observable will be observed
-     * @param sourceObservable the observable sequence to observe from the given fragment
-     * @param <T>
-     * @return a new observable sequence that will emit notifications on the main UI thread
-     * @deprecated Use {@link #bindFragment(Object, rx.Observable)} instead
-     */
-    @Deprecated
-    public static <T> Observable<T> fromFragment(Object fragment, Observable<T> sourceObservable) {
-        Assertions.assertUiThread();
-        if (USES_SUPPORT_FRAGMENTS && fragment instanceof android.support.v4.app.Fragment) {
-            return OperatorObserveFromAndroidComponent.observeFromAndroidComponent(sourceObservable, (android.support.v4.app.Fragment) fragment);
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB && fragment instanceof Fragment) {
-            return OperatorObserveFromAndroidComponent.observeFromAndroidComponent(sourceObservable, (Fragment) fragment);
-        } else {
-            throw new IllegalArgumentException("Target fragment is neither a native nor support library Fragment");
-        }
     }
 
     /**
