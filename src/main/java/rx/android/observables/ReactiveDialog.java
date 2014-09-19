@@ -3,6 +3,7 @@ package rx.android.observables;
 import android.app.DialogFragment;
 import android.app.FragmentManager;
 import android.content.DialogInterface;
+import android.os.Bundle;
 
 import java.util.UUID;
 
@@ -29,7 +30,7 @@ public class ReactiveDialog<T> extends DialogFragment {
             @Override
             public void call(rx.Subscriber<? super T> subscriber) {
                 UUID key = subscriberVault.store(subscriber);
-                getArguments().putSerializable(REACTIVE_DIALOG_KEY, key);
+                storeSubscriberKey(key);
                 show(manager, getClass().getSimpleName());
             }
         });
@@ -42,7 +43,18 @@ public class ReactiveDialog<T> extends DialogFragment {
     }
 
     protected ReactiveDialogListener<T> getListener() {
-        return new ReactiveDialogObserver<T>(subscriberVault.get(getSubscriberKey()));
+        Subscriber<Object> subscriber = subscriberVault.get(getSubscriberKey());
+        if (subscriber == null) {
+            throw new IllegalStateException("No listener attached, you are probably trying to deliver a result after completion of the observable");
+        }
+        return new ReactiveDialogObserver<T>(subscriber);
+    }
+
+    private void storeSubscriberKey(UUID key) {
+        if (getArguments() == null) {
+            setArguments(new Bundle());
+        }
+        getArguments().putSerializable(REACTIVE_DIALOG_KEY, key);
     }
 
     private UUID getSubscriberKey() {
