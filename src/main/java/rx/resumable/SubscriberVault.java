@@ -20,6 +20,10 @@ public class SubscriberVault {
         return subscriberMap.get(key);
     }
 
+    public boolean containsKey(UUID key) {
+        return subscriberMap.containsKey(key);
+    }
+
     public <T> Subscriber<T> remove(UUID subscriberKey) {
         return subscriberMap.remove(subscriberKey);
     }

@@ -10,6 +10,7 @@ import java.util.UUID;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscriber;
+import rx.Subscription;
 import rx.android.exception.CancelledException;
 import rx.resumable.SubscriberVault;
 
@@ -29,8 +30,19 @@ public class ReactiveDialog<T> extends DialogFragment {
         return Observable.create(new Observable.OnSubscribe<T>() {
             @Override
             public void call(rx.Subscriber<? super T> subscriber) {
-                UUID key = subscriberVault.store(subscriber);
+                final UUID key = subscriberVault.store(subscriber);
                 storeSubscriberKey(key);
+                subscriber.add(new Subscription() {
+                    @Override
+                    public void unsubscribe() {
+                        subscriberVault.remove(key);
+                    }
+
+                    @Override
+                    public boolean isUnsubscribed() {
+                        return !subscriberVault.containsKey(key);
+                    }
+                });
                 show(manager, getClass().getSimpleName());
             }
         });
