@@ -15,14 +15,18 @@
  */
 package rx.android.observables;
 
+import android.view.View;
+import android.widget.Adapter;
+import android.widget.AdapterView;
+import android.widget.CompoundButton;
+import android.widget.TextView;
+
 import rx.Observable;
+import rx.android.events.OnItemClickEvent;
+import rx.operators.OperatorAdapterViewOnItemClick;
 import rx.operators.OperatorCompoundButtonInput;
 import rx.operators.OperatorTextViewInput;
 import rx.operators.OperatorViewClick;
-
-import android.view.View;
-import android.widget.CompoundButton;
-import android.widget.TextView;
 
 public class ViewObservable {
 
@@ -40,6 +44,10 @@ public class ViewObservable {
 
     public static Observable<Boolean> input(final CompoundButton button, final boolean emitInitialValue) {
         return Observable.create(new OperatorCompoundButtonInput(button, emitInitialValue));
+    }
+
+    public static <T extends AdapterView<? extends Adapter>> Observable<OnItemClickEvent> itemClicks(final T list) {
+        return Observable.create(new OperatorAdapterViewOnItemClick<T>(list));
     }
 
 }
