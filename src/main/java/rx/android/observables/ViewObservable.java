@@ -16,6 +16,9 @@
 package rx.android.observables;
 
 import rx.Observable;
+import rx.android.events.OnCheckedChangeEvent;
+import rx.android.events.OnClickEvent;
+import rx.android.events.OnTextChangeEvent;
 import rx.operators.OperatorCompoundButtonInput;
 import rx.operators.OperatorTextViewInput;
 import rx.operators.OperatorViewClick;
@@ -26,21 +29,20 @@ import android.widget.TextView;
 
 public class ViewObservable {
 
-    public static <T extends View> Observable<T> clicks(final T view, final boolean emitInitialValue) {
-        return Observable.create(new OperatorViewClick<T>(view, emitInitialValue));
+    public static <T extends View> Observable<OnClickEvent> clicks(final T view, final boolean emitInitialValue) {
+        return Observable.create(new OperatorViewClick(view, emitInitialValue));
     }
 
-    public static <T extends TextView> Observable<T> text(final T input) {
+    public static <T extends TextView> Observable<OnTextChangeEvent> text(final T input) {
         return text(input, false);
     }
 
-    public static <T extends TextView> Observable<T> text(final T input, final boolean emitInitialValue) {
-        return Observable.create(new OperatorTextViewInput<T>(input, emitInitialValue));
+    public static <T extends TextView> Observable<OnTextChangeEvent> text(final T input, final boolean emitInitialValue) {
+        return Observable.create(new OperatorTextViewInput(input, emitInitialValue));
     }
 
-    public static Observable<Boolean> input(final CompoundButton button, final boolean emitInitialValue) {
+    public static <T extends CompoundButton> Observable<OnCheckedChangeEvent> input(final T button, final boolean emitInitialValue) {
         return Observable.create(new OperatorCompoundButtonInput(button, emitInitialValue));
     }
 
 }
-

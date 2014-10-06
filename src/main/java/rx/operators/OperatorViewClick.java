@@ -15,37 +15,38 @@
  */
 package rx.operators;
 
+import android.view.View;
+import rx.Observable;
+import rx.Subscriber;
+import rx.Subscription;
+import rx.android.events.OnClickEvent;
+import rx.android.observables.Assertions;
+import rx.android.subscriptions.AndroidSubscriptions;
+import rx.functions.Action0;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-import rx.Observable;
-import rx.Subscriber;
-import rx.Subscription;
-import rx.android.observables.Assertions;
-import rx.android.subscriptions.AndroidSubscriptions;
-import rx.functions.Action0;
-import android.view.View;
-
-public final class OperatorViewClick<T extends View> implements Observable.OnSubscribe<T> {
+public final class OperatorViewClick implements Observable.OnSubscribe<OnClickEvent> {
     private final boolean emitInitialValue;
-    private final T view;
+    private final View view;
 
-    public OperatorViewClick(final T view, final boolean emitInitialValue) {
+    public OperatorViewClick(final View view, final boolean emitInitialValue) {
         this.emitInitialValue = emitInitialValue;
         this.view = view;
     }
 
     @Override
-    public void call(final Subscriber<? super T> observer) {
+    public void call(final Subscriber<? super OnClickEvent> observer) {
         Assertions.assertUiThread();
         final CompositeOnClickListener composite = CachedListeners.getFromViewOrCreate(view);
 
         final View.OnClickListener listener = new View.OnClickListener() {
             @Override
             public void onClick(final View clicked) {
-                observer.onNext(view);
+                observer.onNext(new OnClickEvent(view));
             }
         };
 
@@ -57,7 +58,7 @@ public final class OperatorViewClick<T extends View> implements Observable.OnSub
         });
 
         if (emitInitialValue) {
-            observer.onNext(view);
+            observer.onNext(new OnClickEvent(view));
         }
 
         composite.addOnClickListener(listener);

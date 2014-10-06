@@ -15,21 +15,22 @@
  */
 package rx.operators;
 
+import android.view.View;
+import android.widget.CompoundButton;
+import rx.Observable;
+import rx.Subscriber;
+import rx.Subscription;
+import rx.android.events.OnCheckedChangeEvent;
+import rx.android.observables.Assertions;
+import rx.android.subscriptions.AndroidSubscriptions;
+import rx.functions.Action0;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-import rx.Observable;
-import rx.Subscriber;
-import rx.Subscription;
-import rx.android.observables.Assertions;
-import rx.android.subscriptions.AndroidSubscriptions;
-import rx.functions.Action0;
-import android.view.View;
-import android.widget.CompoundButton;
-
-public class OperatorCompoundButtonInput implements Observable.OnSubscribe<Boolean> {
+public class OperatorCompoundButtonInput implements Observable.OnSubscribe<OnCheckedChangeEvent> {
     private final boolean emitInitialValue;
     private final CompoundButton button;
 
@@ -39,14 +40,14 @@ public class OperatorCompoundButtonInput implements Observable.OnSubscribe<Boole
     }
 
     @Override
-    public void call(final Subscriber<? super Boolean> observer) {
+    public void call(final Subscriber<? super OnCheckedChangeEvent> observer) {
         Assertions.assertUiThread();
         final CompositeOnCheckedChangeListener composite = CachedListeners.getFromViewOrCreate(button);
 
         final CompoundButton.OnCheckedChangeListener listener = new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onCheckedChanged(final CompoundButton button, final boolean checked) {
-                observer.onNext(checked);
+            public void onCheckedChanged(final CompoundButton view, final boolean checked) {
+                observer.onNext(new OnCheckedChangeEvent(button, checked));
             }
         };
 
@@ -58,7 +59,7 @@ public class OperatorCompoundButtonInput implements Observable.OnSubscribe<Boole
         });
 
         if (emitInitialValue) {
-            observer.onNext(button.isChecked());
+            observer.onNext(new OnCheckedChangeEvent(button));
         }
 
         composite.addOnCheckedChangeListener(listener);
