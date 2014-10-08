@@ -29,19 +29,27 @@ import android.widget.TextView;
 
 public class ViewObservable {
 
-    public static <T extends View> Observable<OnClickEvent> clicks(final T view, final boolean emitInitialValue) {
+    public static Observable<OnClickEvent> clicks(final View view) {
+        return clicks(view, false);
+    }
+
+    public static Observable<OnClickEvent> clicks(final View view, final boolean emitInitialValue) {
         return Observable.create(new OperatorViewClick(view, emitInitialValue));
     }
 
-    public static <T extends TextView> Observable<OnTextChangeEvent> text(final T input) {
+    public static Observable<OnTextChangeEvent> text(final TextView input) {
         return text(input, false);
     }
 
-    public static <T extends TextView> Observable<OnTextChangeEvent> text(final T input, final boolean emitInitialValue) {
+    public static Observable<OnTextChangeEvent> text(final TextView input, final boolean emitInitialValue) {
         return Observable.create(new OperatorTextViewInput(input, emitInitialValue));
     }
 
-    public static <T extends CompoundButton> Observable<OnCheckedChangeEvent> input(final T button, final boolean emitInitialValue) {
+    public static Observable<OnCheckedChangeEvent> input(final CompoundButton button) {
+        return input(button, false);
+    }
+
+    public static Observable<OnCheckedChangeEvent> input(final CompoundButton button, final boolean emitInitialValue) {
         return Observable.create(new OperatorCompoundButtonInput(button, emitInitialValue));
     }
 
