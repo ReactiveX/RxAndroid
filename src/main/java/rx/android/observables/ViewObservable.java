@@ -19,9 +19,9 @@ import rx.Observable;
 import rx.android.events.OnCheckedChangeEvent;
 import rx.android.events.OnClickEvent;
 import rx.android.events.OnTextChangeEvent;
-import rx.operators.OperatorCompoundButtonInput;
-import rx.operators.OperatorTextViewInput;
-import rx.operators.OperatorViewClick;
+import rx.android.operators.OperatorCompoundButtonInput;
+import rx.android.operators.OperatorTextViewInput;
+import rx.android.operators.OperatorViewClick;
 
 import android.view.View;
 import android.widget.CompoundButton;
