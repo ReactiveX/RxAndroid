@@ -17,7 +17,6 @@ package rx.android.operators;
 
 import android.view.View;
 import android.widget.AbsListView;
-import android.widget.Adapter;
 import android.widget.AdapterView;
 
 import java.util.ArrayList;
@@ -33,18 +32,18 @@ import rx.android.observables.Assertions;
 import rx.android.subscriptions.AndroidSubscriptions;
 import rx.functions.Action0;
 
-public class OperatorAdapterViewOnItemClick<T extends AdapterView<? extends Adapter>> implements Observable.OnSubscribe<OnItemClickEvent> {
+public class OperatorAdapterViewOnItemClick implements Observable.OnSubscribe<OnItemClickEvent> {
 
-    private final T list;
+    private final AdapterView<?> adapterView;
 
-    public OperatorAdapterViewOnItemClick(final T list) {
-        this.list = list;
+    public OperatorAdapterViewOnItemClick(final AdapterView<?> adapterView) {
+        this.adapterView = adapterView;
     }
 
     @Override
     public void call(final Subscriber<? super OnItemClickEvent> observer) {
         Assertions.assertUiThread();
-        final CompositeOnClickListener composite = CachedListeners.getFromViewOrCreate(list);
+        final CompositeOnClickListener composite = CachedListeners.getFromViewOrCreate(adapterView);
 
         final AbsListView.OnItemClickListener listener = new AdapterView.OnItemClickListener() {
             @Override
@@ -84,9 +83,9 @@ public class OperatorAdapterViewOnItemClick<T extends AdapterView<? extends Adap
     }
 
     private static class CachedListeners {
-        private static final Map<AdapterView<? extends Adapter>, CompositeOnClickListener> sCachedListeners = new WeakHashMap<AdapterView<? extends Adapter>, CompositeOnClickListener>();
+        private static final Map<AdapterView<?>, CompositeOnClickListener> sCachedListeners = new WeakHashMap<AdapterView<?>, CompositeOnClickListener>();
 
-        public static CompositeOnClickListener getFromViewOrCreate(final AdapterView<? extends Adapter> view) {
+        public static CompositeOnClickListener getFromViewOrCreate(final AdapterView<?> view) {
             final CompositeOnClickListener cached = sCachedListeners.get(view);
 
             if (cached != null) {

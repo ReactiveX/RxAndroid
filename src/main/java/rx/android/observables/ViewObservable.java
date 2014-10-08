@@ -46,8 +46,8 @@ public class ViewObservable {
         return Observable.create(new OperatorCompoundButtonInput(button, emitInitialValue));
     }
 
-    public static <T extends AdapterView<? extends Adapter>> Observable<OnItemClickEvent> itemClicks(final T list) {
-        return Observable.create(new OperatorAdapterViewOnItemClick<T>(list));
+    public static Observable<OnItemClickEvent> itemClicks(final AdapterView<?> adapterView) {
+        return Observable.create(new OperatorAdapterViewOnItemClick(adapterView));
     }
 
 }
