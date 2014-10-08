@@ -23,7 +23,7 @@ import android.widget.TextView;
 
 import rx.Observable;
 import rx.android.events.OnItemClickEvent;
-import rx.operators.OperatorAdapterViewOnItemClick;
+import rx.android.operators.OperatorAdapterViewOnItemClick;
 import rx.operators.OperatorCompoundButtonInput;
 import rx.operators.OperatorTextViewInput;
 import rx.operators.OperatorViewClick;

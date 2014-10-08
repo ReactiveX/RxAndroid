@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package rx.operators;
+package rx.android.operators;
 
 import android.view.View;
 import android.widget.AbsListView;
