@@ -1,0 +1,29 @@
+buildscript {
+  repositories { jcenter() }
+  dependencies { classpath 'com.android.tools.build:gradle:0.12.+' }
+}
+
+apply plugin: 'com.android.application'
+
+repositories {
+    jcenter()
+}
+
+android {
+  compileSdkVersion 20
+  buildToolsVersion "20.0.0"
+
+  defaultConfig {
+    applicationId "rx.android.tests.acceptance"
+
+    minSdkVersion 14
+    targetSdkVersion 20
+    versionCode 1
+    versionName "1.0"
+
+  }
+}
+
+dependencies {
+    compile project(':rxandroid')
+}
