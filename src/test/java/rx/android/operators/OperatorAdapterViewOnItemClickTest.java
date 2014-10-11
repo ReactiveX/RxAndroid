@@ -76,31 +76,139 @@ public class OperatorAdapterViewOnItemClickTest {
     }
 
     @Test
-    public void testListView() {
+    public void testListViewNeverEmitEventBeforeSubscribed() {
         final ListView listView = createListView(createValues(10));
-        performTestAdapterView(listView);
+        performTestAdapterViewNeverEmitEventBeforeSubscribed(listView);
     }
 
     @Test
-    public void testGridView() {
+    public void testGridViewNeverEmitEventBeforeSubscribed() {
         final GridView gridView = createGridView(createValues(10));
-        performTestAdapterView(gridView);
+        performTestAdapterViewNeverEmitEventBeforeSubscribed(gridView);
     }
 
     @Test
-    public void testMultipleSubscriptionsListView() {
+    public void testListViewClickAllViewsEmitAllEvents() {
         final ListView listView = createListView(createValues(10));
-        performTestAdapterViewMultipleSubscriptions(listView);
+        performTestAdapterViewClickAllViewsEmitAllEvents(listView);
     }
 
     @Test
-    public void testMultipleSubscriptionsGridView() {
+    public void testGridViewClickAllViewsEmitAllEvents() {
         final GridView gridView = createGridView(createValues(10));
-        performTestAdapterViewMultipleSubscriptions(gridView);
+        performTestAdapterViewClickAllViewsEmitAllEvents(gridView);
+    }
+
+    @Test
+    public void testListViewNeverEmitEventAfterUnsubscribed() {
+        final ListView listView = createListView(createValues(10));
+        performTestAdapterViewNeverEmitEventAfterUnsubscribed(listView);
+    }
+
+    @Test
+    public void testGridViewNeverEmitEventAfterUnsubscribed() {
+        final GridView gridView = createGridView(createValues(10));
+        performTestAdapterViewClickAllViewsEmitAllEvents(gridView);
+    }
+
+    @Test
+    public void testListViewNeverEmitAnyThrowableAfterUnsubscribed() {
+        final ListView listView = createListView(createValues(10));
+        performTestAdapterViewNeverEmitAnyThrowableAfterUnsubscribed(listView);
+    }
+
+    @Test
+    public void testGridViewNeverEmitAnyThrowableAfterUnsubscribed() {
+        final GridView gridView = createGridView(createValues(10));
+        performTestAdapterViewNeverEmitAnyThrowableAfterUnsubscribed(gridView);
+    }
+
+    @Test
+    public void testListViewNeverEmitOnCompletedAfterUnsubscribed() {
+        final ListView listView = createListView(createValues(10));
+        performTestAdapterViewNeverEmitOnCompletedAfterUnsubscribed(listView);
+    }
+
+    @Test
+    public void testGridViewNeverEmitOnCompletedAfterUnsubscribed() {
+        final GridView gridView = createGridView(createValues(10));
+        performTestAdapterViewNeverEmitOnCompletedAfterUnsubscribed(gridView);
+    }
+
+    @Test
+    public void testMultipleSubscriptionsListViewNeverEmitEventBeforeSubscribed() {
+        final ListView listView = createListView(createValues(10));
+        performTestAdapterViewMultipleSubscriptionsNeverEmitEventBeforeSubscribed(listView);
+    }
+
+    @Test
+    public void testMultipleSubscriptionsGridViewNeverEmitEventBeforeSubscribed() {
+        final GridView gridView = createGridView(createValues(10));
+        performTestAdapterViewMultipleSubscriptionsNeverEmitEventBeforeSubscribed(gridView);
+    }
+
+    @Test
+    public void testMultipleSubscriptionsListViewClickAllViewsEmitAllEvents() {
+        final ListView listView = createListView(createValues(10));
+        performTestAdapterViewMultipleSubscriptionsClickAllViewsEmitAllEvents(listView);
+    }
+
+    @Test
+    public void testMultipleSubscriptionsGridViewClickAllViewsEmitAllEvents() {
+        final GridView gridView = createGridView(createValues(10));
+        performTestAdapterViewMultipleSubscriptionsClickAllViewsEmitAllEvents(gridView);
+    }
+
+    @Test
+    public void testMultipleSubscriptionsListViewClickAllViewsEmitAllEventsForOneSubscriber() {
+        final ListView listView = createListView(createValues(10));
+        performTestAdapterViewMultipleSubscriptionsClickAllViewsEmitAllEventsForOneSubscriber(listView);
+    }
+
+    @Test
+    public void testMultipleSubscriptionsGridViewClickAllViewsEmitAllEventsForOneSubscriber() {
+        final GridView gridView = createGridView(createValues(10));
+        performTestAdapterViewMultipleSubscriptionsClickAllViewsEmitAllEventsForOneSubscriber(gridView);
+    }
+
+    @Test
+    public void testMultipleSubscriptionsListViewNeverEmitEventAfterUnsubscribed() {
+        final ListView listView = createListView(createValues(10));
+        performTestAdapterViewMultipleSubscriptionsNeverEmitEventAfterUnsubscribed(listView);
+    }
+
+    @Test
+    public void testMultipleSubscriptionsGridViewNeverEmitEventAfrerUnsubscribed() {
+        final GridView gridView = createGridView(createValues(10));
+        performTestAdapterViewMultipleSubscriptionsNeverEmitEventAfterUnsubscribed(gridView);
+    }
+
+    @Test
+    public void testMultipleSubscriptionsListViewNeverEmitAnyThrowableAfterUnsubscribed() {
+        final ListView listView = createListView(createValues(10));
+        performTestAdapterViewMultipleSubscriptionsNeverEmitAnyThrowableAfterUnsubscribed(listView);
+    }
+
+    @Test
+    public void testMultipleSubscriptionsGridViewNeverEmitAnyThrowableAfterUnsubscribed() {
+        final GridView gridView = createGridView(createValues(10));
+        performTestAdapterViewMultipleSubscriptionsNeverEmitAnyThrowableAfterUnsubscribed(gridView);
+    }
+
+    @Test
+    public void testMultipleSubscriptionsListViewNeverEmitOnCompletedAfterUnsubscribed() {
+        final ListView listView = createListView(createValues(10));
+        performTestAdapterViewMultipleSubscriptionsNeverEmitOnCompletedAfterUnsubscribed(listView);
+    }
+
+    @Test
+    public void testMultipleSubscriptionsGridViewNeverEmitOnCompletedAfterUnsubscribed() {
+        final GridView gridView = createGridView(createValues(10));
+        performTestAdapterViewMultipleSubscriptionsNeverEmitOnCompletedAfterUnsubscribed(gridView);
     }
 
     @SuppressWarnings("unchecked")
-    private void performTestAdapterView(AdapterView<? extends Adapter> adapterView) {
+    private void performTestAdapterViewNeverEmitEventBeforeSubscribed(AdapterView<? extends Adapter> adapterView) {
         Adapter adapter = adapterView.getAdapter();
         Assert.assertNotNull(adapter);
         final Observable<OnItemClickEvent> observable = ViewObservable.itemClicks(adapterView);
@@ -110,21 +218,72 @@ public class OperatorAdapterViewOnItemClickTest {
         final InOrder inOrder = inOrder(observer);
         inOrder.verify(observer, never()).onNext(any(OnItemClickEvent.class));
 
+        subscription.unsubscribe();
+    }
+
+    @SuppressWarnings("unchecked")
+    private void performTestAdapterViewClickAllViewsEmitAllEvents(AdapterView<? extends Adapter> adapterView) {
+        Adapter adapter = adapterView.getAdapter();
+        Assert.assertNotNull(adapter);
+        final Observable<OnItemClickEvent> observable = ViewObservable.itemClicks(adapterView);
+        final Observer<OnItemClickEvent> observer = mock(Observer.class);
+        final Subscription subscription = observable.subscribe(new TestObserver<OnItemClickEvent>(observer));
+
+        final InOrder inOrder = inOrder(observer);
+
         for (int i = 0; i < adapter.getCount(); i++) {
             adapterView.performItemClick(any(View.class), i, i);
             inOrder.verify(observer, times(1)).onNext(new OnItemClickEvent(adapterView, any(View.class), i, i));
         }
 
         subscription.unsubscribe();
+    }
+
+    @SuppressWarnings("unchecked")
+    private void performTestAdapterViewNeverEmitEventAfterUnsubscribed(AdapterView<? extends Adapter> adapterView) {
+        Adapter adapter = adapterView.getAdapter();
+        Assert.assertNotNull(adapter);
+        final Observable<OnItemClickEvent> observable = ViewObservable.itemClicks(adapterView);
+        final Observer<OnItemClickEvent> observer = mock(Observer.class);
+        final Subscription subscription = observable.subscribe(new TestObserver<OnItemClickEvent>(observer));
+
+        final InOrder inOrder = inOrder(observer);
+
+        subscription.unsubscribe();
 
         inOrder.verify(observer, never()).onNext(any(OnItemClickEvent.class));
+    }
+
+    @SuppressWarnings("unchecked")
+    private void performTestAdapterViewNeverEmitAnyThrowableAfterUnsubscribed(AdapterView<? extends Adapter> adapterView) {
+        Adapter adapter = adapterView.getAdapter();
+        Assert.assertNotNull(adapter);
+        final Observable<OnItemClickEvent> observable = ViewObservable.itemClicks(adapterView);
+        final Observer<OnItemClickEvent> observer = mock(Observer.class);
+        final Subscription subscription = observable.subscribe(new TestObserver<OnItemClickEvent>(observer));
+
+        final InOrder inOrder = inOrder(observer);
+        subscription.unsubscribe();
 
         inOrder.verify(observer, never()).onError(any(Throwable.class));
+    }
+
+    @SuppressWarnings("unchecked")
+    private void performTestAdapterViewNeverEmitOnCompletedAfterUnsubscribed(AdapterView<? extends Adapter> adapterView) {
+        Adapter adapter = adapterView.getAdapter();
+        Assert.assertNotNull(adapter);
+        final Observable<OnItemClickEvent> observable = ViewObservable.itemClicks(adapterView);
+        final Observer<OnItemClickEvent> observer = mock(Observer.class);
+        final Subscription subscription = observable.subscribe(new TestObserver<OnItemClickEvent>(observer));
+
+        final InOrder inOrder = inOrder(observer);
+        subscription.unsubscribe();
+
         inOrder.verify(observer, never()).onCompleted();
     }
 
     @SuppressWarnings("unchecked")
-    private void performTestAdapterViewMultipleSubscriptions(AdapterView<? extends Adapter> adapterView) {
+    private void performTestAdapterViewMultipleSubscriptionsNeverEmitEventBeforeSubscribed(AdapterView<? extends Adapter> adapterView) {
         Adapter adapter = adapterView.getAdapter();
         Assert.assertNotNull(adapter);
         final Observable<OnItemClickEvent> observable = ViewObservable.itemClicks(adapterView);
@@ -139,26 +298,117 @@ public class OperatorAdapterViewOnItemClickTest {
         inOrder1.verify(observer1, never()).onNext(any(OnItemClickEvent.class));
         inOrder2.verify(observer2, never()).onNext(any(OnItemClickEvent.class));
 
+        subscription1.unsubscribe();
+        subscription2.unsubscribe();
+    }
+
+    @SuppressWarnings("unchecked")
+    private void performTestAdapterViewMultipleSubscriptionsClickAllViewsEmitAllEvents(AdapterView<? extends Adapter> adapterView) {
+        Adapter adapter = adapterView.getAdapter();
+        Assert.assertNotNull(adapter);
+        final Observable<OnItemClickEvent> observable = ViewObservable.itemClicks(adapterView);
+        final Observer<OnItemClickEvent> observer1 = mock(Observer.class);
+        final Observer<OnItemClickEvent> observer2 = mock(Observer.class);
+        final Subscription subscription1 = observable.subscribe(new TestObserver<OnItemClickEvent>(observer1));
+        final Subscription subscription2 = observable.subscribe(new TestObserver<OnItemClickEvent>(observer2));
+
+        final InOrder inOrder1 = inOrder(observer1);
+        final InOrder inOrder2 = inOrder(observer2);
+
         final int count = adapter.getCount();
         for (int i = 0; i < count; i++) {
             adapterView.performItemClick(any(View.class), i, i);
             inOrder1.verify(observer1, times(1)).onNext(new OnItemClickEvent(adapterView, any(View.class), i, i));
             inOrder2.verify(observer2, times(1)).onNext(new OnItemClickEvent(adapterView, any(View.class), i, i));
         }
+
+        subscription1.unsubscribe();
+        subscription2.unsubscribe();
+    }
+
+    @SuppressWarnings("unchecked")
+    private void performTestAdapterViewMultipleSubscriptionsClickAllViewsEmitAllEventsForOneSubscriber(AdapterView<? extends Adapter> adapterView) {
+        Adapter adapter = adapterView.getAdapter();
+        Assert.assertNotNull(adapter);
+        final Observable<OnItemClickEvent> observable = ViewObservable.itemClicks(adapterView);
+        final Observer<OnItemClickEvent> observer1 = mock(Observer.class);
+        final Observer<OnItemClickEvent> observer2 = mock(Observer.class);
+        final Subscription subscription1 = observable.subscribe(new TestObserver<OnItemClickEvent>(observer1));
+        final Subscription subscription2 = observable.subscribe(new TestObserver<OnItemClickEvent>(observer2));
+
+        final InOrder inOrder1 = inOrder(observer1);
+        final InOrder inOrder2 = inOrder(observer2);
+
+        inOrder1.verify(observer1, never()).onNext(any(OnItemClickEvent.class));
+        inOrder2.verify(observer2, never()).onNext(any(OnItemClickEvent.class));
+
         subscription1.unsubscribe();
 
+        final int count = adapter.getCount();
         for (int i = 0; i < count; i++) {
             adapterView.performItemClick(any(View.class), i, i);
             inOrder1.verify(observer1, never()).onNext(any(OnItemClickEvent.class));
             inOrder2.verify(observer2, times(1)).onNext(new OnItemClickEvent(adapterView, any(View.class), i, i));
         }
         subscription2.unsubscribe();
+    }
+
+    @SuppressWarnings("unchecked")
+    private void performTestAdapterViewMultipleSubscriptionsNeverEmitEventAfterUnsubscribed(AdapterView<? extends Adapter> adapterView) {
+        Adapter adapter = adapterView.getAdapter();
+        Assert.assertNotNull(adapter);
+        final Observable<OnItemClickEvent> observable = ViewObservable.itemClicks(adapterView);
+        final Observer<OnItemClickEvent> observer1 = mock(Observer.class);
+        final Observer<OnItemClickEvent> observer2 = mock(Observer.class);
+        final Subscription subscription1 = observable.subscribe(new TestObserver<OnItemClickEvent>(observer1));
+        final Subscription subscription2 = observable.subscribe(new TestObserver<OnItemClickEvent>(observer2));
+
+        final InOrder inOrder1 = inOrder(observer1);
+        final InOrder inOrder2 = inOrder(observer2);
+
+        subscription1.unsubscribe();
+        subscription2.unsubscribe();
 
         inOrder1.verify(observer1, never()).onNext(any(OnItemClickEvent.class));
         inOrder2.verify(observer2, never()).onNext(any(OnItemClickEvent.class));
+    }
+
+    @SuppressWarnings("unchecked")
+    private void performTestAdapterViewMultipleSubscriptionsNeverEmitAnyThrowableAfterUnsubscribed(AdapterView<? extends Adapter> adapterView) {
+        Adapter adapter = adapterView.getAdapter();
+        Assert.assertNotNull(adapter);
+        final Observable<OnItemClickEvent> observable = ViewObservable.itemClicks(adapterView);
+        final Observer<OnItemClickEvent> observer1 = mock(Observer.class);
+        final Observer<OnItemClickEvent> observer2 = mock(Observer.class);
+        final Subscription subscription1 = observable.subscribe(new TestObserver<OnItemClickEvent>(observer1));
+        final Subscription subscription2 = observable.subscribe(new TestObserver<OnItemClickEvent>(observer2));
+
+        final InOrder inOrder1 = inOrder(observer1);
+        final InOrder inOrder2 = inOrder(observer2);
+
+        subscription1.unsubscribe();
+        subscription2.unsubscribe();
 
         inOrder1.verify(observer1, never()).onError(any(Throwable.class));
-        inOrder2.verify(observer2, never()).onNext(any(OnItemClickEvent.class));
+        inOrder2.verify(observer2, never()).onError(any(Throwable.class));
+    }
+
+    @SuppressWarnings("unchecked")
+    private void performTestAdapterViewMultipleSubscriptionsNeverEmitOnCompletedAfterUnsubscribed(AdapterView<? extends Adapter> adapterView) {
+        Adapter adapter = adapterView.getAdapter();
+        Assert.assertNotNull(adapter);
+        final Observable<OnItemClickEvent> observable = ViewObservable.itemClicks(adapterView);
+        final Observer<OnItemClickEvent> observer1 = mock(Observer.class);
+        final Observer<OnItemClickEvent> observer2 = mock(Observer.class);
+        final Subscription subscription1 = observable.subscribe(new TestObserver<OnItemClickEvent>(observer1));
+        final Subscription subscription2 = observable.subscribe(new TestObserver<OnItemClickEvent>(observer2));
+
+        final InOrder inOrder1 = inOrder(observer1);
+        final InOrder inOrder2 = inOrder(observer2);
+
+        subscription1.unsubscribe();
+        subscription2.unsubscribe();
+
         inOrder1.verify(observer1, never()).onCompleted();
         inOrder2.verify(observer2, never()).onCompleted();
     }
