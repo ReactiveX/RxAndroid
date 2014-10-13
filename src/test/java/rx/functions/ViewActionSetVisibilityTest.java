@@ -15,7 +15,6 @@
  */
 package rx.android.functions;
 
-import android.app.Activity;
 import android.view.View;
 
 import org.junit.Test;
@@ -26,14 +25,10 @@ import org.robolectric.RobolectricTestRunner;
 import rx.subjects.PublishSubject;
 
 import static org.junit.Assert.assertEquals;
+import static rx.android.TestUtil.createView;
 
 @RunWith(RobolectricTestRunner.class)
 public class ViewActionSetVisibilityTest {
-
-    private static View createView() {
-        final Activity activity = Robolectric.buildActivity(Activity.class).create().get();
-        return new View(activity);
-    }
 
     @Test
     @SuppressWarnings("unchecked")

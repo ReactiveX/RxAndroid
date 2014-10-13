@@ -15,7 +15,6 @@
  */
 package rx.android.functions;
 
-import android.app.Activity;
 import android.view.View;
 
 import org.junit.Test;
@@ -27,14 +26,10 @@ import rx.subjects.PublishSubject;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static rx.android.TestUtil.createView;
 
 @RunWith(RobolectricTestRunner.class)
 public class ViewActionSetFocusableTest {
-
-    private static View createView() {
-        final Activity activity = Robolectric.buildActivity(Activity.class).create().get();
-        return new View(activity);
-    }
 
     @Test
     @SuppressWarnings("unchecked")
