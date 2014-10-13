@@ -17,18 +17,14 @@ package rx.android.functions;
 
 import android.view.View;
 
-import rx.functions.Action1;
-
-public class ViewActionSetEnabled implements Action1<Boolean> {
-
-    private final View view;
+public class ViewActionSetEnabled extends ViewAction1<View, Boolean> {
 
     public ViewActionSetEnabled(View view) {
-        this.view = view;
+        super(view);
     }
 
     @Override
-    public void call(Boolean aBoolean) {
+    public void call(View view, Boolean aBoolean) {
         view.setEnabled(aBoolean);
     }
 }

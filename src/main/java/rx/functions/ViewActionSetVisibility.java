@@ -17,11 +17,8 @@ package rx.android.functions;
 
 import android.view.View;
 
-import rx.functions.Action1;
+public class ViewActionSetVisibility extends ViewAction1<View, Boolean> {
 
-public class ViewActionSetVisibility implements Action1<Boolean> {
-
-    private final View view;
     private final int visibilityOnFalse;
 
     public ViewActionSetVisibility(View view) {
@@ -29,18 +26,18 @@ public class ViewActionSetVisibility implements Action1<Boolean> {
     }
 
     public ViewActionSetVisibility(View view, int visibilityOnFalse) {
+        super(view);
         if (visibilityOnFalse != View.GONE &&
                 visibilityOnFalse != View.INVISIBLE &&
                 visibilityOnFalse != View.VISIBLE) {
             throw new IllegalArgumentException(visibilityOnFalse +
                     " is not a valid visibility value. See android.view.View VISIBLE, GONE, and INVISIBLE");
         }
-        this.view = view;
         this.visibilityOnFalse = visibilityOnFalse;
     }
 
     @Override
-    public void call(Boolean aBoolean) {
+    public void call(View view, Boolean aBoolean) {
         int visibility = aBoolean ? View.VISIBLE : visibilityOnFalse;
         view.setVisibility(visibility);
     }
