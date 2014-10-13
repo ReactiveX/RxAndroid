@@ -39,7 +39,7 @@ import rx.Scheduler.Worker;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.functions.Action0;
-import rx.functions.Action1;
+
 import android.os.Handler;
 
 @RunWith(RobolectricTestRunner.class)

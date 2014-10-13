@@ -19,7 +19,6 @@ import rx.Scheduler.Worker;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
-import rx.functions.Action1;
 import rx.subscriptions.Subscriptions;
 import android.os.Looper;
 
