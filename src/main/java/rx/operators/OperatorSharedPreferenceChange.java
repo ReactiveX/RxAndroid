@@ -34,7 +34,6 @@ public class OperatorSharedPreferenceChange implements Observable.OnSubscribe<St
         final SharedPreferences.OnSharedPreferenceChangeListener listener = new SharedPreferences.OnSharedPreferenceChangeListener() {
             @Override
             public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-                if(!subscriber.isUnsubscribed())
                 subscriber.onNext(key);
             }
         };
