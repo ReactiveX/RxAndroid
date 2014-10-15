@@ -15,23 +15,23 @@
  */
 package rx.android.observables;
 
-import static rx.android.schedulers.AndroidSchedulers.mainThread;
-
-import android.content.SharedPreferences;
-import rx.Observable;
-import rx.functions.Func1;
-import rx.android.operators.OperatorBroadcastRegister;
-import rx.android.operators.OperatorConditionalBinding;
-import rx.android.operators.OperatorLocalBroadcastRegister;
-
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Handler;
-import rx.operators.OperatorSharedPreferenceChange;
+
+import rx.Observable;
+import rx.android.operators.OperatorBroadcastRegister;
+import rx.android.operators.OperatorConditionalBinding;
+import rx.android.operators.OperatorLocalBroadcastRegister;
+import rx.android.operators.OperatorSharedPreferenceChange;
+import rx.functions.Func1;
+
+import static rx.android.schedulers.AndroidSchedulers.mainThread;
 
 
 public final class AndroidObservable {

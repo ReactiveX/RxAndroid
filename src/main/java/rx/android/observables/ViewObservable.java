@@ -15,17 +15,20 @@
  */
 package rx.android.observables;
 
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.CompoundButton;
+import android.widget.TextView;
+
 import rx.Observable;
 import rx.android.events.OnCheckedChangeEvent;
 import rx.android.events.OnClickEvent;
+import rx.android.events.OnItemClickEvent;
 import rx.android.events.OnTextChangeEvent;
+import rx.android.operators.OperatorAdapterViewOnItemClick;
 import rx.android.operators.OperatorCompoundButtonInput;
 import rx.android.operators.OperatorTextViewInput;
 import rx.android.operators.OperatorViewClick;
-
-import android.view.View;
-import android.widget.CompoundButton;
-import android.widget.TextView;
 
 public class ViewObservable {
 
@@ -51,6 +54,10 @@ public class ViewObservable {
 
     public static Observable<OnCheckedChangeEvent> input(final CompoundButton button, final boolean emitInitialValue) {
         return Observable.create(new OperatorCompoundButtonInput(button, emitInitialValue));
+    }
+
+    public static Observable<OnItemClickEvent> itemClicks(final AdapterView<?> adapterView) {
+        return Observable.create(new OperatorAdapterViewOnItemClick(adapterView));
     }
 
 }
