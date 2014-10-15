@@ -17,11 +17,12 @@ package rx.android.observables;
 
 import static rx.android.schedulers.AndroidSchedulers.mainThread;
 
+import android.content.SharedPreferences;
 import rx.Observable;
 import rx.functions.Func1;
-import rx.operators.OperatorBroadcastRegister;
-import rx.operators.OperatorConditionalBinding;
-import rx.operators.OperatorLocalBroadcastRegister;
+import rx.android.operators.OperatorBroadcastRegister;
+import rx.android.operators.OperatorConditionalBinding;
+import rx.android.operators.OperatorLocalBroadcastRegister;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -30,6 +31,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Handler;
+import rx.operators.OperatorSharedPreferenceChange;
 
 
 public final class AndroidObservable {
@@ -149,5 +151,14 @@ public final class AndroidObservable {
      */
     public static Observable<Intent> fromLocalBroadcast(Context context, IntentFilter filter){
         return Observable.create(new OperatorLocalBroadcastRegister(context, filter));
+    }
+
+    /**
+     * Create Observable that emits String keys whenever it changes in provided SharedPreferences
+     *
+     * Items will be observed on the main Android UI thread
+     */
+    public static Observable<String> fromSharedPreferencesChanges(SharedPreferences sharedPreferences){
+        return Observable.create(new OperatorSharedPreferenceChange(sharedPreferences));
     }
 }

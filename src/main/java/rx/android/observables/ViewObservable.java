@@ -16,33 +16,43 @@
 package rx.android.observables;
 
 import android.view.View;
-import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import rx.Observable;
+import rx.android.events.OnCheckedChangeEvent;
+import rx.android.events.OnClickEvent;
 import rx.android.events.OnItemClickEvent;
+import rx.android.events.OnTextChangeEvent;
 import rx.android.operators.OperatorAdapterViewOnItemClick;
-import rx.operators.OperatorCompoundButtonInput;
-import rx.operators.OperatorTextViewInput;
-import rx.operators.OperatorViewClick;
+import rx.android.operators.OperatorCompoundButtonInput;
+import rx.android.operators.OperatorTextViewInput;
+import rx.android.operators.OperatorViewClick;
 
 public class ViewObservable {
 
-    public static <T extends View> Observable<T> clicks(final T view, final boolean emitInitialValue) {
-        return Observable.create(new OperatorViewClick<T>(view, emitInitialValue));
+    public static Observable<OnClickEvent> clicks(final View view) {
+        return clicks(view, false);
     }
 
-    public static <T extends TextView> Observable<T> text(final T input) {
+    public static Observable<OnClickEvent> clicks(final View view, final boolean emitInitialValue) {
+        return Observable.create(new OperatorViewClick(view, emitInitialValue));
+    }
+
+    public static Observable<OnTextChangeEvent> text(final TextView input) {
         return text(input, false);
     }
 
-    public static <T extends TextView> Observable<T> text(final T input, final boolean emitInitialValue) {
-        return Observable.create(new OperatorTextViewInput<T>(input, emitInitialValue));
+    public static Observable<OnTextChangeEvent> text(final TextView input, final boolean emitInitialValue) {
+        return Observable.create(new OperatorTextViewInput(input, emitInitialValue));
     }
 
-    public static Observable<Boolean> input(final CompoundButton button, final boolean emitInitialValue) {
+    public static Observable<OnCheckedChangeEvent> input(final CompoundButton button) {
+        return input(button, false);
+    }
+
+    public static Observable<OnCheckedChangeEvent> input(final CompoundButton button, final boolean emitInitialValue) {
         return Observable.create(new OperatorCompoundButtonInput(button, emitInitialValue));
     }
 
@@ -51,4 +61,3 @@ public class ViewObservable {
     }
 
 }
-
