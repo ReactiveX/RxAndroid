@@ -19,9 +19,9 @@ import static rx.android.schedulers.AndroidSchedulers.mainThread;
 
 import rx.Observable;
 import rx.functions.Func1;
-import rx.operators.OperatorBroadcastRegister;
-import rx.operators.OperatorConditionalBinding;
-import rx.operators.OperatorLocalBroadcastRegister;
+import rx.android.operators.OperatorBroadcastRegister;
+import rx.android.operators.OperatorConditionalBinding;
+import rx.android.operators.OperatorLocalBroadcastRegister;
 
 import android.app.Activity;
 import android.app.Fragment;

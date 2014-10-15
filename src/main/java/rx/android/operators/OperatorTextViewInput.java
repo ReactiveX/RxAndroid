@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package rx.operators;
+package rx.android.operators;
 
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
+import rx.android.events.OnTextChangeEvent;
 import rx.android.observables.Assertions;
 import rx.android.subscriptions.AndroidSubscriptions;
 import rx.functions.Action0;
@@ -25,22 +26,22 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.widget.TextView;
 
-public class OperatorTextViewInput<T extends TextView> implements Observable.OnSubscribe<T> {
-    private final T input;
+public class OperatorTextViewInput implements Observable.OnSubscribe<OnTextChangeEvent> {
     private final boolean emitInitialValue;
+    private final TextView input;
 
-    public OperatorTextViewInput(final T input, final boolean emitInitialValue) {
+    public OperatorTextViewInput(final TextView input, final boolean emitInitialValue) {
         this.input = input;
         this.emitInitialValue = emitInitialValue;
     }
 
     @Override
-    public void call(final Subscriber<? super T> observer) {
+    public void call(final Subscriber<? super OnTextChangeEvent> observer) {
         Assertions.assertUiThread();
         final TextWatcher watcher = new SimpleTextWatcher() {
             @Override
             public void afterTextChanged(final Editable editable) {
-                observer.onNext(input);
+                observer.onNext(new OnTextChangeEvent(input));
             }
         };
 
@@ -52,7 +53,7 @@ public class OperatorTextViewInput<T extends TextView> implements Observable.OnS
         });
 
         if (emitInitialValue) {
-            observer.onNext(input);
+            observer.onNext(new OnTextChangeEvent(input));
         }
 
         input.addTextChangedListener(watcher);
