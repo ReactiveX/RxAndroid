@@ -72,3 +72,10 @@ bin/
 # Scala build
 *.cache
 /.nb-gradle/private/
+
+# Android
+local.properties
+
+# jEnv
+.java-version
+
