@@ -1,3 +1,6 @@
+<a href='https://travis-ci.org/ReactiveX/RxAndroid/builds'><img src='https://travis-ci.org/ReactiveX/RxAndroid.svg?branch=0.x'></a>
+<a href='http://search.maven.org/#search%7Cga%7C1%7Crxandroid'><img src='http://img.shields.io/maven-central/v/io.reactivex/rxandroid.svg'></a>
+
 # RxAndroid: Reactive Extensions for Android
 
 Android specific bindings for [RxJava](http://github.com/ReactiveX/RxJava).
@@ -9,10 +12,6 @@ Android applications easy and hassle free. More specifically, it
 - provides base `Observer` implementations that make guarantees w.r.t. to reliable and thread-safe use throughout 
       `Fragment` and `Activity` life-cycle callbacks (coming soon)
 - provides reusable, self-contained reactive components for common Android use cases and UI concerns (coming soon)
-
-## Master Build Status
-
-<a href='https://travis-ci.org/ReactiveX/RxAndroid/builds'><img src='https://travis-ci.org/ReactiveX/RxAndroid.svg?branch=0.x'></a>
 
 ## Communication
 
