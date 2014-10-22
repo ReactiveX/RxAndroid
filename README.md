@@ -24,22 +24,22 @@ Since RxAndroid is part of the RxJava family the communication channels are simi
 
 # Binaries
 
-Binaries and dependency information for Maven, Ivy, Gradle and others can be found at [http://search.maven.org](http://search.maven.org/#search%7Cga%7C1%7Ca%3A%22rxjava-android%22).
+Binaries and dependency information for Maven, Ivy, Gradle and others can be found at [http://search.maven.org](http://search.maven.org/#search%7Cga%7C1%7Crxandroid).
 
-Example for [Maven](http://search.maven.org/#search%7Cga%7C1%7Ca%3A%22rxjava-android%22):
+Example for Maven:
 
 ```xml
 <dependency>
-    <groupId>com.netflix.rxjava</groupId>
-    <artifactId>rxjava-android</artifactId>
-    <version>0.10.1</version>
+    <groupId>io.reactivex</groupId>
+    <artifactId>rxandroid</artifactId>
+    <version>0.22</version>
 </dependency>
 ```
 
 and for Ivy:
 
 ```xml
-<dependency org="com.netflix.rxjava" name="rxjava-android" rev="0.10.1" />
+<dependency org="io.reactivex" name="rxandroid" rev="0.22" />
 ```
 
 ## Build
