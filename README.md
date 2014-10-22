@@ -45,7 +45,7 @@ and for Ivy:
 
 To build:
 
-```
+```bash
 $ git clone git@github.com:ReactiveX/RxAndroid.git
 $ cd RxAndroid/
 $ ./RxAndroid build
@@ -66,7 +66,8 @@ result or outcome on the main UI thread. Using vanilla Android, this would
 typically be accomplished with an `AsyncTask`. With RxJava instead you would declare your `Observable`
 to be observed on the main thread:
 
-    public class ReactiveFragment extends Fragment {
+```java
+public class ReactiveFragment extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -76,27 +77,30 @@ to be observed on the main thread:
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(/* an Observer */);
     }
- 
+```
+
 This will execute the Observable on a new thread, and emit results through `onNext` on the main UI thread.
-   
+
 ## Observing on arbitrary threads
 The previous sample is merely a specialization of a more general concept, namely binding asynchronous
 communication to an Android message loop using the `Handler` class. In order to observe an `Observable`
 on an arbitrary thread, create a `Handler` bound to that thread and use the `AndroidSchedulers.handlerThread`
 scheduler:
 
-    new Thread(new Runnable() {
-        @Override
-        public void run() {
-            final Handler handler = new Handler(); // bound to this thread
-            Observable.from("one", "two", "three", "four", "five")
-                    .subscribeOn(Schedulers.newThread())
-                    .observeOn(AndroidSchedulers.handlerThread(handler))
-                    .subscribe(/* an Observer */)
-                    
-            // perform work, ...
-        }
-    }, "custom-thread-1").start();
+```java
+new Thread(new Runnable() {
+    @Override
+    public void run() {
+        final Handler handler = new Handler(); // bound to this thread
+        Observable.from("one", "two", "three", "four", "five")
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.handlerThread(handler))
+                .subscribe(/* an Observer */)
+
+        // perform work, ...
+    }
+}, "custom-thread-1").start();
+```
 
 This will execute the Observable on a new thread and emit results through `onNext` on "custom-thread-1".
 (This example is contrived since you could as well call `observeOn(Schedulers.currentThread())` but it
