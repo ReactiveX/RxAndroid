@@ -48,7 +48,7 @@ To build:
 ```bash
 $ git clone git@github.com:ReactiveX/RxAndroid.git
 $ cd RxAndroid/
-$ ./RxAndroid build
+$ ./gradlew build
 ```
 
 Futher details on building can be found on the RxJava [Getting Started](https://github.com/ReactiveX/RxJava/wiki/Getting-Started) page of the wiki.
