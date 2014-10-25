@@ -41,6 +41,11 @@ and for Ivy:
 <dependency org="io.reactivex" name="rxandroid" rev="0.22" />
 ```
 
+and for Gradle:
+```groovy
+compile 'io.reactivex:rxandroid:0.22.0'
+```
+
 ## Build
 
 To build:
