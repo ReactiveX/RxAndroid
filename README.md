@@ -21,6 +21,18 @@ Since RxAndroid is part of the RxJava family the communication channels are simi
 - Twitter: [@RxJava](http://twitter.com/RxJava)
 - [GitHub Issues](https://github.com/ReactiveX/RxAndroid/issues)
 
+# Versioning
+
+RxAndroid 0.21 and beyond are published under the `io.reactivex` GroupID and depend on RxJava 1.0.x. Versions 0.20 and earlier were `rxjava-android` and published along with `rxjava-core` under the `com.netflix.rxjava` GroupID.
+
+RxAndroid is staying on the 0.x versioning for now despite RxJava hitting 1.0 as it is not yet felt that the RxAndroid APIs are stabilized.
+
+All usage of 0.20.x and earlier under `com.netflix.rxjava` should eventually be migrated to RxJava 1.x and `io.reactivex`. This was done as part of the migration of the project from `Netflix/RxJava` to `ReactiveX/RxJava` and `ReactiveX/RxAndroid`.
+
+During the transition it will be possible for an application to resolve both the `com.netflix.rxjava` and `io.reactivex` artifacts. This is unfortunate but was accepted as a reasonable cost for adopting the new name as we hit version 1.0.
+
+The RxJava 0.20.x branch is being maintained with bug fixes on the `com.netflix.rxjava` GroupId until version 1.0 Final is released to allow time to migrate between the artifacts.
+
 # Binaries
 
 Binaries and dependency information for Maven, Ivy, Gradle and others can be found at [http://search.maven.org](http://search.maven.org/#search%7Cga%7C1%7Crxandroid).
