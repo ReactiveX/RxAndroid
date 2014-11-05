@@ -16,7 +16,7 @@ package rx.android.operators;
 import rx.Observable;
 import rx.Subscriber;
 import rx.functions.Func1;
-import rx.functions.Functions;
+import rx.internal.util.UtilityFunctions;
 
 import android.util.Log;
 
@@ -44,7 +44,7 @@ public final class OperatorConditionalBinding<T, R> implements Observable.Operat
 
     public OperatorConditionalBinding(R bound) {
         boundRef = bound;
-        this.predicate = Functions.alwaysTrue();
+        this.predicate = UtilityFunctions.alwaysTrue();
     }
 
     @Override

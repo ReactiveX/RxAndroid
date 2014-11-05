@@ -23,7 +23,7 @@ import org.mockito.MockitoAnnotations;
 import org.robolectric.RobolectricTestRunner;
 import rx.Subscriber;
 import rx.functions.Func1;
-import rx.functions.Functions;
+import rx.internal.util.UtilityFunctions;
 import rx.observers.TestSubscriber;
 
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -65,7 +65,7 @@ public class OperatorConditionalBindingTest {
     @Test
     public void shouldUnsubscribeFromSourceSequenceWhenPredicateFailsToPass() {
         OperatorConditionalBinding<String, Object> op = new OperatorConditionalBinding<String, Object>(
-                new Object(), Functions.alwaysFalse());
+                new Object(), UtilityFunctions.alwaysFalse());
 
         Subscriber<? super String> sub = op.call(subscriber);
         sub.onNext("one");
