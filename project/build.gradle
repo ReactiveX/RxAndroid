@@ -10,7 +10,7 @@ apply plugin: 'rxjava-project'
 apply plugin: 'provided-base'
 
 dependencies {
-    compile 'io.reactivex:rxjava:1.0.+'
+    compile "io.reactivex:rxjava:$rxJavaVersion"
     provided 'com.google.android:android:4.0.1.2'
     provided 'com.google.android:support-v4:r7'
 
