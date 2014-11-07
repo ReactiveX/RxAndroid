@@ -17,7 +17,6 @@ import android.view.View;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 
 import rx.subjects.PublishSubject;
@@ -27,47 +26,20 @@ import static org.junit.Assert.assertTrue;
 import static rx.android.TestUtil.createView;
 
 @RunWith(RobolectricTestRunner.class)
-public class ViewAction1Test {
+public class ViewActionSetActivatedTest {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void callIsNotExecutedWithAReleasedReference() {
-        final View view = null; // simulate a released WeakReference
-        final PublishSubject<Boolean> subject = PublishSubject.create();
-        final ViewAction1Impl action = new ViewAction1Impl(view);
-        subject.subscribe(action);
-
-        assertFalse(action.wasCalled);
-        subject.onNext(true);
-        assertFalse(action.wasCalled);
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void callIsExecutedWithARetainedReference() {
+    public void testSetsViewActivated() {
         final View view = createView();
         final PublishSubject<Boolean> subject = PublishSubject.create();
-        final ViewAction1Impl action = new ViewAction1Impl(view);
-        subject.subscribe(action);
+        subject.subscribe(ViewActions.setActivated(view));
 
-        assertFalse(action.wasCalled);
+        assertFalse(view.isActivated());
         subject.onNext(true);
-        assertTrue(action.wasCalled);
-    }
-
-    private static class ViewAction1Impl extends ViewAction1<View, Boolean> {
-
-        boolean wasCalled = false;
-
-        ViewAction1Impl(View view) {
-            super(view);
-        }
-
-        @Override
-        public void call(View view, Boolean aBoolean) {
-            wasCalled = true;
-        }
-
+        assertTrue(view.isActivated());
+        subject.onNext(false);
+        assertFalse(view.isActivated());
     }
 
 }

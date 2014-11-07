@@ -15,9 +15,9 @@ package rx.android.functions;
 
 import android.view.View;
 
-import rx.functions.Action1;
-
 import java.lang.ref.WeakReference;
+
+import rx.functions.Action1;
 
 /**
  * An {@link Action1} implementation specific for {@link View}s.
