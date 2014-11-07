@@ -1,4 +1,4 @@
-package com.netflix.rxjava.android.samples;
+package rx.android.samples;
 
 import android.app.Application;
 import android.os.StrictMode;
