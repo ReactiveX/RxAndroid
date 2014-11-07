@@ -1,4 +1,10 @@
-language: java
+language: android
 
 jdk:
   - oraclejdk7
+
+android:
+  components:
+    - android-20
+
+script: "./gradlew build"

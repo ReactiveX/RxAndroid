@@ -1,11 +1,6 @@
 # Compiled source #
 ###################
-*.com
 *.class
-*.dll
-*.exe
-*.o
-*.so
 
 # Packages #
 ############
@@ -15,7 +10,6 @@
 *.dmg
 *.gz
 *.iso
-*.jar
 *.rar
 *.tar
 *.zip
@@ -68,10 +62,6 @@ bin/
 .nbattrs
 /.nb-gradle/profiles/private/
 .nb-gradle-properties
-
-# Scala build
-*.cache
-/.nb-gradle/private/
 
 # Android
 local.properties

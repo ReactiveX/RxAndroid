@@ -5,6 +5,3 @@ buildscript {
     classpath 'com.netflix.nebula:gradle-extra-configurations-plugin:1.12.+'
   }
 }
-apply plugin: 'rxjava-project'
-apply plugin: 'provided-base'
-
