@@ -1,0 +1,12 @@
+apply plugin: 'java'
+
+tasks.assemble.doLast {
+    def androidHome = System.getenv("ANDROID_HOME")
+    if (androidHome.empty) {
+        throw new Exception("ANDROID_HOME not found")
+    }
+    project.exec {
+        workingDir '../samples'
+        commandLine "./gradlew", "clean", "packageDebug"
+    }
+}
