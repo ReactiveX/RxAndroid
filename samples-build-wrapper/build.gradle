@@ -1,8 +1,7 @@
 apply plugin: 'java'
 
 tasks.assemble.doLast {
-    def androidHome = System.getenv("ANDROID_HOME")
-    if (!androidHome || androidHome.empty) {
+    if (!System.getenv("ANDROID_HOME")) {
         throw new Exception("ANDROID_HOME not found")
     }
     project.exec {
