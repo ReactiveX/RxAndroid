@@ -1,2 +1,2 @@
-rootProject.name='rxandroid'
-include 'library', 'samples-build-wrapper'
+rootProject.name='rxandroid-project'
+include 'rxandroid', 'samples-build-wrapper'
