@@ -1,7 +1,6 @@
 apply plugin: 'java'
-apply plugin: 'maven'
 
-tasks.install.doLast {
+tasks.assemble.doLast {
     def androidHome = System.getenv("ANDROID_HOME")
     if (androidHome) {
         println "Found ANDROID_HOME at $androidHome"
