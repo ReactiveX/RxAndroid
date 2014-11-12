@@ -1,7 +1,13 @@
 buildscript {
-  repositories { jcenter() }
-  dependencies {
-    classpath 'com.netflix.nebula:gradle-rxjava-project-plugin:1.12.+'
-    classpath 'com.netflix.nebula:gradle-extra-configurations-plugin:1.12.+'
-  }
+    repositories { jcenter() }
+    dependencies {
+        classpath 'com.netflix.nebula:gradle-rxjava-project-plugin:1.12.+'
+    }
+    configurations.classpath.resolutionStrategy {
+        // The above dependency will bring in guava, which then pollutes child projects
+        force 'com.google.guava:guava:15.0'
+    }
+
 }
+
+apply plugin: 'rxjava-project'
