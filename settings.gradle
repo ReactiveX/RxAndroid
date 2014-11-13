@@ -1,2 +1,5 @@
-rootProject.name='rxandroid'
-include 'library', 'project', 'samples-build-wrapper'
+rootProject.name='rxandroid-root'
+include 'library', 'framework', 'sample-app'
+
+project(':library').name = 'rxandroid'
+project(':framework').name = 'rxandroid-framework'

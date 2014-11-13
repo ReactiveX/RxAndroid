@@ -7,6 +7,10 @@ buildscript {
 }
 
 apply plugin: 'rxjava-project'
+
+// Multi-module modules aren't really supported
+version = rootProject.version
+
 apply plugin: 'provided-base'
 
 dependencies {
@@ -29,3 +33,4 @@ test {
         displayGranularity 2
     }
 }
+
