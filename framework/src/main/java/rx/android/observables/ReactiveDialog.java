@@ -30,10 +30,10 @@ import rx.android.exception.CancelledException;
 import rx.resumable.SubscriberVault;
 
 /**
- * A Wrapper for DialogFragment that allows to observe on the result of the User Interaction.
+ * Wrapper for DialogFragment that allows to observe on the result of the user interaction.
  *
  * @param <T> The type of data expected as return value from the fragment, can be boolean for confirmation dialogs,
- *            or more complex for data input dialogs
+ *            or more complex for data input dialogs.
  */
 public class ReactiveDialog<T> extends DialogFragment {
 
@@ -48,9 +48,8 @@ public class ReactiveDialog<T> extends DialogFragment {
     }
 
     /**
-     *
-     * @param manager The android Fragment manager
-     * @return An observable on the User Interaction
+     * Returns an observable for the dialog result.
+     * The dialog is shown at subscription time.
      */
     public Observable<T> show(final FragmentManager manager) {
         return Observable.create(new Observable.OnSubscribe<T>() {
@@ -81,8 +80,7 @@ public class ReactiveDialog<T> extends DialogFragment {
     }
 
     /**
-     * Get the wrapped subscriber for the observable
-     * @return a listener that is an extended version of the subscriber
+     * Get the wrapped subscriber for the observable.
      */
     protected ReactiveDialogListener<T> getListener() {
         Subscriber<T> subscriber = subscriberVault.get(getSubscriberKey());
@@ -106,8 +104,6 @@ public class ReactiveDialog<T> extends DialogFragment {
     /**
      * A wrapper for the subscriber from the observable.
      * The wrapper add specialised failures such as CancelledException and removes itself from the vault upon completion or failure.
-     * @param <T> The type of data expected as return value from the fragment, can be boolean for confirmation dialogs,
-     *            or more complex for data input dialogs
      */
     private class ReactiveDialogObserver implements ReactiveDialogListener<T> {
 
@@ -147,5 +143,4 @@ public class ReactiveDialog<T> extends DialogFragment {
             subscriberVault.remove(getSubscriberKey());
         }
     }
-
 }
