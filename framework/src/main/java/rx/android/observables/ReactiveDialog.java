@@ -65,7 +65,7 @@ public class ReactiveDialog<T> extends DialogFragment {
                         return !subscriberVault.containsKey(key);
                     }
                 });
-                show(manager, getClass().getSimpleName());
+                show(manager, null);
             }
         });
     }
