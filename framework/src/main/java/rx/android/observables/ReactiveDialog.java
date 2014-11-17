@@ -41,8 +41,8 @@ public class ReactiveDialog<T> extends DialogFragment {
 
     private static final SubscriberVault subscriberVault = new SubscriberVault();
 
-    protected interface ReactiveDialogListener<T> extends Observer<T> {
-        void onCompleteWith(T value);
+    public interface ReactiveDialogListener<V> extends Observer<V> {
+        void onCompleteWith(V value);
 
         void onCancel();
     }
@@ -85,11 +85,11 @@ public class ReactiveDialog<T> extends DialogFragment {
      * @return a listener that is an extended version of the subscriber
      */
     protected ReactiveDialogListener<T> getListener() {
-        Subscriber<Object> subscriber = subscriberVault.get(getSubscriberKey());
+        Subscriber<T> subscriber = subscriberVault.get(getSubscriberKey());
         if (subscriber == null) {
             throw new IllegalStateException("No listener attached, you are probably trying to deliver a result after completion of the observable");
         }
-        return new ReactiveDialogObserver<T>(subscriber);
+        return new ReactiveDialogObserver(subscriber);
     }
 
     private void storeSubscriberKey(UUID key) {
@@ -109,7 +109,7 @@ public class ReactiveDialog<T> extends DialogFragment {
      * @param <T> The type of data expected as return value from the fragment, can be boolean for confirmation dialogs,
      *            or more complex for data input dialogs
      */
-    private class ReactiveDialogObserver<T> implements ReactiveDialogListener<T> {
+    private class ReactiveDialogObserver implements ReactiveDialogListener<T> {
 
         private final Subscriber<? super T> subscriber;
 
