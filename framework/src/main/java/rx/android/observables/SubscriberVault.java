@@ -13,33 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package rx.resumable;
+package rx.android.observables;
 
+import java.lang.Long;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 import rx.Subscriber;
 
-public class SubscriberVault {
+final class SubscriberVault {
 
-    private final Map<UUID, Subscriber> subscriberMap = new HashMap<UUID, Subscriber>();
+    private static long idGenerator;
 
-    public <T> UUID store(Subscriber<T> subscriber) {
-        UUID uuid = UUID.randomUUID();
-        subscriberMap.put(uuid, subscriber);
-        return uuid;
+    private final Map<Long, Subscriber> subscriberMap = new HashMap<Long, Subscriber>();
+
+    <T> long store(Subscriber<T> subscriber) {
+        long id = idGenerator++;
+        subscriberMap.put(id, subscriber);
+        return id;
     }
 
-    public <T> Subscriber<T> get(UUID key) {
+    public <T> Subscriber<T> get(long key) {
         return subscriberMap.get(key);
     }
 
-    public boolean containsKey(UUID key) {
+    public boolean containsKey(long key) {
         return subscriberMap.containsKey(key);
     }
 
-    public <T> Subscriber<T> remove(UUID subscriberKey) {
+    public <T> Subscriber<T> remove(long subscriberKey) {
         return subscriberMap.remove(subscriberKey);
     }
 }

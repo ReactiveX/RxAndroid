@@ -20,14 +20,11 @@ import android.app.FragmentManager;
 import android.content.DialogInterface;
 import android.os.Bundle;
 
-import java.util.UUID;
-
 import rx.Observable;
 import rx.Observer;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.exception.CancelledException;
-import rx.resumable.SubscriberVault;
 
 /**
  * Wrapper for DialogFragment that allows to observe on the result of the user interaction.
@@ -55,7 +52,7 @@ public class ReactiveDialog<T> extends DialogFragment {
         return Observable.create(new Observable.OnSubscribe<T>() {
             @Override
             public void call(rx.Subscriber<? super T> subscriber) {
-                final UUID key = subscriberVault.store(subscriber);
+                final long key = subscriberVault.store(subscriber);
                 storeSubscriberKey(key);
                 subscriber.add(new Subscription() {
                     @Override
@@ -90,15 +87,15 @@ public class ReactiveDialog<T> extends DialogFragment {
         return new ReactiveDialogObserver(subscriber);
     }
 
-    private void storeSubscriberKey(UUID key) {
+    private void storeSubscriberKey(long key) {
         if (getArguments() == null) {
             setArguments(new Bundle());
         }
-        getArguments().putSerializable(REACTIVE_DIALOG_KEY, key);
+        getArguments().putLong(REACTIVE_DIALOG_KEY, key);
     }
 
-    private UUID getSubscriberKey() {
-        return (UUID) getArguments().getSerializable(REACTIVE_DIALOG_KEY);
+    private long getSubscriberKey() {
+        return getArguments().getLong(REACTIVE_DIALOG_KEY);
     }
 
     /**

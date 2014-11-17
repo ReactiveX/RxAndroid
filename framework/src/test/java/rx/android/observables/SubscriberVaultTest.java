@@ -13,9 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package rx.resumable;
-
-import java.util.UUID;
+package rx.android.observables;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -38,7 +36,7 @@ public class SubscriberVaultTest {
     @Test
     public void itStoresValuesForAGivenKey() {
         Subscriber mockSubscriber = mock(Subscriber.class);
-        UUID id = subscriberVault.store(mockSubscriber);
+        long id = subscriberVault.store(mockSubscriber);
 
         assertSame(subscriberVault.get(id), mockSubscriber);
     }
@@ -46,7 +44,7 @@ public class SubscriberVaultTest {
     @Test
     public void itRemovesValuesForAGivenKey() {
         Subscriber mockSubscriber = mock(Subscriber.class);
-        UUID id = subscriberVault.store(mockSubscriber);
+        long id = subscriberVault.store(mockSubscriber);
         subscriberVault.remove(id);
 
         assertNull(subscriberVault.get(id));
