@@ -2,3 +2,5 @@ rootProject.name='rxandroid-root'
 include 'library', 'sample-app'
 
 project(':library').name = 'rxandroid'
+
+include 'rxandroid'
