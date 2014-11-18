@@ -1,18 +1,18 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:id="@android:id/empty"
+    <ProgressBar
+        android:id="@android:id/progress"
+        style="@android:style/Widget.Holo.ProgressBar.Horizontal"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:text="Loading..."
-        android:visibility="gone" />
+        android:layout_height="48dp"
+        android:indeterminate="false" />
 
     <ListView
         android:id="@android:id/list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_marginTop="48dp" />
 
-</RelativeLayout>
+</FrameLayout>
