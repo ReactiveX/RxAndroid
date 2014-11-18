@@ -24,7 +24,7 @@ import rx.Observable;
 import rx.Observer;
 import rx.Subscriber;
 import rx.Subscription;
-import rx.android.exception.CancelledException;
+import rx.functions.Func1;
 
 /**
  * Wrapper for DialogFragment that allows to observe on the result of the user interaction.
@@ -48,10 +48,10 @@ public class ReactiveDialog<T> extends DialogFragment {
      * Returns an observable for the dialog result.
      * The dialog is shown at subscription time.
      */
-    public Observable<T> show(final FragmentManager manager) {
-        return Observable.create(new Observable.OnSubscribe<T>() {
+    public Observable<Result<T>> show(final FragmentManager manager) {
+        return Observable.create(new Observable.OnSubscribe<Result<T>>() {
             @Override
-            public void call(rx.Subscriber<? super T> subscriber) {
+            public void call(rx.Subscriber<? super Result<T>> subscriber) {
                 final long key = subscriberVault.store(subscriber);
                 storeSubscriberKey(key);
                 subscriber.add(new Subscription() {
@@ -70,6 +70,26 @@ public class ReactiveDialog<T> extends DialogFragment {
         });
     }
 
+    /**
+     * Returns an unwrapped version of the dialog observable.
+     * Cancelled events are ignored to allow for simpler composition in the case of data input dialogs.
+     */
+    public Observable<T> showIgnoreCancel(final FragmentManager manager) {
+        return show(manager)
+                .filter(new Func1<Result<T>, Boolean>() {
+                    @Override
+                    public Boolean call(Result<T> tResult) {
+                        return !tResult.isCancelled();
+                    }
+                })
+                .map(new Func1<Result<T>, T>() {
+                    @Override
+                    public T call(Result<T> tResult) {
+                        return tResult.getValue();
+                    }
+                });
+    }
+
     @Override
     public void onCancel(DialogInterface dialog) {
         super.onCancel(dialog);
@@ -80,7 +100,7 @@ public class ReactiveDialog<T> extends DialogFragment {
      * Get the wrapped subscriber for the observable.
      */
     protected ReactiveDialogListener<T> getListener() {
-        Subscriber<T> subscriber = subscriberVault.get(getSubscriberKey());
+        Subscriber<Result<T>> subscriber = subscriberVault.get(getSubscriberKey());
         if (subscriber == null) {
             throw new IllegalStateException("No listener attached, you are probably trying to deliver a result after completion of the observable");
         }
@@ -104,27 +124,28 @@ public class ReactiveDialog<T> extends DialogFragment {
      */
     private class ReactiveDialogObserver implements ReactiveDialogListener<T> {
 
-        private final Subscriber<? super T> subscriber;
+        private final Subscriber<? super Result<T>> subscriber;
 
-        public ReactiveDialogObserver(Subscriber<? super T> subscriber) {
+        public ReactiveDialogObserver(Subscriber<? super Result<T>> subscriber) {
             this.subscriber = subscriber;
         }
 
         @Override
         public void onNext(T value) {
-            subscriber.onNext(value);
+            subscriber.onNext(Result.asSuccess(value));
         }
 
         @Override
         public void onCompleteWith(T value) {
-            subscriber.onNext(value);
+            subscriber.onNext(Result.asSuccess(value));
             subscriber.onCompleted();
             subscriberVault.remove(getSubscriberKey());
         }
 
         @Override
         public void onCancel() {
-            subscriber.onError(new CancelledException());
+            subscriber.onNext(Result.<T>asCancelled());
+            subscriber.onCompleted();
             subscriberVault.remove(getSubscriberKey());
         }
 
@@ -138,6 +159,33 @@ public class ReactiveDialog<T> extends DialogFragment {
         public void onCompleted() {
             subscriber.onCompleted();
             subscriberVault.remove(getSubscriberKey());
+        }
+    }
+
+    public static class Result<V> {
+
+        private final V value;
+        private final boolean cancelled;
+
+        static <V> Result<V> asSuccess(V value){
+            return new Result(value, false);
+        }
+
+        static <V> Result<V> asCancelled() {
+            return new Result(null, true);
+        }
+
+        private Result(V value, boolean cancelled) {
+            this.value = value;
+            this.cancelled = cancelled;
+        }
+
+        public V getValue() {
+            return value;
+        }
+
+        public boolean isCancelled() {
+            return cancelled;
         }
     }
 }
