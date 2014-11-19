@@ -11,3 +11,4 @@ buildscript {
 }
 
 apply plugin: 'rxjava-project'
+bintrayUpload.enabled=false
