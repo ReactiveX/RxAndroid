@@ -13,6 +13,9 @@ import java.lang.ref.WeakReference;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * An {@link rx.android.eventbus.EventBus} implementation backed by lazy queues.
+ */
 public class DefaultEventBus implements EventBus {
 
     private static final String TAG = EventBus.class.getSimpleName();

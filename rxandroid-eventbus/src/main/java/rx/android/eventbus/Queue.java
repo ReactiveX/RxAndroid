@@ -5,6 +5,37 @@ import rx.functions.Actions;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * A descriptor type representing an event queue. Use {@link rx.android.eventbus.Queue.Builder} to obtain
+ * instances of this class:
+ * <pre>
+ *     Queue<MyEventType> queue = Queue.of(MyEventType.class).get();
+ * </pre>
+ * There are several ways to modify the queue behavior:
+ * <h3>Replaying queues</h3>
+ * If by the time a subscriber subscribes to a queue you want the last event the queue has seen to be
+ * emitted immediately to the subscriber, you can create a replaying queue, optionally specifying an event
+ * instance that is emitted in case there were zero events prior to subscribing:
+ * <pre>
+ *     Queue<MyEventType> queue1 = Queue.of(MyEventType.class).replay().get();
+ *     Queue<MyEventType> queue2 = Queue.of(MyEventType.class).replay(MyEventType.DEFAULT_EVENT).get();
+ * </pre>
+ * <h3>Custom error hooks</h3>
+ * Event queues do not process <code>onError</code> notifications (or completed events) as this would lead
+ * to the queue being closed and entering a terminal state. However, you can be notified of error by
+ * providing a custom hook:
+ * <pre>
+ *     Queue<MyEventType> queue = Queue.of(MyEventType.class).onError(myErrorHook).get();
+ * </pre>
+ * A convenient way to group event queues together is in a sealed container class:
+ * <pre>
+ *     public final class EventQueue {
+ *         public static final Queue<Event1> EVENT1 = Queue.of(Event1.class).get();
+ *         public static final Queue<Event2> EVENT2 = Queue.of(Event2.class).get();
+ *         ...
+ *     }
+ * </pre>
+ */
 public final class Queue<T> {
 
     private static final AtomicInteger runningId = new AtomicInteger();
