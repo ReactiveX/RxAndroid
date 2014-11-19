@@ -1,2 +1,0 @@
-// Multi-module modules aren't really supported
-version = rootProject.version

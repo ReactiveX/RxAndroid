@@ -19,6 +19,8 @@ configure(libraryModules) {
   apply plugin: 'rxjava-project'
   apply plugin: 'provided-base'
 
+  version = rootProject.version
+
   dependencies {
     compile "io.reactivex:rxjava:$rxJavaVersion"
     provided 'com.google.android:android:4.0.1.2'
