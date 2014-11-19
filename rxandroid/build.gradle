@@ -1,11 +1,2 @@
 // Multi-module modules aren't really supported
 version = rootProject.version
-
-test {
-    testLogging {
-        exceptionFormat "full"
-        events "started"
-        displayGranularity 2
-    }
-}
-
