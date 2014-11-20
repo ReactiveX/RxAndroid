@@ -24,7 +24,7 @@ public class DefaultEventBusTest {
     private static final EventQueue<String> TEST_REPLAY_QUEUE = EventQueue.build(String.class).replay().get();
     private static final EventQueue<String> TEST_REPLAY_QUEUE_WITH_DEFAULT = EventQueue.build(String.class).replay("first!").get();
 
-    private DefaultEventBus eventBus = new DefaultEventBus();
+    private DefaultEventBus eventBus = DefaultEventBus.create();
 
     @Mock private Observer<String> observer1;
     @Mock private Observer<String> observer2;

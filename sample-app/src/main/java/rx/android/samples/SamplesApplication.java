@@ -8,7 +8,7 @@ import android.os.StrictMode;
 
 public class SamplesApplication extends Application {
 
-    private final EventBus eventBus = new DefaultEventBus();
+    private final EventBus eventBus = DefaultEventBus.create();
 
     @Override
     public void onCreate() {

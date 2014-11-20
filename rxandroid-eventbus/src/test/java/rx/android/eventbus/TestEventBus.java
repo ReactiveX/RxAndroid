@@ -19,7 +19,7 @@ import java.util.List;
 
 public class TestEventBus implements EventBus {
 
-    private final EventBus eventBus = new DefaultEventBus();
+    private final EventBus eventBus = DefaultEventBus.create();
     private final Multimap<EventQueue, Observer> observedQueues = HashMultimap.create();
     private final Multimap<EventQueue, Subscription> subscriptions = HashMultimap.create();
 

@@ -30,6 +30,14 @@ public final class DefaultEventBus implements EventBus {
         }
     }
 
+    public static DefaultEventBus create() {
+        return new DefaultEventBus();
+    }
+
+    private DefaultEventBus() {
+        // use create() to obtain instances
+    }
+
     @SuppressWarnings("unchecked")
     @Override
     public <T> Subject<T, T> queue(EventQueue<T> queue) {
