@@ -8,14 +8,14 @@ public interface EventBus {
 
     /**
      * Subscribes <code>observer</code> to <code>queue</code>.
-     * <p/>
+     * <p>
      * This variant always delivers notifications on the Android main thread.
      */
     <T> Subscription subscribe(Queue<T> queue, Observer<T> observer);
 
     /**
      * Subscribes <code>observer</code> to <code>queue</code>.
-     * <p/>
+     * <p>
      * Unlike {@link #subscribe(Queue, rx.Observer)}, this variant delivers notifications
      * on the same thread as the event source.
      */
