@@ -15,7 +15,6 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 import rx.Observer;
 import rx.Subscription;
-import rx.functions.Func1;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(manifest = Config.NONE)
@@ -65,22 +64,6 @@ public class DefaultEventBusTest {
         verifyNoMoreInteractions(observer1);
         verify(observer2).onNext("hello!");
         verify(observer2).onNext("world!");
-    }
-
-    @Test
-    public void shouldAllowEventDataTransformation() {
-        eventBus.subscribe(TEST_DEFAULT_QUEUE, observer1);
-        eventBus.queue(TEST_DEFAULT_QUEUE).map(new Func1<String, Integer>() {
-            @Override
-            public Integer call(String s) {
-                return Integer.parseInt(s);
-            }
-        }).subscribe(intObserver);
-
-        eventBus.publish(TEST_DEFAULT_QUEUE, "1");
-
-        verify(observer1).onNext("1");
-        verify(intObserver).onNext(1);
     }
 
     @Test
