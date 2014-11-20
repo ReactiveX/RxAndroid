@@ -21,12 +21,14 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Handler;
+import android.view.View;
 
 import rx.Observable;
 import rx.android.operators.OperatorBroadcastRegister;
 import rx.android.operators.OperatorConditionalBinding;
 import rx.android.operators.OperatorLocalBroadcastRegister;
 import rx.android.operators.OperatorSharedPreferenceChange;
+import rx.android.operators.OperatorViewDetachedFromWindowFirst;
 import rx.functions.Func1;
 
 import static rx.android.schedulers.AndroidSchedulers.mainThread;
@@ -116,6 +118,27 @@ public final class AndroidObservable {
         } else {
             throw new IllegalArgumentException("Target fragment is neither a native nor support library Fragment");
         }
+    }
+
+    /**
+     * Binds the given source sequence to the view.
+     * <p>
+     * This helper will schedule the given sequence to be observed on the main UI thread and ensure
+     * that no notifications will be forwarded to the view in case it gets detached from its the window.
+     * <p>
+     * Unlike {@link #bindActivity} or {@link #bindFragment}, you don't have to unsubscribe the returned {@code Observable}
+     * on the detachment. {@link #bindView} does it automatically.
+     * That means that the subscriber doesn't see further sequence even if the view is recycled and
+     * attached again.
+     *
+     * @param view the view to bind the source sequence to
+     * @param source the source sequence
+     */
+    public static <T> Observable<T> bindView(View view, Observable<T> source) {
+        if (view == null || source == null)
+            throw new IllegalArgumentException("View and Observable must be given");
+        Assertions.assertUiThread();
+        return source.takeUntil(Observable.create(new OperatorViewDetachedFromWindowFirst(view))).observeOn(mainThread());
     }
 
     /**
