@@ -1,2 +1,2 @@
 rootProject.name='rxandroid-root'
-include 'rxandroid', 'sample-app'
+include 'rxandroid', 'rxandroid-eventbus', 'sample-app'
