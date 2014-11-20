@@ -6,7 +6,7 @@ import rx.functions.Actions;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * A descriptor type representing an event queue. Use {@link rx.android.eventbus.Queue.Builder} to obtain
+ * A descriptor type representing an event queue. Use {@link Builder} to obtain
  * instances of this class:
  * <pre>
  *     Queue<MyEventType> queue = Queue.of(MyEventType.class).get();

@@ -14,7 +14,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * An {@link rx.android.eventbus.EventBus} implementation backed by lazy queues.
+ * An {@link EventBus} implementation backed by lazy queues.
  */
 public final class DefaultEventBus implements EventBus {
 

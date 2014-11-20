@@ -16,7 +16,7 @@ public interface EventBus {
     /**
      * Subscribes <code>observer</code> to <code>queue</code>.
      * <p>
-     * Unlike {@link #subscribe(Queue, rx.Observer)}, this variant delivers notifications
+     * Unlike {@link #subscribe(Queue, Observer)}, this variant delivers notifications
      * on the same thread as the event source.
      */
     <T> Subscription subscribeImmediate(Queue<T> queue, Observer<T> observer);
@@ -27,7 +27,7 @@ public interface EventBus {
     <T> void publish(Queue<T> queue, T event);
 
     /**
-     * @return The Rx {@link rx.subjects.Subject} backing the given event <code>queue</code>.
+     * @return The Rx {@link Subject} backing the given event <code>queue</code>.
      */
     <T> Subject<T, T> queue(Queue<T> queue);
 }
