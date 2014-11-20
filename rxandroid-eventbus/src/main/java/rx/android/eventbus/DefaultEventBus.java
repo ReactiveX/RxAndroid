@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * An {@link rx.android.eventbus.EventBus} implementation backed by lazy queues.
  */
-public class DefaultEventBus implements EventBus {
+public final class DefaultEventBus implements EventBus {
 
     private static final String TAG = EventBus.class.getSimpleName();
     private static final boolean LOG_EVENTS = Log.isLoggable(TAG, Log.DEBUG);
