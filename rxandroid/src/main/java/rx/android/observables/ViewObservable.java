@@ -14,6 +14,7 @@
 package rx.android.observables;
 
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.CompoundButton;
 import android.widget.TextView;
@@ -22,9 +23,11 @@ import rx.Observable;
 import rx.android.events.OnCheckedChangeEvent;
 import rx.android.events.OnClickEvent;
 import rx.android.events.OnItemClickEvent;
+import rx.android.events.OnListViewScrollEvent;
 import rx.android.events.OnTextChangeEvent;
 import rx.android.operators.OperatorAdapterViewOnItemClick;
 import rx.android.operators.OperatorCompoundButtonInput;
+import rx.android.operators.OnSubscribeListViewScroll;
 import rx.android.operators.OperatorTextViewInput;
 import rx.android.operators.OperatorViewClick;
 
@@ -58,4 +61,13 @@ public class ViewObservable {
         return Observable.create(new OperatorAdapterViewOnItemClick(adapterView));
     }
 
+    /**
+     * Returns an observable that emits all the scroll events from the provided ListView.
+     * Note that this will replace any listeners previously set through
+     * {@link android.widget.AbsListView#setOnScrollListener(android.widget.AbsListView.OnScrollListener)} unless those
+     * were set by this method or {@link rx.android.operators.OnSubscribeListViewScroll}.
+     */
+    public static Observable<OnListViewScrollEvent> listScrollEvents(final AbsListView listView) {
+        return Observable.create(new OnSubscribeListViewScroll(listView));
+    }
 }

@@ -1,12 +1,20 @@
 package rx.android.samples;
 
 import android.app.Activity;
-import android.app.ListFragment;
+import android.app.Fragment;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-
+import android.widget.ListView;
+import android.widget.ProgressBar;
 import rx.Observable;
 import rx.Subscriber;
+import rx.android.events.OnListViewScrollEvent;
+import rx.android.observables.AndroidObservable;
+import rx.android.observables.ViewObservable;
+import rx.functions.Action1;
 
 import static rx.android.schedulers.AndroidSchedulers.mainThread;
 
@@ -30,7 +38,7 @@ public class ListFragmentActivity extends Activity {
     }
 
     @SuppressWarnings("ConstantConditions")
-    public static class RetainedListFragment extends ListFragment {
+    public static class RetainedListFragment extends Fragment {
 
         private ArrayAdapter<String> adapter;
 
@@ -39,18 +47,38 @@ public class ListFragmentActivity extends Activity {
         }
 
         @Override
-        public void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
+        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+            View view = inflater.inflate(R.layout.list_fragment, container, false);
 
             adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1);
-            setListAdapter(adapter);
-            SampleObservables.numberStrings(1, 20, 250)
-                    .observeOn(mainThread())
-                    .lift(new BindAdapter())
-                    .subscribe();
+            ListView listView = (ListView) view.findViewById(android.R.id.list);
+            listView.setAdapter(adapter);
+
+            AndroidObservable.bindFragment(this, SampleObservables.numberStrings(1, 500, 100))
+                .observeOn(mainThread())
+                .lift(new BindAdapter())
+                .subscribe();
+
+            final ProgressBar progressBar = (ProgressBar) view.findViewById(android.R.id.progress);
+            AndroidObservable.bindFragment(this, ViewObservable.listScrollEvents(listView))
+                .subscribe(new Action1<OnListViewScrollEvent>() {
+                    @Override
+                    public void call(OnListViewScrollEvent event) {
+                        if (event.totalItemCount == 0) {
+                            return;
+                        }
+
+                        int progress =
+                            (int) ((100.0 * (event.firstVisibleItem + event.visibleItemCount)) / event.totalItemCount);
+                        progressBar.setProgress(progress);
+                    }
+                });
+
+            return view;
         }
 
         private final class BindAdapter implements Observable.Operator<String, String> {
+
             @Override
             public Subscriber<? super String> call(Subscriber<? super String> subscriber) {
                 return new Subscriber<String>() {
