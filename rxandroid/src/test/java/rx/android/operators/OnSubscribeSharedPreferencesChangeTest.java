@@ -14,16 +14,13 @@
 package rx.android.operators;
 
 import android.app.Application;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.support.v4.content.LocalBroadcastManager;
-
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InOrder;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
-
 import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
@@ -31,39 +28,33 @@ import rx.android.observables.AndroidObservable;
 import rx.observers.TestObserver;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.inOrder;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.*;
 
 @RunWith(RobolectricTestRunner.class)
-public class OperatorLocalBroadcastRegisterTest {
+public class OnSubscribeSharedPreferencesChangeTest {
 
     @Test
-    public void testLocalBroadcast() {
-        String action = "TEST_ACTION";
-        IntentFilter intentFilter = new IntentFilter(action);
+    public void testSharedPreferences() {
         Application application = Robolectric.application;
-        Observable<Intent> observable = AndroidObservable.fromLocalBroadcast(application, intentFilter);
-        final Observer<Intent> observer = mock(Observer.class);
-        final Subscription subscription = observable.subscribe(new TestObserver<Intent>(observer));
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(application);
+        Observable<String> observable = AndroidObservable.fromSharedPreferencesChanges(sharedPreferences);
+        final Observer<String> observer = mock(Observer.class);
+        final Subscription subscription = observable.subscribe(new TestObserver<String>(observer));
 
         final InOrder inOrder = inOrder(observer);
 
-        inOrder.verify(observer, never()).onNext(any(Intent.class));
+        inOrder.verify(observer, never()).onNext(any(String.class));
 
-        Intent intent = new Intent(action);
-        LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(application);
-        localBroadcastManager.sendBroadcast(intent);
-        inOrder.verify(observer, times(1)).onNext(intent);
+        sharedPreferences.edit().putBoolean("a", true).commit();
+        inOrder.verify(observer, times(1)).onNext("a");
 
-        localBroadcastManager.sendBroadcast(intent);
-        inOrder.verify(observer, times(1)).onNext(intent);
+        sharedPreferences.edit().putInt("b", 9).commit();
+        inOrder.verify(observer, times(1)).onNext("b");
 
         subscription.unsubscribe();
-        localBroadcastManager.sendBroadcast(intent);
-        inOrder.verify(observer, never()).onNext(any(Intent.class));
 
+        sharedPreferences.edit().putInt("c", 42).commit();
+        inOrder.verify(observer, never()).onNext(any(String.class));
         inOrder.verify(observer, never()).onError(any(Throwable.class));
         inOrder.verify(observer, never()).onCompleted();
     }

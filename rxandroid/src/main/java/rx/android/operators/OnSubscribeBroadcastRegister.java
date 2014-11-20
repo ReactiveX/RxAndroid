@@ -17,7 +17,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.support.v4.content.LocalBroadcastManager;
+import android.os.Handler;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -25,19 +25,22 @@ import rx.Subscription;
 import rx.functions.Action0;
 import rx.subscriptions.Subscriptions;
 
-public class OperatorLocalBroadcastRegister implements Observable.OnSubscribe<Intent> {
+public class OnSubscribeBroadcastRegister implements Observable.OnSubscribe<Intent> {
 
     private final Context context;
     private final IntentFilter intentFilter;
+    private final String broadcastPermission;
+    private final Handler schedulerHandler;
 
-    public OperatorLocalBroadcastRegister(Context context, IntentFilter intentFilter) {
+    public OnSubscribeBroadcastRegister(Context context, IntentFilter intentFilter, String broadcastPermission, Handler schedulerHandler) {
         this.context = context;
         this.intentFilter = intentFilter;
+        this.broadcastPermission = broadcastPermission;
+        this.schedulerHandler = schedulerHandler;
     }
 
     @Override
     public void call(final Subscriber<? super Intent> subscriber) {
-        final LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(context);
         final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -48,11 +51,12 @@ public class OperatorLocalBroadcastRegister implements Observable.OnSubscribe<In
         final Subscription subscription = Subscriptions.create(new Action0() {
             @Override
             public void call() {
-                localBroadcastManager.unregisterReceiver(broadcastReceiver);
+                context.unregisterReceiver(broadcastReceiver);
             }
         });
 
         subscriber.add(subscription);
-        localBroadcastManager.registerReceiver(broadcastReceiver, intentFilter);
+        context.registerReceiver(broadcastReceiver, intentFilter, broadcastPermission, schedulerHandler);
+
     }
 }

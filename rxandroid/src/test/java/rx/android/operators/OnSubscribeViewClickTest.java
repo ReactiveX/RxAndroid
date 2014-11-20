@@ -31,7 +31,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
 @RunWith(RobolectricTestRunner.class)
-public class OperatorViewClickTest {
+public class OnSubscribeViewClickTest {
     private static OnClickEvent mkMockedEvent(final View view) {
         return refEq(new OnClickEvent(view));
     }

@@ -17,7 +17,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.Handler;
+import android.support.v4.content.LocalBroadcastManager;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -25,22 +25,19 @@ import rx.Subscription;
 import rx.functions.Action0;
 import rx.subscriptions.Subscriptions;
 
-public class OperatorBroadcastRegister implements Observable.OnSubscribe<Intent> {
+public class OnSubscribeLocalBroadcastRegister implements Observable.OnSubscribe<Intent> {
 
     private final Context context;
     private final IntentFilter intentFilter;
-    private final String broadcastPermission;
-    private final Handler schedulerHandler;
 
-    public OperatorBroadcastRegister(Context context, IntentFilter intentFilter, String broadcastPermission, Handler schedulerHandler) {
+    public OnSubscribeLocalBroadcastRegister(Context context, IntentFilter intentFilter) {
         this.context = context;
         this.intentFilter = intentFilter;
-        this.broadcastPermission = broadcastPermission;
-        this.schedulerHandler = schedulerHandler;
     }
 
     @Override
     public void call(final Subscriber<? super Intent> subscriber) {
+        final LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(context);
         final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -51,12 +48,11 @@ public class OperatorBroadcastRegister implements Observable.OnSubscribe<Intent>
         final Subscription subscription = Subscriptions.create(new Action0() {
             @Override
             public void call() {
-                context.unregisterReceiver(broadcastReceiver);
+                localBroadcastManager.unregisterReceiver(broadcastReceiver);
             }
         });
 
         subscriber.add(subscription);
-        context.registerReceiver(broadcastReceiver, intentFilter, broadcastPermission, schedulerHandler);
-
+        localBroadcastManager.registerReceiver(broadcastReceiver, intentFilter);
     }
 }

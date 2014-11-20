@@ -25,11 +25,11 @@ import rx.android.events.OnClickEvent;
 import rx.android.events.OnItemClickEvent;
 import rx.android.events.OnListViewScrollEvent;
 import rx.android.events.OnTextChangeEvent;
-import rx.android.operators.OperatorAdapterViewOnItemClick;
-import rx.android.operators.OperatorCompoundButtonInput;
+import rx.android.operators.OnSubscribeAdapterViewOnItemClick;
+import rx.android.operators.OnSubscribeCompoundButtonInput;
 import rx.android.operators.OnSubscribeListViewScroll;
-import rx.android.operators.OperatorTextViewInput;
-import rx.android.operators.OperatorViewClick;
+import rx.android.operators.OnSubscribeTextViewInput;
+import rx.android.operators.OnSubscribeViewClick;
 
 public class ViewObservable {
 
@@ -38,7 +38,7 @@ public class ViewObservable {
     }
 
     public static Observable<OnClickEvent> clicks(final View view, final boolean emitInitialValue) {
-        return Observable.create(new OperatorViewClick(view, emitInitialValue));
+        return Observable.create(new OnSubscribeViewClick(view, emitInitialValue));
     }
 
     public static Observable<OnTextChangeEvent> text(final TextView input) {
@@ -46,7 +46,7 @@ public class ViewObservable {
     }
 
     public static Observable<OnTextChangeEvent> text(final TextView input, final boolean emitInitialValue) {
-        return Observable.create(new OperatorTextViewInput(input, emitInitialValue));
+        return Observable.create(new OnSubscribeTextViewInput(input, emitInitialValue));
     }
 
     public static Observable<OnCheckedChangeEvent> input(final CompoundButton button) {
@@ -54,11 +54,11 @@ public class ViewObservable {
     }
 
     public static Observable<OnCheckedChangeEvent> input(final CompoundButton button, final boolean emitInitialValue) {
-        return Observable.create(new OperatorCompoundButtonInput(button, emitInitialValue));
+        return Observable.create(new OnSubscribeCompoundButtonInput(button, emitInitialValue));
     }
 
     public static Observable<OnItemClickEvent> itemClicks(final AdapterView<?> adapterView) {
-        return Observable.create(new OperatorAdapterViewOnItemClick(adapterView));
+        return Observable.create(new OnSubscribeAdapterViewOnItemClick(adapterView));
     }
 
     /**

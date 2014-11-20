@@ -36,7 +36,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 
 @RunWith(RobolectricTestRunner.class)
-public class OperatorBroadcastRegisterTest {
+public class OnSubscribeBroadcastRegisterTest {
 
     @Test
     public void testBroadcast() {

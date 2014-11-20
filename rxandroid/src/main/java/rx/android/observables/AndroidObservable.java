@@ -24,11 +24,11 @@ import android.os.Handler;
 import android.view.View;
 
 import rx.Observable;
-import rx.android.operators.OperatorBroadcastRegister;
+import rx.android.operators.OnSubscribeBroadcastRegister;
+import rx.android.operators.OnSubscribeLocalBroadcastRegister;
+import rx.android.operators.OnSubscribeSharedPreferenceChange;
+import rx.android.operators.OnSubscribeViewDetachedFromWindowFirst;
 import rx.android.operators.OperatorConditionalBinding;
-import rx.android.operators.OperatorLocalBroadcastRegister;
-import rx.android.operators.OperatorSharedPreferenceChange;
-import rx.android.operators.OperatorViewDetachedFromWindowFirst;
 import rx.functions.Func1;
 
 import static rx.android.schedulers.AndroidSchedulers.mainThread;
@@ -138,7 +138,7 @@ public final class AndroidObservable {
         if (view == null || source == null)
             throw new IllegalArgumentException("View and Observable must be given");
         Assertions.assertUiThread();
-        return source.takeUntil(Observable.create(new OperatorViewDetachedFromWindowFirst(view))).observeOn(mainThread());
+        return source.takeUntil(Observable.create(new OnSubscribeViewDetachedFromWindowFirst(view))).observeOn(mainThread());
     }
 
     /**
@@ -147,7 +147,7 @@ public final class AndroidObservable {
      * @param filter Selects the Intent broadcasts to be received.
      */
     public static Observable<Intent> fromBroadcast(Context context, IntentFilter filter){
-        return Observable.create(new OperatorBroadcastRegister(context, filter, null, null));
+        return Observable.create(new OnSubscribeBroadcastRegister(context, filter, null, null));
     }
 
     /**
@@ -161,7 +161,7 @@ public final class AndroidObservable {
      *      the Intent.  If null, the main thread of the process will be used.
      */
     public static Observable<Intent> fromBroadcast(Context context, IntentFilter filter, String broadcastPermission, Handler schedulerHandler){
-        return Observable.create(new OperatorBroadcastRegister(context, filter, broadcastPermission, schedulerHandler));
+        return Observable.create(new OnSubscribeBroadcastRegister(context, filter, broadcastPermission, schedulerHandler));
     }
 
     /**
@@ -171,7 +171,7 @@ public final class AndroidObservable {
      * @param filter Selects the Intent broadcasts to be received.
      */
     public static Observable<Intent> fromLocalBroadcast(Context context, IntentFilter filter){
-        return Observable.create(new OperatorLocalBroadcastRegister(context, filter));
+        return Observable.create(new OnSubscribeLocalBroadcastRegister(context, filter));
     }
 
     /**
@@ -180,6 +180,6 @@ public final class AndroidObservable {
      * Items will be observed on the main Android UI thread
      */
     public static Observable<String> fromSharedPreferencesChanges(SharedPreferences sharedPreferences){
-        return Observable.create(new OperatorSharedPreferenceChange(sharedPreferences));
+        return Observable.create(new OnSubscribeSharedPreferenceChange(sharedPreferences));
     }
 }

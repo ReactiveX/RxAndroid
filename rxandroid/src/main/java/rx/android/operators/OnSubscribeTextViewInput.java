@@ -24,11 +24,11 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.widget.TextView;
 
-public class OperatorTextViewInput implements Observable.OnSubscribe<OnTextChangeEvent> {
+public class OnSubscribeTextViewInput implements Observable.OnSubscribe<OnTextChangeEvent> {
     private final boolean emitInitialValue;
     private final TextView input;
 
-    public OperatorTextViewInput(final TextView input, final boolean emitInitialValue) {
+    public OnSubscribeTextViewInput(final TextView input, final boolean emitInitialValue) {
         this.input = input;
         this.emitInitialValue = emitInitialValue;
     }

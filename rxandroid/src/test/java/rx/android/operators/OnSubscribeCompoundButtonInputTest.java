@@ -31,7 +31,7 @@ import rx.observers.TestObserver;
 import static org.mockito.Mockito.*;
 
 @RunWith(RobolectricTestRunner.class)
-public class OperatorCompoundButtonInputTest {
+public class OnSubscribeCompoundButtonInputTest {
     private static OnCheckedChangeEvent mkMockedEvent(final CompoundButton button, final boolean value) {
         return refEq(new OnCheckedChangeEvent(button, value));
     }
