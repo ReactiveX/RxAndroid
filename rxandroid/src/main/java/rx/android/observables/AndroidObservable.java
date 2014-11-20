@@ -73,10 +73,10 @@ public final class AndroidObservable {
 
     /**
      * Binds the given source sequence to an activity.
-     * <p/>
+     * <p>
      * This helper will schedule the given sequence to be observed on the main UI thread and ensure
      * that no notifications will be forwarded to the activity in case it is scheduled to finish.
-     * <p/>
+     * <p>
      * You should unsubscribe from the returned Observable in onDestroy at the latest, in order to not
      * leak the activity or an inner subscriber. Conversely, when the source sequence can outlive the activity,
      * make sure to bind to new instances of the activity again, e.g. after going through configuration changes.
@@ -92,11 +92,11 @@ public final class AndroidObservable {
 
     /**
      * Binds the given source sequence to a fragment (native or support-v4).
-     * <p/>
+     * <p>
      * This helper will schedule the given sequence to be observed on the main UI thread and ensure
      * that no notifications will be forwarded to the fragment in case it gets detached from its
      * activity or the activity is scheduled to finish.
-     * <p/>
+     * <p>
      * You should unsubscribe from the returned Observable in onDestroy for normal fragments, or in onDestroyView
      * for retained fragments, in order to not leak any references to the host activity or the fragment.
      * Refer to the samples project for actual examples.
