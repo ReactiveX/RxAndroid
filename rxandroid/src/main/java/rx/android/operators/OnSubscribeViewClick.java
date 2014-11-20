@@ -27,11 +27,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-public final class OperatorViewClick implements Observable.OnSubscribe<OnClickEvent> {
+public final class OnSubscribeViewClick implements Observable.OnSubscribe<OnClickEvent> {
     private final boolean emitInitialValue;
     private final View view;
 
-    public OperatorViewClick(final View view, final boolean emitInitialValue) {
+    public OnSubscribeViewClick(final View view, final boolean emitInitialValue) {
         this.emitInitialValue = emitInitialValue;
         this.view = view;
     }

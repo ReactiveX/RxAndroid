@@ -47,7 +47,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 
 @RunWith(RobolectricTestRunner.class)
-public class OperatorAdapterViewOnItemClickTest {
+public class OnSubscribeAdapterViewOnItemClickTest {
 
     private static ListView createListView(List<String> values) {
         final Activity activity = Robolectric.buildActivity(Activity.class).create().get();

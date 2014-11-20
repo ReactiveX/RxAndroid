@@ -28,11 +28,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-public class OperatorCompoundButtonInput implements Observable.OnSubscribe<OnCheckedChangeEvent> {
+public class OnSubscribeCompoundButtonInput implements Observable.OnSubscribe<OnCheckedChangeEvent> {
     private final boolean emitInitialValue;
     private final CompoundButton button;
 
-    public OperatorCompoundButtonInput(final CompoundButton button, final boolean emitInitialValue) {
+    public OnSubscribeCompoundButtonInput(final CompoundButton button, final boolean emitInitialValue) {
         this.emitInitialValue = emitInitialValue;
         this.button = button;
     }

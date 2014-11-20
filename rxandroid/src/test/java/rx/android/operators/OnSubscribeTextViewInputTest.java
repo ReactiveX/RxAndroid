@@ -34,7 +34,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
 @RunWith(RobolectricTestRunner.class)
-public class OperatorTextViewInputTest {
+public class OnSubscribeTextViewInputTest {
     private static OnTextChangeEvent mkMockedEvent(final TextView view, final CharSequence text) {
         return argThat(new ArgumentMatcher<OnTextChangeEvent>() {
             @Override

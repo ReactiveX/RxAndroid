@@ -19,11 +19,11 @@ import rx.Subscriber;
 import rx.functions.Action0;
 import rx.subscriptions.Subscriptions;
 
-public class OperatorSharedPreferenceChange implements Observable.OnSubscribe<String>{
+public class OnSubscribeSharedPreferenceChange implements Observable.OnSubscribe<String>{
 
     private final SharedPreferences sharedPreferences;
 
-    public OperatorSharedPreferenceChange(SharedPreferences sharedPreferences) {
+    public OnSubscribeSharedPreferenceChange(SharedPreferences sharedPreferences) {
         this.sharedPreferences = sharedPreferences;
     }
 

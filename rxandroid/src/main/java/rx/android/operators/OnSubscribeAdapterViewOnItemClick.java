@@ -30,11 +30,11 @@ import rx.android.observables.Assertions;
 import rx.android.subscriptions.AndroidSubscriptions;
 import rx.functions.Action0;
 
-public class OperatorAdapterViewOnItemClick implements Observable.OnSubscribe<OnItemClickEvent> {
+public class OnSubscribeAdapterViewOnItemClick implements Observable.OnSubscribe<OnItemClickEvent> {
 
     private final AdapterView<?> adapterView;
 
-    public OperatorAdapterViewOnItemClick(final AdapterView<?> adapterView) {
+    public OnSubscribeAdapterViewOnItemClick(final AdapterView<?> adapterView) {
         this.adapterView = adapterView;
     }
 
