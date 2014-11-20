@@ -18,7 +18,7 @@ import java.util.List;
  */
 public final class DefaultEventBus implements EventBus {
 
-    private static final String TAG = EventBus.class.getSimpleName();
+    private static final String TAG = DefaultEventBus.class.getSimpleName();
     private static final boolean LOG_EVENTS = Log.isLoggable(TAG, Log.DEBUG);
     private static SparseArray<List<Reference<Observer<?>>>> loggedObservers;
 
