@@ -24,7 +24,7 @@ public class EventBusActivity extends Activity {
         final EventBus eventBus = ((SamplesApplication) getApplication()).getEventBus();
         final TextView textView = (TextView) findViewById(android.R.id.text1);
 
-        subscription = eventBus.subscribe(EventQueue.STRING_QUEUE, new Subscriber<String>() {
+        subscription = eventBus.subscribe(Events.STRING_QUEUE, new Subscriber<String>() {
             @Override
             public void onCompleted() {
 

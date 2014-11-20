@@ -20,10 +20,10 @@ import java.util.List;
 public class TestEventBus implements EventBus {
 
     private final EventBus eventBus = new DefaultEventBus();
-    private final Multimap<Queue, Observer> observedQueues = HashMultimap.create();
-    private final Multimap<Queue, Subscription> subscriptions = HashMultimap.create();
+    private final Multimap<EventQueue, Observer> observedQueues = HashMultimap.create();
+    private final Multimap<EventQueue, Subscription> subscriptions = HashMultimap.create();
 
-    private <T> FluentIterable<T> internalEventsOn(Queue<T> queue) {
+    private <T> FluentIterable<T> internalEventsOn(EventQueue<T> queue) {
         return FluentIterable.from(observedQueues.get(queue))
                 .filter(TestObserver.class)
                 .transformAndConcat(new Function<TestObserver, Iterable<T>>() {
@@ -34,32 +34,32 @@ public class TestEventBus implements EventBus {
                 });
     }
 
-    public <T> List<T> eventsOn(Queue<T> queue) {
+    public <T> List<T> eventsOn(EventQueue<T> queue) {
         return internalEventsOn(queue).toList();
     }
 
-    public <T> List<T> eventsOn(Queue<T> queue, Predicate<T> filter) {
+    public <T> List<T> eventsOn(EventQueue<T> queue, Predicate<T> filter) {
         return internalEventsOn(queue).filter(filter).toList();
     }
 
-    public <T> T firstEventOn(Queue<T> queue) {
+    public <T> T firstEventOn(EventQueue<T> queue) {
         final List<T> events = this.eventsOn(queue);
         assertFalse("Attempted to access first event on queue " + queue + ", but no events fired", events.isEmpty());
         return events.get(0);
     }
 
-    public <T> T lastEventOn(Queue<T> queue) {
+    public <T> T lastEventOn(EventQueue<T> queue) {
         final List<T> events = this.eventsOn(queue);
         assertFalse("Attempted to access last event on queue " + queue + ", but no events fired", events.isEmpty());
         return Iterables.getLast(events);
     }
 
-    public <T> void verifyNoEventsOn(Queue<T> queue) {
+    public <T> void verifyNoEventsOn(EventQueue<T> queue) {
         final List<T> events = eventsOn(queue);
         assertTrue("Expected no events on queue " + queue + ", but found these events:\n" + events, events.isEmpty());
     }
 
-    public <T> void verifyUnsubscribed(Queue<T> queue) {
+    public <T> void verifyUnsubscribed(EventQueue<T> queue) {
         final Collection<Subscription> seenSubscriptions = subscriptions.get(queue);
         assertFalse("Expected to be unsubscribed from queue " + queue + ", but was never subscribed",
                 seenSubscriptions.isEmpty());
@@ -84,30 +84,30 @@ public class TestEventBus implements EventBus {
     }
 
     @Override
-    public <T> Subscription subscribe(Queue<T> queue, Observer<T> observer) {
+    public <T> Subscription subscribe(EventQueue<T> queue, Observer<T> observer) {
         final Subscription subscription = eventBus.subscribe(queue, observer);
         subscriptions.put(queue, subscription);
         return subscription;
     }
 
     @Override
-    public <T> Subscription subscribeImmediate(Queue<T> queue, Observer<T> observer) {
+    public <T> Subscription subscribeImmediate(EventQueue<T> queue, Observer<T> observer) {
         return subscribe(queue, observer);
     }
 
     @Override
-    public <T> void publish(Queue<T> queue, T event) {
+    public <T> void publish(EventQueue<T> queue, T event) {
         monitorQueue(queue);
         eventBus.publish(queue, event);
     }
 
     @Override
-    public <T> Subject<T, T> queue(Queue<T> queue) {
+    public <T> Subject<T, T> queue(EventQueue<T> queue) {
         monitorQueue(queue);
         return eventBus.queue(queue);
     }
 
-    private <T> void monitorQueue(Queue<T> queue) {
+    private <T> void monitorQueue(EventQueue<T> queue) {
         if (!observedQueues.containsKey(queue)) {
             final Observer<T> testObserver = new TestObserver<T>();
             eventBus.subscribe(queue, testObserver);

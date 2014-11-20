@@ -36,7 +36,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  *     }
  * </pre>
  */
-public final class Queue<T> {
+public final class EventQueue<T> {
 
     private static final AtomicInteger runningId = new AtomicInteger();
 
@@ -80,11 +80,11 @@ public final class Queue<T> {
             return this;
         }
 
-        public Queue<T> get() {
+        public EventQueue<T> get() {
             if (name == null) {
                 name = eventType.getSimpleName() + "Queue";
             }
-            return new Queue<T>(name, eventType, replayLast, defaultEvent, onError);
+            return new EventQueue<T>(name, eventType, replayLast, defaultEvent, onError);
         }
     }
 
@@ -92,7 +92,7 @@ public final class Queue<T> {
         return new Builder<T>(eventType);
     }
 
-    Queue(String name, Class<T> eventType, boolean replayLast, T defaultEvent, Action1<Throwable> onError) {
+    EventQueue(String name, Class<T> eventType, boolean replayLast, T defaultEvent, Action1<Throwable> onError) {
         this.name = name;
         this.eventType = eventType;
         this.replayLast = replayLast;
@@ -108,7 +108,7 @@ public final class Queue<T> {
 
     @Override
     public boolean equals(Object that) {
-        return (that != null && that instanceof Queue && ((Queue) that).id == this.id);
+        return (that != null && that instanceof EventQueue && ((EventQueue) that).id == this.id);
     }
 
     @Override

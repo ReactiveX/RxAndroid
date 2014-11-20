@@ -11,23 +11,23 @@ public interface EventBus {
      * <p>
      * This variant always delivers notifications on the Android main thread.
      */
-    <T> Subscription subscribe(Queue<T> queue, Observer<T> observer);
+    <T> Subscription subscribe(EventQueue<T> queue, Observer<T> observer);
 
     /**
      * Subscribes <code>observer</code> to <code>queue</code>.
      * <p>
-     * Unlike {@link #subscribe(Queue, Observer)}, this variant delivers notifications
+     * Unlike {@link #subscribe(EventQueue, Observer)}, this variant delivers notifications
      * on the same thread as the event source.
      */
-    <T> Subscription subscribeImmediate(Queue<T> queue, Observer<T> observer);
+    <T> Subscription subscribeImmediate(EventQueue<T> queue, Observer<T> observer);
 
     /**
      * Publishes an event by putting it on the given <code>queue</code>.
      */
-    <T> void publish(Queue<T> queue, T event);
+    <T> void publish(EventQueue<T> queue, T event);
 
     /**
      * @return The Rx {@link Subject} backing the given event <code>queue</code>.
      */
-    <T> Subject<T, T> queue(Queue<T> queue);
+    <T> Subject<T, T> queue(EventQueue<T> queue);
 }

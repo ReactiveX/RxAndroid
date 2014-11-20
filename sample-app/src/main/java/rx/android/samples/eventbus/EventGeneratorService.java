@@ -20,7 +20,7 @@ public class EventGeneratorService extends IntentService {
 
         for (int i = 0; i < 10; i++) {
             SystemClock.sleep(2000);
-            eventBus.publish(EventQueue.STRING_QUEUE, "event " + i);
+            eventBus.publish(Events.STRING_QUEUE, "event " + i);
         }
     }
 

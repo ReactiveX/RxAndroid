@@ -17,8 +17,8 @@ import rx.Observer;
 @Config(manifest = Config.NONE)
 public class TestEventBusTest {
 
-    private static final Queue<String> STRING_QUEUE = Queue.build(String.class).get();
-    private static final Queue<Integer> INT_QUEUE = Queue.build(Integer.class).get();
+    private static final EventQueue<String> STRING_QUEUE = EventQueue.build(String.class).get();
+    private static final EventQueue<Integer> INT_QUEUE = EventQueue.build(Integer.class).get();
 
     private TestEventBus eventBus = new TestEventBus();
 
@@ -34,7 +34,7 @@ public class TestEventBusTest {
         eventBus.publish(STRING_QUEUE, "one");
         eventBus.publish(STRING_QUEUE, "two");
         eventBus.publish(INT_QUEUE, 1);
-        eventBus.publish(Queue.build(Integer.class).get(), 1);
+        eventBus.publish(EventQueue.build(Integer.class).get(), 1);
 
         assertThat(eventBus.eventsOn(STRING_QUEUE), contains("one", "two"));
         assertThat(eventBus.eventsOn(INT_QUEUE), contains(1));
@@ -45,7 +45,7 @@ public class TestEventBusTest {
         eventBus.queue(STRING_QUEUE).onNext("one");
         eventBus.queue(STRING_QUEUE).onNext("two");
         eventBus.queue(INT_QUEUE).onNext(1);
-        eventBus.queue(Queue.build(Integer.class).get()).onNext(1);
+        eventBus.queue(EventQueue.build(Integer.class).get()).onNext(1);
 
         assertThat(eventBus.eventsOn(STRING_QUEUE), contains("one", "two"));
         assertThat(eventBus.eventsOn(INT_QUEUE), contains(1));

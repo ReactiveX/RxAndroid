@@ -32,7 +32,7 @@ public final class DefaultEventBus implements EventBus {
 
     @SuppressWarnings("unchecked")
     @Override
-    public <T> Subject<T, T> queue(Queue<T> queue) {
+    public <T> Subject<T, T> queue(EventQueue<T> queue) {
         Subject<T, T> subject = (Subject<T, T>) queues.get(queue.id);
         if (subject == null) {
             if (queue.defaultEvent != null) {
@@ -48,7 +48,7 @@ public final class DefaultEventBus implements EventBus {
     }
 
     @Override
-    public <T> Subscription subscribe(Queue<T> queue, Observer<T> observer) {
+    public <T> Subscription subscribe(EventQueue<T> queue, Observer<T> observer) {
         if (LOG_EVENTS) {
             registerObserver(queue, observer);
         }
@@ -56,7 +56,7 @@ public final class DefaultEventBus implements EventBus {
     }
 
     @Override
-    public <T> Subscription subscribeImmediate(Queue<T> queue, Observer<T> observer) {
+    public <T> Subscription subscribeImmediate(EventQueue<T> queue, Observer<T> observer) {
         if (LOG_EVENTS) {
             registerObserver(queue, observer);
         }
@@ -64,7 +64,7 @@ public final class DefaultEventBus implements EventBus {
     }
 
     @Override
-    public <T> void publish(Queue<T> queue, T event) {
+    public <T> void publish(EventQueue<T> queue, T event) {
         if (LOG_EVENTS) {
             logEvent(queue, event);
         }
@@ -72,7 +72,7 @@ public final class DefaultEventBus implements EventBus {
     }
 
     // for logging events in debug mode
-    private <T> void registerObserver(Queue<T> queue, Observer<T> observer) {
+    private <T> void registerObserver(EventQueue<T> queue, Observer<T> observer) {
         List<Reference<Observer<?>>> observerRefs = loggedObservers.get(queue.id);
         if (observerRefs == null) {
             observerRefs = new LinkedList<Reference<Observer<?>>>();
@@ -81,7 +81,7 @@ public final class DefaultEventBus implements EventBus {
         observerRefs.add(new WeakReference<Observer<?>>(observer));
     }
 
-    private <T> void logEvent(Queue<T> queue, T event) {
+    private <T> void logEvent(EventQueue<T> queue, T event) {
         final StringBuilder message = new StringBuilder(5000);
         message.append("Publishing to ").append(queue.name)
                 .append(" [").append(event.toString()).append("]\n");
