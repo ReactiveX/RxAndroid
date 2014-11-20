@@ -88,7 +88,7 @@ public final class Queue<T> {
         }
     }
 
-    public static <T> Builder<T> of(Class<T> eventType) {
+    public static <T> Builder<T> build(Class<T> eventType) {
         return new Builder<T>(eventType);
     }
 

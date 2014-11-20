@@ -20,7 +20,7 @@ public class QueueTest {
 
     @Test
     public void shouldBuildDefaultQueue() {
-        final Queue<String> stringQueue = Queue.of(String.class).get();
+        final Queue<String> stringQueue = Queue.build(String.class).get();
         assertThat(stringQueue.name, is("StringQueue"));
         assertThat(stringQueue.replayLast, is(false));
         assertThat(stringQueue.defaultEvent, is(nullValue()));
@@ -28,7 +28,7 @@ public class QueueTest {
 
     @Test
     public void shouldBuildNamedQueue() {
-        final Queue<String> stringQueue = Queue.of(String.class).name("custom").get();
+        final Queue<String> stringQueue = Queue.build(String.class).name("custom").get();
         assertThat(stringQueue.name, is("custom"));
         assertThat(stringQueue.replayLast, is(false));
         assertThat(stringQueue.defaultEvent, is(nullValue()));
@@ -36,27 +36,27 @@ public class QueueTest {
 
     @Test
     public void shouldBuildReplayQueue() {
-        final Queue<String> stringQueue = Queue.of(String.class).replay().get();
+        final Queue<String> stringQueue = Queue.build(String.class).replay().get();
         assertThat(stringQueue.replayLast, is(true));
     }
 
     @Test
     public void shouldBuildReplayQueueWithDefaultEvent() {
-        final Queue<String> stringQueue = Queue.of(String.class).replay("def").get();
+        final Queue<String> stringQueue = Queue.build(String.class).replay("def").get();
         assertThat(stringQueue.replayLast, is(true));
         assertThat(stringQueue.defaultEvent, is("def"));
     }
 
     @Test
     public void shouldDefaultErrorHookToEmptyAction() {
-        final Queue<String> stringQueue = Queue.of(String.class).get();
+        final Queue<String> stringQueue = Queue.build(String.class).get();
         assertThat(stringQueue.onError, Matchers.<Action1<?>>is(Actions.empty()));
     }
 
     @Test
     public void shouldBuildQueueWithCustomErrorHook() {
         Action1<Throwable> hook = mock(Action1.class);
-        final Queue<String> stringQueue = Queue.of(String.class).onError(hook).get();
+        final Queue<String> stringQueue = Queue.build(String.class).onError(hook).get();
         assertThat(stringQueue.onError, is(hook));
     }
 }

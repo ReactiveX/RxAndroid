@@ -20,9 +20,9 @@ import rx.Subscription;
 @Config(manifest = Config.NONE)
 public class DefaultEventBusTest {
 
-    private static final Queue<String> TEST_DEFAULT_QUEUE = Queue.of(String.class).get();
-    private static final Queue<String> TEST_REPLAY_QUEUE = Queue.of(String.class).replay().get();
-    private static final Queue<String> TEST_REPLAY_QUEUE_WITH_DEFAULT = Queue.of(String.class).replay("first!").get();
+    private static final Queue<String> TEST_DEFAULT_QUEUE = Queue.build(String.class).get();
+    private static final Queue<String> TEST_REPLAY_QUEUE = Queue.build(String.class).replay().get();
+    private static final Queue<String> TEST_REPLAY_QUEUE_WITH_DEFAULT = Queue.build(String.class).replay("first!").get();
 
     private DefaultEventBus eventBus = new DefaultEventBus();
 
