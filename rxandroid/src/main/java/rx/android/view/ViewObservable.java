@@ -14,13 +14,9 @@
 package rx.android.view;
 
 import android.view.View;
-import android.widget.AbsListView;
-import android.widget.AdapterView;
-import android.widget.CompoundButton;
-import android.widget.TextView;
 
 import rx.Observable;
-import rx.android.util.Assertions;
+import rx.android.internal.Assertions;
 
 import static rx.android.schedulers.AndroidSchedulers.mainThread;
 

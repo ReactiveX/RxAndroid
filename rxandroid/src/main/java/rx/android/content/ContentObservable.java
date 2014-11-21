@@ -10,7 +10,7 @@ import android.os.Build;
 import android.os.Handler;
 
 import rx.Observable;
-import rx.android.util.Assertions;
+import rx.android.internal.Assertions;
 import rx.functions.Func1;
 
 import static rx.android.schedulers.AndroidSchedulers.mainThread;

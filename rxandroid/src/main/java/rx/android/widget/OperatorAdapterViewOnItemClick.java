@@ -25,7 +25,7 @@ import java.util.WeakHashMap;
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
-import rx.android.util.Assertions;
+import rx.android.internal.Assertions;
 import rx.android.AndroidSubscriptions;
 import rx.functions.Action0;
 
