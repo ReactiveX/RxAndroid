@@ -12,7 +12,7 @@ import rx.Observer;
 import rx.Subscription;
 import rx.observables.ConnectableObservable;
 
-import static rx.android.observables.AndroidObservable.bindActivity;
+import static rx.android.content.ContentObservable.bindActivity;
 
 /**
  * Activity that binds to a counting sequence and is able to listen in and out to that
