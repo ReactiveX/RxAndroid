@@ -90,7 +90,7 @@ public class ReactiveDialogTest {
 
     @Test
     public void unwrappedObservableSendsListenerEventToObserver() {
-        Observable<String> observable = reactiveDialog.showIgnoreCancel(fragmentManager);
+        Observable<String> observable = reactiveDialog.showIgnoringCancelEvents(fragmentManager);
         observable.subscribe(mockObserver);
 
         reactiveDialog.getListener().onCompleteWith("this");
@@ -101,7 +101,7 @@ public class ReactiveDialogTest {
 
     @Test()
     public void unwrappedObservableIgnoresCancelledCancelledEvents() {
-        Observable<String> observable = reactiveDialog.showIgnoreCancel(fragmentManager);
+        Observable<String> observable = reactiveDialog.showIgnoringCancelEvents(fragmentManager);
         observable.subscribe(mockObserver);
 
         reactiveDialog.getListener().onCancel();

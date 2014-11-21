@@ -74,7 +74,7 @@ public class ReactiveDialog<T> extends DialogFragment {
      * Returns an unwrapped version of the dialog observable.
      * Cancelled events are ignored to allow for simpler composition in the case of data input dialogs.
      */
-    public Observable<T> showIgnoreCancel(final FragmentManager manager) {
+    public Observable<T> showIgnoringCancelEvents(final FragmentManager manager) {
         return show(manager)
                 .filter(new Func1<Result<T>, Boolean>() {
                     @Override
