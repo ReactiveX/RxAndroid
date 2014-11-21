@@ -20,32 +20,33 @@ import rx.Subscriber;
 import rx.Subscription;
 
 /**
- * An internal class that is used from #{@link ViewObservable#bindView}.
+ * An internal class that is used from #{@link rx.android.view.ViewObservable#bindView}.
  * This emits an event when the given #{@code View} is detached from the window for the first time.
  */
-final class OperatorViewDetachedFromWindowFirst implements Observable.OnSubscribe<View> {
+public class OnSubscribeViewDetachedFromWindowFirst implements Observable.OnSubscribe<View> {
     private final View view;
 
-    public OperatorViewDetachedFromWindowFirst(View view) {
+    public OnSubscribeViewDetachedFromWindowFirst(View view) {
         this.view = view;
     }
 
     @Override
     public void call(final Subscriber<? super View> subscriber) {
-        new ListenerSubscription(subscriber, view);
+        final SubscriptionAdapter adapter = new SubscriptionAdapter(subscriber, view);
+        subscriber.add(adapter);
+        view.addOnAttachStateChangeListener(adapter);
     }
 
     // This could be split into a couple of anonymous classes.
     // We pack it into one for the sake of memory efficiency.
-    private static class ListenerSubscription implements View.OnAttachStateChangeListener, Subscription {
+    private static class SubscriptionAdapter implements View.OnAttachStateChangeListener,
+        Subscription {
         private Subscriber<? super View> subscriber;
         private View view;
 
-        public ListenerSubscription(Subscriber<? super View> subscriber, View view) {
+        public SubscriptionAdapter(Subscriber<? super View> subscriber, View view) {
             this.subscriber = subscriber;
             this.view = view;
-            view.addOnAttachStateChangeListener(this);
-            subscriber.add(this);
         }
 
         @Override
@@ -56,7 +57,7 @@ final class OperatorViewDetachedFromWindowFirst implements Observable.OnSubscrib
         public void onViewDetachedFromWindow(View v) {
             if (!isUnsubscribed()) {
                 Subscriber<? super View> originalSubscriber = subscriber;
-                clear();
+                unsubscribe();
                 originalSubscriber.onNext(v);
                 originalSubscriber.onCompleted();
             }
@@ -65,19 +66,15 @@ final class OperatorViewDetachedFromWindowFirst implements Observable.OnSubscrib
         @Override
         public void unsubscribe() {
             if (!isUnsubscribed()) {
-                clear();
+                view.removeOnAttachStateChangeListener(this);
+                view = null;
+                subscriber = null;
             }
         }
 
         @Override
         public boolean isUnsubscribed() {
             return view == null;
-        }
-
-        private void clear() {
-            view.removeOnAttachStateChangeListener(this);
-            view = null;
-            subscriber = null;
         }
     }
 }
