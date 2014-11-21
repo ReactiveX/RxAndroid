@@ -36,8 +36,6 @@ import java.util.List;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
-import rx.android.widget.OnItemClickEvent;
-import rx.android.view.ViewObservable;
 import rx.observers.TestObserver;
 
 import static org.mockito.Matchers.any;
@@ -209,7 +207,7 @@ public class OperatorAdapterViewOnItemClickTest {
     private void performTestAdapterViewNeverEmitEventBeforeSubscribed(AdapterView<? extends Adapter> adapterView) {
         Adapter adapter = adapterView.getAdapter();
         Assert.assertNotNull(adapter);
-        final Observable<OnItemClickEvent> observable = ViewObservable.itemClicks(adapterView);
+        final Observable<OnItemClickEvent> observable = WidgetObservable.itemClicks(adapterView);
         final Observer<OnItemClickEvent> observer = mock(Observer.class);
         final Subscription subscription = observable.subscribe(new TestObserver<OnItemClickEvent>(observer));
 
@@ -223,7 +221,7 @@ public class OperatorAdapterViewOnItemClickTest {
     private void performTestAdapterViewClickAllViewsEmitAllEvents(AdapterView<? extends Adapter> adapterView) {
         Adapter adapter = adapterView.getAdapter();
         Assert.assertNotNull(adapter);
-        final Observable<OnItemClickEvent> observable = ViewObservable.itemClicks(adapterView);
+        final Observable<OnItemClickEvent> observable = WidgetObservable.itemClicks(adapterView);
         final Observer<OnItemClickEvent> observer = mock(Observer.class);
         final Subscription subscription = observable.subscribe(new TestObserver<OnItemClickEvent>(observer));
 
@@ -241,7 +239,7 @@ public class OperatorAdapterViewOnItemClickTest {
     private void performTestAdapterViewNeverEmitEventAfterUnsubscribed(AdapterView<? extends Adapter> adapterView) {
         Adapter adapter = adapterView.getAdapter();
         Assert.assertNotNull(adapter);
-        final Observable<OnItemClickEvent> observable = ViewObservable.itemClicks(adapterView);
+        final Observable<OnItemClickEvent> observable = WidgetObservable.itemClicks(adapterView);
         final Observer<OnItemClickEvent> observer = mock(Observer.class);
         final Subscription subscription = observable.subscribe(new TestObserver<OnItemClickEvent>(observer));
 
@@ -256,7 +254,7 @@ public class OperatorAdapterViewOnItemClickTest {
     private void performTestAdapterViewNeverEmitAnyThrowableAfterUnsubscribed(AdapterView<? extends Adapter> adapterView) {
         Adapter adapter = adapterView.getAdapter();
         Assert.assertNotNull(adapter);
-        final Observable<OnItemClickEvent> observable = ViewObservable.itemClicks(adapterView);
+        final Observable<OnItemClickEvent> observable = WidgetObservable.itemClicks(adapterView);
         final Observer<OnItemClickEvent> observer = mock(Observer.class);
         final Subscription subscription = observable.subscribe(new TestObserver<OnItemClickEvent>(observer));
 
@@ -270,7 +268,7 @@ public class OperatorAdapterViewOnItemClickTest {
     private void performTestAdapterViewNeverEmitOnCompletedAfterUnsubscribed(AdapterView<? extends Adapter> adapterView) {
         Adapter adapter = adapterView.getAdapter();
         Assert.assertNotNull(adapter);
-        final Observable<OnItemClickEvent> observable = ViewObservable.itemClicks(adapterView);
+        final Observable<OnItemClickEvent> observable = WidgetObservable.itemClicks(adapterView);
         final Observer<OnItemClickEvent> observer = mock(Observer.class);
         final Subscription subscription = observable.subscribe(new TestObserver<OnItemClickEvent>(observer));
 
@@ -284,7 +282,7 @@ public class OperatorAdapterViewOnItemClickTest {
     private void performTestAdapterViewMultipleSubscriptionsNeverEmitEventBeforeSubscribed(AdapterView<? extends Adapter> adapterView) {
         Adapter adapter = adapterView.getAdapter();
         Assert.assertNotNull(adapter);
-        final Observable<OnItemClickEvent> observable = ViewObservable.itemClicks(adapterView);
+        final Observable<OnItemClickEvent> observable = WidgetObservable.itemClicks(adapterView);
         final Observer<OnItemClickEvent> observer1 = mock(Observer.class);
         final Observer<OnItemClickEvent> observer2 = mock(Observer.class);
         final Subscription subscription1 = observable.subscribe(new TestObserver<OnItemClickEvent>(observer1));
@@ -304,7 +302,7 @@ public class OperatorAdapterViewOnItemClickTest {
     private void performTestAdapterViewMultipleSubscriptionsClickAllViewsEmitAllEvents(AdapterView<? extends Adapter> adapterView) {
         Adapter adapter = adapterView.getAdapter();
         Assert.assertNotNull(adapter);
-        final Observable<OnItemClickEvent> observable = ViewObservable.itemClicks(adapterView);
+        final Observable<OnItemClickEvent> observable = WidgetObservable.itemClicks(adapterView);
         final Observer<OnItemClickEvent> observer1 = mock(Observer.class);
         final Observer<OnItemClickEvent> observer2 = mock(Observer.class);
         final Subscription subscription1 = observable.subscribe(new TestObserver<OnItemClickEvent>(observer1));
@@ -328,7 +326,7 @@ public class OperatorAdapterViewOnItemClickTest {
     private void performTestAdapterViewMultipleSubscriptionsClickAllViewsEmitAllEventsForOneSubscriber(AdapterView<? extends Adapter> adapterView) {
         Adapter adapter = adapterView.getAdapter();
         Assert.assertNotNull(adapter);
-        final Observable<OnItemClickEvent> observable = ViewObservable.itemClicks(adapterView);
+        final Observable<OnItemClickEvent> observable = WidgetObservable.itemClicks(adapterView);
         final Observer<OnItemClickEvent> observer1 = mock(Observer.class);
         final Observer<OnItemClickEvent> observer2 = mock(Observer.class);
         final Subscription subscription1 = observable.subscribe(new TestObserver<OnItemClickEvent>(observer1));
@@ -355,7 +353,7 @@ public class OperatorAdapterViewOnItemClickTest {
     private void performTestAdapterViewMultipleSubscriptionsNeverEmitEventAfterUnsubscribed(AdapterView<? extends Adapter> adapterView) {
         Adapter adapter = adapterView.getAdapter();
         Assert.assertNotNull(adapter);
-        final Observable<OnItemClickEvent> observable = ViewObservable.itemClicks(adapterView);
+        final Observable<OnItemClickEvent> observable = WidgetObservable.itemClicks(adapterView);
         final Observer<OnItemClickEvent> observer1 = mock(Observer.class);
         final Observer<OnItemClickEvent> observer2 = mock(Observer.class);
         final Subscription subscription1 = observable.subscribe(new TestObserver<OnItemClickEvent>(observer1));
@@ -375,7 +373,7 @@ public class OperatorAdapterViewOnItemClickTest {
     private void performTestAdapterViewMultipleSubscriptionsNeverEmitAnyThrowableAfterUnsubscribed(AdapterView<? extends Adapter> adapterView) {
         Adapter adapter = adapterView.getAdapter();
         Assert.assertNotNull(adapter);
-        final Observable<OnItemClickEvent> observable = ViewObservable.itemClicks(adapterView);
+        final Observable<OnItemClickEvent> observable = WidgetObservable.itemClicks(adapterView);
         final Observer<OnItemClickEvent> observer1 = mock(Observer.class);
         final Observer<OnItemClickEvent> observer2 = mock(Observer.class);
         final Subscription subscription1 = observable.subscribe(new TestObserver<OnItemClickEvent>(observer1));
@@ -395,7 +393,7 @@ public class OperatorAdapterViewOnItemClickTest {
     private void performTestAdapterViewMultipleSubscriptionsNeverEmitOnCompletedAfterUnsubscribed(AdapterView<? extends Adapter> adapterView) {
         Adapter adapter = adapterView.getAdapter();
         Assert.assertNotNull(adapter);
-        final Observable<OnItemClickEvent> observable = ViewObservable.itemClicks(adapterView);
+        final Observable<OnItemClickEvent> observable = WidgetObservable.itemClicks(adapterView);
         final Observer<OnItemClickEvent> observer1 = mock(Observer.class);
         final Observer<OnItemClickEvent> observer2 = mock(Observer.class);
         final Subscription subscription1 = observable.subscribe(new TestObserver<OnItemClickEvent>(observer1));

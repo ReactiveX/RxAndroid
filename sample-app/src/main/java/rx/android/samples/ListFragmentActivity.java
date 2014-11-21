@@ -13,7 +13,7 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.android.content.ContentObservable;
 import rx.android.widget.OnListViewScrollEvent;
-import rx.android.view.ViewObservable;
+import rx.android.widget.WidgetObservable;
 import rx.functions.Action1;
 
 import static rx.android.schedulers.AndroidSchedulers.mainThread;
@@ -60,7 +60,7 @@ public class ListFragmentActivity extends Activity {
                 .subscribe();
 
             final ProgressBar progressBar = (ProgressBar) view.findViewById(android.R.id.progress);
-            ContentObservable.bindFragment(this, ViewObservable.listScrollEvents(listView))
+            ContentObservable.bindFragment(this, WidgetObservable.listScrollEvents(listView))
                 .subscribe(new Action1<OnListViewScrollEvent>() {
                     @Override
                     public void call(OnListViewScrollEvent event) {

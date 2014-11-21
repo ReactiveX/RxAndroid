@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-public class OnSubscribeListViewScroll implements Observable.OnSubscribe<OnListViewScrollEvent> {
+class OnSubscribeListViewScroll implements Observable.OnSubscribe<OnListViewScrollEvent> {
 
     private final AbsListView listView;
 

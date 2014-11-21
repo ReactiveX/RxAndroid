@@ -23,7 +23,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.widget.TextView;
 
-public class OperatorTextViewInput implements Observable.OnSubscribe<OnTextChangeEvent> {
+class OperatorTextViewInput implements Observable.OnSubscribe<OnTextChangeEvent> {
     private final boolean emitInitialValue;
     private final TextView input;
 

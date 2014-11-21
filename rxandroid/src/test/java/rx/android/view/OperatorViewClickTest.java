@@ -15,20 +15,24 @@ package rx.android.view;
 
 import android.app.Activity;
 import android.view.View;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InOrder;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
+
 import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
-import rx.android.view.OnClickEvent;
-import rx.android.view.ViewObservable;
 import rx.observers.TestObserver;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.refEq;
+import static org.mockito.Mockito.times;
 
 @RunWith(RobolectricTestRunner.class)
 public class OperatorViewClickTest {

@@ -25,7 +25,6 @@ import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.view.OnCheckedChangeEvent;
-import rx.android.view.ViewObservable;
 import rx.observers.TestObserver;
 
 import static org.mockito.Mockito.*;
@@ -48,7 +47,7 @@ public class OperatorCompoundButtonInputTest {
     @SuppressWarnings("unchecked")
     public void testWithoutInitialValue() {
         final CompoundButton button = mkCompoundButton(true);
-        final Observable<OnCheckedChangeEvent> observable = ViewObservable.input(button, false);
+        final Observable<OnCheckedChangeEvent> observable = WidgetObservable.input(button, false);
         final Observer<OnCheckedChangeEvent> observer = mock(Observer.class);
         final Subscription subscription = observable.subscribe(new TestObserver<OnCheckedChangeEvent>(observer));
 
@@ -80,7 +79,7 @@ public class OperatorCompoundButtonInputTest {
     @SuppressWarnings("unchecked")
     public void testWithInitialValue() {
         final CompoundButton button = mkCompoundButton(true);
-        final Observable<OnCheckedChangeEvent> observable = ViewObservable.input(button, true);
+        final Observable<OnCheckedChangeEvent> observable = WidgetObservable.input(button, true);
         final Observer<OnCheckedChangeEvent> observer = mock(Observer.class);
         final Subscription subscription = observable.subscribe(new TestObserver<OnCheckedChangeEvent>(observer));
 
@@ -112,7 +111,7 @@ public class OperatorCompoundButtonInputTest {
     @SuppressWarnings("unchecked")
     public void testMultipleSubscriptions() {
         final CompoundButton button = mkCompoundButton(false);
-        final Observable<OnCheckedChangeEvent> observable = ViewObservable.input(button, false);
+        final Observable<OnCheckedChangeEvent> observable = WidgetObservable.input(button, false);
 
         final Observer<OnCheckedChangeEvent> observer1 = mock(Observer.class);
         final Observer<OnCheckedChangeEvent> observer2 = mock(Observer.class);

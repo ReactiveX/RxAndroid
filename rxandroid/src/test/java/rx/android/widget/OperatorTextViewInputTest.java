@@ -26,8 +26,6 @@ import org.robolectric.RobolectricTestRunner;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
-import rx.android.widget.OnTextChangeEvent;
-import rx.android.view.ViewObservable;
 import rx.observers.TestObserver;
 
 import static org.mockito.Matchers.any;
@@ -80,7 +78,7 @@ public class OperatorTextViewInputTest {
     @SuppressWarnings("unchecked")
     public void testOverloadedMethodDefaultsWithoutInitialValue() {
         final TextView input = mkTextView("initial");
-        final Observable<OnTextChangeEvent> observable = ViewObservable.text(input);
+        final Observable<OnTextChangeEvent> observable = WidgetObservable.text(input);
         final Observer<OnTextChangeEvent> observer = mock(Observer.class);
         final Subscription subscription = observable.subscribe(new TestObserver<OnTextChangeEvent>(observer));
 
@@ -109,7 +107,7 @@ public class OperatorTextViewInputTest {
     @SuppressWarnings("unchecked")
     public void testWithoutInitialValue() {
         final TextView input = mkTextView("initial");
-        final Observable<OnTextChangeEvent> observable = ViewObservable.text(input, false);
+        final Observable<OnTextChangeEvent> observable = WidgetObservable.text(input, false);
         final Observer<OnTextChangeEvent> observer = mock(Observer.class);
         final Subscription subscription = observable.subscribe(new TestObserver<OnTextChangeEvent>(observer));
 
@@ -138,7 +136,7 @@ public class OperatorTextViewInputTest {
     @SuppressWarnings("unchecked")
     public void testWithInitialValue() {
         final TextView input = mkTextView("initial");
-        final Observable<OnTextChangeEvent> observable = ViewObservable.text(input, true);
+        final Observable<OnTextChangeEvent> observable = WidgetObservable.text(input, true);
         final Observer<OnTextChangeEvent> observer = mock(Observer.class);
         final Subscription subscription = observable.subscribe(new TestObserver<OnTextChangeEvent>(observer));
 
@@ -167,7 +165,7 @@ public class OperatorTextViewInputTest {
     @SuppressWarnings("unchecked")
     public void testMultipleSubscriptions() {
         final TextView input = mkTextView("initial");
-        final Observable<OnTextChangeEvent> observable = ViewObservable.text(input, false);
+        final Observable<OnTextChangeEvent> observable = WidgetObservable.text(input, false);
 
         final Observer<OnTextChangeEvent> observer1 = mock(Observer.class);
         final Observer<OnTextChangeEvent> observer2 = mock(Observer.class);
@@ -207,7 +205,7 @@ public class OperatorTextViewInputTest {
     @SuppressWarnings("unchecked")
     public void testTextViewSubclass() {
         final EditText input = mkEditText("initial");
-        final Observable<OnTextChangeEvent> observable = ViewObservable.text(input, false);
+        final Observable<OnTextChangeEvent> observable = WidgetObservable.text(input, false);
         final Observer<OnTextChangeEvent> observer = mock(Observer.class);
         observable.subscribe(new TestObserver<OnTextChangeEvent>(observer));
 

@@ -21,17 +21,13 @@ import android.widget.TextView;
 
 import rx.Observable;
 import rx.android.util.Assertions;
-import rx.android.widget.OnItemClickEvent;
-import rx.android.widget.OnListViewScrollEvent;
-import rx.android.widget.OperatorAdapterViewOnItemClick;
-import rx.android.widget.OperatorCompoundButtonInput;
-import rx.android.widget.OnSubscribeListViewScroll;
-import rx.android.widget.OperatorTextViewInput;
-import rx.android.widget.OnTextChangeEvent;
 
 import static rx.android.schedulers.AndroidSchedulers.mainThread;
 
-public class ViewObservable {
+public final class ViewObservable {
+
+    private ViewObservable() {
+    }
 
     public static Observable<OnClickEvent> clicks(final View view) {
         return clicks(view, false);
@@ -39,36 +35,6 @@ public class ViewObservable {
 
     public static Observable<OnClickEvent> clicks(final View view, final boolean emitInitialValue) {
         return Observable.create(new OperatorViewClick(view, emitInitialValue));
-    }
-
-    public static Observable<OnTextChangeEvent> text(final TextView input) {
-        return text(input, false);
-    }
-
-    public static Observable<OnTextChangeEvent> text(final TextView input, final boolean emitInitialValue) {
-        return Observable.create(new OperatorTextViewInput(input, emitInitialValue));
-    }
-
-    public static Observable<OnCheckedChangeEvent> input(final CompoundButton button) {
-        return input(button, false);
-    }
-
-    public static Observable<OnCheckedChangeEvent> input(final CompoundButton button, final boolean emitInitialValue) {
-        return Observable.create(new OperatorCompoundButtonInput(button, emitInitialValue));
-    }
-
-    public static Observable<OnItemClickEvent> itemClicks(final AdapterView<?> adapterView) {
-        return Observable.create(new OperatorAdapterViewOnItemClick(adapterView));
-    }
-
-    /**
-     * Returns an observable that emits all the scroll events from the provided ListView.
-     * Note that this will replace any listeners previously set through
-     * {@link android.widget.AbsListView#setOnScrollListener(android.widget.AbsListView.OnScrollListener)} unless those
-     * were set by this method or {@link rx.android.widget.OnSubscribeListViewScroll}.
-     */
-    public static Observable<OnListViewScrollEvent> listScrollEvents(final AbsListView listView) {
-        return Observable.create(new OnSubscribeListViewScroll(listView));
     }
 
     /**

@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-public class OperatorCompoundButtonInput implements Observable.OnSubscribe<OnCheckedChangeEvent> {
+class OperatorCompoundButtonInput implements Observable.OnSubscribe<OnCheckedChangeEvent> {
     private final boolean emitInitialValue;
     private final CompoundButton button;
 

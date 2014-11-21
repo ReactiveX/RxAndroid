@@ -29,7 +29,7 @@ import rx.android.util.Assertions;
 import rx.android.AndroidSubscriptions;
 import rx.functions.Action0;
 
-public class OperatorAdapterViewOnItemClick implements Observable.OnSubscribe<OnItemClickEvent> {
+class OperatorAdapterViewOnItemClick implements Observable.OnSubscribe<OnItemClickEvent> {
 
     private final AdapterView<?> adapterView;
 
