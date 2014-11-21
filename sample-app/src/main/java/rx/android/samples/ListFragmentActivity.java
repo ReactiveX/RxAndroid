@@ -11,9 +11,9 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import rx.Observable;
 import rx.Subscriber;
-import rx.android.events.OnListViewScrollEvent;
-import rx.android.observables.AndroidObservable;
-import rx.android.observables.ViewObservable;
+import rx.android.widget.OnListViewScrollEvent;
+import rx.android.AndroidObservable;
+import rx.android.view.ViewObservable;
 import rx.functions.Action1;
 
 import static rx.android.schedulers.AndroidSchedulers.mainThread;

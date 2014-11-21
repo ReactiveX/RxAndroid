@@ -11,7 +11,7 @@ import android.widget.Toast;
 
 import rx.Subscriber;
 import rx.Subscription;
-import rx.android.observables.AndroidObservable;
+import rx.android.AndroidObservable;
 import rx.observables.ConnectableObservable;
 import rx.subscriptions.Subscriptions;
 
