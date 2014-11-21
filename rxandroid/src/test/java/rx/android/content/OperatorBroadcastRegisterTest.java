@@ -26,7 +26,6 @@ import org.robolectric.RobolectricTestRunner;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
-import rx.android.AndroidObservable;
 import rx.observers.TestObserver;
 
 import static org.mockito.Matchers.any;
@@ -43,7 +42,7 @@ public class OperatorBroadcastRegisterTest {
         String action = "TEST_ACTION";
         IntentFilter intentFilter = new IntentFilter(action);
         Application application = Robolectric.application;
-        Observable<Intent> observable = AndroidObservable.fromBroadcast(application, intentFilter);
+        Observable<Intent> observable = ContentObservable.fromBroadcast(application, intentFilter);
         final Observer<Intent> observer = mock(Observer.class);
         final Subscription subscription = observable.subscribe(new TestObserver<Intent>(observer));
 
@@ -73,7 +72,7 @@ public class OperatorBroadcastRegisterTest {
         Application application = Robolectric.application;
         Intent intent = new Intent(action);
         application.sendStickyBroadcast(intent);
-        Observable<Intent> observable = AndroidObservable.fromBroadcast(application, intentFilter);
+        Observable<Intent> observable = ContentObservable.fromBroadcast(application, intentFilter);
         final Observer<Intent> observer = mock(Observer.class);
         final Subscription subscription = observable.subscribe(new TestObserver<Intent>(observer));
 
@@ -98,7 +97,7 @@ public class OperatorBroadcastRegisterTest {
         String permission = "test_permission";
         IntentFilter intentFilter = new IntentFilter(action);
         Application application = Robolectric.application;
-        Observable<Intent> observable = AndroidObservable.fromBroadcast(application, intentFilter, permission, null);
+        Observable<Intent> observable = ContentObservable.fromBroadcast(application, intentFilter, permission, null);
         final Observer<Intent> observer = mock(Observer.class);
         final Subscription subscription = observable.subscribe(new TestObserver<Intent>(observer));
 

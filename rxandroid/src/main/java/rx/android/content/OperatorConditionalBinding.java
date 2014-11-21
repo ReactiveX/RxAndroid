@@ -30,7 +30,7 @@ import android.util.Log;
  * @param <T> the type of the objects emitted to a subscriber
  * @param <R> the type of the target object to bind to
  */
-public final class OperatorConditionalBinding<T, R> implements Observable.Operator<T, T> {
+final class OperatorConditionalBinding<T, R> implements Observable.Operator<T, T> {
 
     private static final String LOG_TAG = "ConditionalBinding";
 
@@ -98,8 +98,7 @@ public final class OperatorConditionalBinding<T, R> implements Observable.Operat
     }
 
     /* Visible for testing */
-    /* XXX: Should be back to public */
-    public R getBoundRef() {
+    R getBoundRef() {
         return boundRef;
     }
 }

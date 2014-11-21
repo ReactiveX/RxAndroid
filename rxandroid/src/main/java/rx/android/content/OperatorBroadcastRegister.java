@@ -25,7 +25,7 @@ import rx.Subscription;
 import rx.functions.Action0;
 import rx.subscriptions.Subscriptions;
 
-public class OperatorBroadcastRegister implements Observable.OnSubscribe<Intent> {
+class OperatorBroadcastRegister implements Observable.OnSubscribe<Intent> {
 
     private final Context context;
     private final IntentFilter intentFilter;

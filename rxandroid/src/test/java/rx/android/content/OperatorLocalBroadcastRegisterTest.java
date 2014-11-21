@@ -27,7 +27,6 @@ import org.robolectric.RobolectricTestRunner;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
-import rx.android.AndroidObservable;
 import rx.observers.TestObserver;
 
 import static org.mockito.Matchers.any;
@@ -44,7 +43,7 @@ public class OperatorLocalBroadcastRegisterTest {
         String action = "TEST_ACTION";
         IntentFilter intentFilter = new IntentFilter(action);
         Application application = Robolectric.application;
-        Observable<Intent> observable = AndroidObservable.fromLocalBroadcast(application, intentFilter);
+        Observable<Intent> observable = ContentObservable.fromLocalBroadcast(application, intentFilter);
         final Observer<Intent> observer = mock(Observer.class);
         final Subscription subscription = observable.subscribe(new TestObserver<Intent>(observer));
 

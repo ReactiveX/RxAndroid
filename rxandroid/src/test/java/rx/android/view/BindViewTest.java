@@ -18,7 +18,6 @@ import org.robolectric.annotation.Config;
 
 import rx.Observer;
 import rx.Subscription;
-import rx.android.AndroidObservable;
 import rx.subjects.PublishSubject;
 
 @RunWith(RobolectricTestRunner.class)
@@ -45,7 +44,7 @@ public class BindViewTest {
 
     @Test
     public void viewIsNotifiedEvenBeforeAttach() {
-        AndroidObservable.bindView(target, subject).subscribe(observer);
+        ViewObservable.bindView(target, subject).subscribe(observer);
 
         subject.onNext("hello");
         subject.onCompleted();
@@ -56,7 +55,7 @@ public class BindViewTest {
 
     @Test
     public void attachedViewIsNotified() {
-        AndroidObservable.bindView(target, subject).subscribe(observer);
+        ViewObservable.bindView(target, subject).subscribe(observer);
         contentView.addView(target);
 
         subject.onNext("hello");
@@ -68,7 +67,7 @@ public class BindViewTest {
 
     @Test
     public void detachedViewIsNotNotified() {
-        AndroidObservable.bindView(target, subject).subscribe(observer);
+        ViewObservable.bindView(target, subject).subscribe(observer);
         contentView.addView(target);
         contentView.removeView(target);
 
@@ -81,7 +80,7 @@ public class BindViewTest {
 
     @Test
     public void recycledViewIsNotNotified() {
-        AndroidObservable.bindView(target, subject).subscribe(observer);
+        ViewObservable.bindView(target, subject).subscribe(observer);
         contentView.addView(target);
         contentView.removeView(target);
         contentView.addView(target);
@@ -95,7 +94,7 @@ public class BindViewTest {
 
     @Test
     public void unsubscribeStopsNotifications() {
-        Subscription subscription = AndroidObservable.bindView(target, subject).subscribe(observer);
+        Subscription subscription = ViewObservable.bindView(target, subject).subscribe(observer);
         contentView.addView(target);
 
         subscription.unsubscribe();
@@ -109,7 +108,7 @@ public class BindViewTest {
 
     @Test
     public void earlyUnsubscribeStopsNotifications() {
-        Subscription subscription = AndroidObservable.bindView(target, subject).subscribe(observer);
+        Subscription subscription = ViewObservable.bindView(target, subject).subscribe(observer);
         subscription.unsubscribe();
 
         contentView.addView(target);
@@ -122,6 +121,6 @@ public class BindViewTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void nullViewIsNotAllowed() {
-        AndroidObservable.bindView(null, subject);
+        ViewObservable.bindView(null, subject);
     }
 }

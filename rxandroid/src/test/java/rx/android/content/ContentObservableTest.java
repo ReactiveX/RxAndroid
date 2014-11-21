@@ -11,7 +11,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package rx.android;
+package rx.android.content;
 
 import static org.mockito.Mockito.verify;
 
@@ -25,7 +25,7 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 import rx.Observable;
 import rx.Observer;
-import rx.android.AndroidObservable;
+import rx.android.content.ContentObservable;
 import rx.observers.TestObserver;
 
 import android.app.Activity;
@@ -41,7 +41,7 @@ import java.util.concurrent.TimeUnit;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(manifest = Config.NONE)
-public class AndroidObservableTest {
+public class ContentObservableTest {
 
     // support library fragments
     private FragmentActivity fragmentActivity;
@@ -68,21 +68,21 @@ public class AndroidObservableTest {
 
     @Test
     public void itSupportsFragmentsFromTheSupportV4Library() {
-        AndroidObservable.bindFragment(supportFragment, Observable.just("success")).subscribe(new TestObserver<String>(observer));
+        ContentObservable.bindFragment(supportFragment, Observable.just("success")).subscribe(new TestObserver<String>(observer));
         verify(observer).onNext("success");
         verify(observer).onCompleted();
     }
 
     @Test
     public void itSupportsNativeFragments() {
-        AndroidObservable.bindFragment(fragment, Observable.just("success")).subscribe(new TestObserver<String>(observer));
+        ContentObservable.bindFragment(fragment, Observable.just("success")).subscribe(new TestObserver<String>(observer));
         verify(observer).onNext("success");
         verify(observer).onCompleted();
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void itThrowsIfObjectPassedIsNotAFragment() {
-        AndroidObservable.bindFragment("not a fragment", Observable.never());
+        ContentObservable.bindFragment("not a fragment", Observable.never());
     }
 
     @Test(expected = IllegalStateException.class)
@@ -90,7 +90,7 @@ public class AndroidObservableTest {
         final Future<Object> future = Executors.newSingleThreadExecutor().submit(new Callable<Object>() {
             @Override
             public Object call() throws Exception {
-                AndroidObservable.bindFragment(fragment, Observable.empty());
+                ContentObservable.bindFragment(fragment, Observable.empty());
                 return null;
             }
         });
@@ -106,7 +106,7 @@ public class AndroidObservableTest {
         final Future<Object> future = Executors.newSingleThreadExecutor().submit(new Callable<Object>() {
             @Override
             public Object call() throws Exception {
-                AndroidObservable.bindActivity(activity, Observable.empty());
+                ContentObservable.bindActivity(activity, Observable.empty());
                 return null;
             }
         });

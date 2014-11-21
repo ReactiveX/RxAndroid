@@ -24,7 +24,6 @@ import org.robolectric.RobolectricTestRunner;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
-import rx.android.AndroidObservable;
 import rx.observers.TestObserver;
 
 import static org.mockito.Matchers.any;
@@ -37,7 +36,7 @@ public class OperatorSharedPreferencesChangeTest {
     public void testSharedPreferences() {
         Application application = Robolectric.application;
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(application);
-        Observable<String> observable = AndroidObservable.fromSharedPreferencesChanges(sharedPreferences);
+        Observable<String> observable = ContentObservable.fromSharedPreferencesChanges(sharedPreferences);
         final Observer<String> observer = mock(Observer.class);
         final Subscription subscription = observable.subscribe(new TestObserver<String>(observer));
 
