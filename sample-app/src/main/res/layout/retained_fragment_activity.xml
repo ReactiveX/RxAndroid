@@ -2,13 +2,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="rx.android.samples.RetainedFragmentActivity">
+    tools:context="rx.android.samples.lifeycle.RetainedFragmentActivity">
 
     <fragment
         android:tag="retained_fragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:name="rx.android.samples.RetainedFragmentActivity$RetainedFragment"
+        android:name="rx.android.samples.lifeycle.RetainedFragmentActivity$RetainedFragment"
         tools:layout="@layout/retained_fragment" />
 
 </RelativeLayout>

@@ -14,17 +14,18 @@
 package rx.android.view;
 
 import android.widget.CompoundButton;
+import com.google.auto.value.AutoValue;
 
-public class OnCheckedChangeEvent {
-    public final CompoundButton view;
-    public final boolean value;
+@AutoValue
+public abstract class OnCheckedChangeEvent {
+    public abstract CompoundButton view();
+    public abstract boolean value();
 
-    public OnCheckedChangeEvent(final CompoundButton view) {
-        this(view, view.isChecked());
+    public static OnCheckedChangeEvent create(final CompoundButton view) {
+        return create(view, view.isChecked());
     }
 
-    public OnCheckedChangeEvent(final CompoundButton view, final boolean value) {
-        this.view = view;
-        this.value = value;
+    public static OnCheckedChangeEvent create(final CompoundButton view, final boolean value) {
+        return new AutoValue_OnCheckedChangeEvent(view, value);
     }
 }

@@ -17,16 +17,16 @@ import android.view.View;
 import android.widget.Adapter;
 import android.widget.AdapterView;
 
-public class OnItemClickEvent {
-    public final AdapterView<?> parent;
-    public final View view;
-    public final int position;
-    public final long id;
+import com.google.auto.value.AutoValue;
 
-    public OnItemClickEvent(AdapterView<?> parent, View view, int position, long id) {
-        this.parent = parent;
-        this.view = view;
-        this.position = position;
-        this.id = id;
+@AutoValue
+public abstract class OnItemClickEvent {
+    abstract public AdapterView<?> parent();
+    abstract public View view();
+    abstract public int position();
+    abstract public long id();
+
+    public static OnItemClickEvent create(AdapterView<?> parent, View view, int position, long id) {
+        return new AutoValue_OnItemClickEvent(parent, view, position, id);
     }
 }

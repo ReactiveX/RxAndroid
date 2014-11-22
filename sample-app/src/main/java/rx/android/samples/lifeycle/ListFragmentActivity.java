@@ -1,4 +1,4 @@
-package rx.android.samples;
+package rx.android.samples.lifeycle;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -12,6 +12,8 @@ import android.widget.ProgressBar;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.content.ContentObservable;
+import rx.android.samples.R;
+import rx.android.samples.SampleObservables;
 import rx.android.widget.OnListViewScrollEvent;
 import rx.android.widget.WidgetObservable;
 import rx.functions.Action1;
@@ -64,12 +66,12 @@ public class ListFragmentActivity extends Activity {
                 .subscribe(new Action1<OnListViewScrollEvent>() {
                     @Override
                     public void call(OnListViewScrollEvent event) {
-                        if (event.totalItemCount == 0) {
+                        if (event.totalItemCount() == 0) {
                             return;
                         }
 
                         int progress =
-                            (int) ((100.0 * (event.firstVisibleItem + event.visibleItemCount)) / event.totalItemCount);
+                            (int) ((100.0 * (event.firstVisibleItem() + event.visibleItemCount())) / event.totalItemCount());
                         progressBar.setProgress(progress);
                     }
                 });

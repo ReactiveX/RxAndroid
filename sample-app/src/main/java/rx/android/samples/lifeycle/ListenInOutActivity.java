@@ -1,4 +1,4 @@
-package rx.android.samples;
+package rx.android.samples.lifeycle;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -6,10 +6,11 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
-
 import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
+import rx.android.samples.R;
+import rx.android.samples.SampleObservables;
 import rx.observables.ConnectableObservable;
 
 import static rx.android.content.ContentObservable.bindActivity;

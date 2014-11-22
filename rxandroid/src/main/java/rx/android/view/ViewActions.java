@@ -14,7 +14,7 @@
 package rx.android.view;
 
 import android.view.View;
-
+import android.widget.TextView;
 import rx.functions.Action1;
 
 /**
@@ -111,5 +111,29 @@ public final class ViewActions {
      */
     public static Action1<? super Boolean> setVisibility(View view, int visibilityOnFalse) {
         return new ViewActionSetVisibility(view, visibilityOnFalse);
+    }
+
+    /**
+     * Set the text of a {@link TextView} based on values emitted by an Observable.
+     */
+    public static Action1<? super CharSequence> setText(TextView textView) {
+        return new ViewAction1<TextView, CharSequence>(textView) {
+            @Override
+            public void call(TextView view, CharSequence text) {
+                view.setText(text);
+            }
+        };
+    }
+
+    /**
+     * Set the text of a {@link TextView} based on values emitted by an Observable.
+     */
+    public static Action1<? super Integer> setTextResource(TextView textView) {
+        return new ViewAction1<TextView, Integer>(textView) {
+            @Override
+            public void call(TextView view, Integer resId) {
+                view.setText(resId);
+            }
+        };
     }
 }

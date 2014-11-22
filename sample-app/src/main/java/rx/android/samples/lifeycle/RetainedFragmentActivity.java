@@ -1,4 +1,4 @@
-package rx.android.samples;
+package rx.android.samples.lifeycle;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -8,12 +8,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.TextView;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import rx.Observable;
 import rx.Subscription;
+import rx.android.samples.R;
+import rx.android.samples.SampleObservables;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.subscriptions.Subscriptions;

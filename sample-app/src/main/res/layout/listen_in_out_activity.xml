@@ -6,7 +6,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context="rx.android.samples.ListenInOutActivity">
+    tools:context="rx.android.samples.lifeycle.ListenInOutActivity">
 
     <TextView
         android:id="@android:id/text1"

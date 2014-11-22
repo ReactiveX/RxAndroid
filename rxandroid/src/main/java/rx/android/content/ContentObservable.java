@@ -17,6 +17,10 @@ import rx.functions.Func1;
 import static rx.android.schedulers.AndroidSchedulers.mainThread;
 
 public final class ContentObservable {
+    private ContentObservable() {
+        throw new AssertionError("No instances");
+    }
+
     private static final Func1<Activity, Boolean> ACTIVITY_VALIDATOR = new Func1<Activity, Boolean>() {
         @Override
         public Boolean call(Activity activity) {
@@ -146,8 +150,5 @@ public final class ContentObservable {
      */
     public static Observable<Cursor> fromCursor(final Cursor cursor) {
         return Observable.create(new OnSubscribeCursor(cursor));
-    }
-
-    private ContentObservable() {
     }
 }

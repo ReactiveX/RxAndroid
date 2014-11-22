@@ -228,8 +228,9 @@ public class OperatorAdapterViewOnItemClickTest {
         final InOrder inOrder = inOrder(observer);
 
         for (int i = 0; i < adapter.getCount(); i++) {
-            adapterView.performItemClick(any(View.class), i, i);
-            inOrder.verify(observer, times(1)).onNext(new OnItemClickEvent(adapterView, any(View.class), i, i));
+            View fakeItem = new View(adapterView.getContext());
+            adapterView.performItemClick(fakeItem, i, i);
+            inOrder.verify(observer, times(1)).onNext(OnItemClickEvent.create(adapterView, fakeItem, i, i));
         }
 
         subscription.unsubscribe();
@@ -313,9 +314,10 @@ public class OperatorAdapterViewOnItemClickTest {
 
         final int count = adapter.getCount();
         for (int i = 0; i < count; i++) {
-            adapterView.performItemClick(any(View.class), i, i);
-            inOrder1.verify(observer1, times(1)).onNext(new OnItemClickEvent(adapterView, any(View.class), i, i));
-            inOrder2.verify(observer2, times(1)).onNext(new OnItemClickEvent(adapterView, any(View.class), i, i));
+            View fakeItem = new View(adapterView.getContext());
+            adapterView.performItemClick(fakeItem, i, i);
+            inOrder1.verify(observer1, times(1)).onNext(OnItemClickEvent.create(adapterView, fakeItem, i, i));
+            inOrder2.verify(observer2, times(1)).onNext(OnItemClickEvent.create(adapterView, fakeItem, i, i));
         }
 
         subscription1.unsubscribe();
@@ -342,9 +344,10 @@ public class OperatorAdapterViewOnItemClickTest {
 
         final int count = adapter.getCount();
         for (int i = 0; i < count; i++) {
-            adapterView.performItemClick(any(View.class), i, i);
+            View fakeItem = new View(adapterView.getContext());
+            adapterView.performItemClick(fakeItem, i, i);
             inOrder1.verify(observer1, never()).onNext(any(OnItemClickEvent.class));
-            inOrder2.verify(observer2, times(1)).onNext(new OnItemClickEvent(adapterView, any(View.class), i, i));
+            inOrder2.verify(observer2, times(1)).onNext(OnItemClickEvent.create(adapterView, fakeItem, i, i));
         }
         subscription2.unsubscribe();
     }
