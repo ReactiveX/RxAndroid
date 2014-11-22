@@ -11,7 +11,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package rx.android.operators;
+package rx.android.view;
 
 import android.view.View;
 
@@ -25,7 +25,6 @@ import org.robolectric.RobolectricTestRunner;
 
 import rx.Observable;
 import rx.Subscriber;
-import rx.android.view.OnSubscribeViewDetachedFromWindowFirst;
 import rx.observers.TestSubscriber;
 
 import static org.mockito.Mockito.mock;

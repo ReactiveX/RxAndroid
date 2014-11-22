@@ -23,7 +23,7 @@ import rx.Subscription;
  * An internal class that is used from #{@link rx.android.view.ViewObservable#bindView}.
  * This emits an event when the given #{@code View} is detached from the window for the first time.
  */
-public class OnSubscribeViewDetachedFromWindowFirst implements Observable.OnSubscribe<View> {
+final class OnSubscribeViewDetachedFromWindowFirst implements Observable.OnSubscribe<View> {
     private final View view;
 
     public OnSubscribeViewDetachedFromWindowFirst(View view) {
