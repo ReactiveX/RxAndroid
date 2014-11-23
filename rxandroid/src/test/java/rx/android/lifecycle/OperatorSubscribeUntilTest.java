@@ -24,13 +24,13 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 import rx.Observable;
 import rx.Subscriber;
+import rx.Subscription;
 import rx.observers.TestSubscriber;
 
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.*;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(manifest = Config.NONE)
@@ -45,14 +45,34 @@ public class OperatorSubscribeUntilTest {
     }
 
     @Test
-    public void testDoesNotComplete() {
-        Observable.never()
-                .lift(new OperatorSubscribeUntil<Object, String>(Observable.just("Single Item")))
+    public void testSourceUnsubscribesOnNext() {
+        Subscription subscription = Observable.never()
+                .lift(new OperatorSubscribeUntil<Object, Object>(Observable.just(new Object())))
                 .subscribe(subscriber);
 
         verify(subscriber, never()).onNext(any());
-        verify(subscriber, never()).onError(any(Throwable.class));
+        assertTrue(subscription.isUnsubscribed());
+    }
+
+    @Test
+    public void testSourceUnsubscribesOnComplete() {
+        Subscription subscription = Observable.never()
+                .lift(new OperatorSubscribeUntil<Object, Object>(Observable.empty()))
+                .subscribe(subscriber);
+
         verify(subscriber, never()).onCompleted();
+        assertTrue(subscription.isUnsubscribed());
+    }
+
+    @Test
+    public void testSourceReceivesExceptions() {
+        Exception exception = new RuntimeException();
+        Subscription subscription = Observable.never()
+                .lift(new OperatorSubscribeUntil<Object, String>(Observable.<String>error(exception)))
+                .subscribe(subscriber);
+
+        verify(subscriber, atLeastOnce()).onError(exception);
+        assertTrue(subscription.isUnsubscribed());
     }
 
 }
