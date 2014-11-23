@@ -17,54 +17,42 @@ package rx.android.lifecycle;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.mockito.Spy;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 import rx.Observable;
 import rx.Subscriber;
-import rx.Subscription;
-import rx.functions.Action1;
-import rx.subjects.BehaviorSubject;
+import rx.observers.TestSubscriber;
 
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(manifest = Config.NONE)
 public class OperatorSubscribeUntilTest {
 
-    private Observable<Object> observable;
-    private Subscriber<Object> subscriber;
-
-    // RxJava tends to swallow fail(); instead just use a subscriber to tell if onComplete was called
-    boolean onCompleteCalled;
+    @Spy
+    private Subscriber<Object> subscriber = new TestSubscriber<Object>();
 
     @Before
     public void setup() {
-        observable = Observable.never();
-        subscriber = new Subscriber<Object>() {
-            @Override
-            public void onCompleted() {
-                onCompleteCalled = true;
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onNext(Object o) {
-
-            }
-        };
-        onCompleteCalled = false;
+        MockitoAnnotations.initMocks(this);
     }
 
     @Test
     public void testDoesNotComplete() {
-        observable.lift(new OperatorSubscribeUntil<Object, String>(Observable.just("Single Item")))
+        Observable.never()
+                .lift(new OperatorSubscribeUntil<Object, String>(Observable.just("Single Item")))
                 .subscribe(subscriber);
-        assertFalse(onCompleteCalled);
+
+        verify(subscriber, never()).onNext(any());
+        verify(subscriber, never()).onError(any(Throwable.class));
+        verify(subscriber, never()).onCompleted();
     }
 
 }
