@@ -127,22 +127,32 @@ public class LifecycleObservable {
             new Func1<LifecycleEvent, LifecycleEvent>() {
                 @Override
                 public LifecycleEvent call(LifecycleEvent lastEvent) {
-                    if (lastEvent != null) {
-                        switch (lastEvent) {
-                            case CREATE:
-                                return LifecycleEvent.DESTROY;
-                            case START:
-                                return LifecycleEvent.STOP;
-                            case RESUME:
-                                return LifecycleEvent.PAUSE;
-                            case PAUSE:
-                                return LifecycleEvent.STOP;
-                            case STOP:
-                                return LifecycleEvent.DESTROY;
-                        }
+                    if (lastEvent == null) {
+                        throw new NullPointerException("Cannot bind to null LifecycleEvent.");
                     }
 
-                    throw new IllegalStateException("Cannot bind to Activity lifecycle when outside of it.");
+                    switch (lastEvent) {
+                        case CREATE:
+                            return LifecycleEvent.DESTROY;
+                        case START:
+                            return LifecycleEvent.STOP;
+                        case RESUME:
+                            return LifecycleEvent.PAUSE;
+                        case PAUSE:
+                            return LifecycleEvent.STOP;
+                        case STOP:
+                            return LifecycleEvent.DESTROY;
+                        case DESTROY:
+                            throw new IllegalStateException("Cannot bind to Activity lifecycle when outside of it.");
+                        case ATTACH:
+                        case CREATE_VIEW:
+                        case DESTROY_VIEW:
+                        case DETACH:
+                            throw new IllegalStateException("Cannot bind to " + lastEvent + " for an Activity.");
+                        default:
+                            throw new UnsupportedOperationException("Binding to LifecycleEvent " + lastEvent
+                                    + " not yet implemented");
+                    }
                 }
             };
 
@@ -151,30 +161,35 @@ public class LifecycleObservable {
             new Func1<LifecycleEvent, LifecycleEvent>() {
                 @Override
                 public LifecycleEvent call(LifecycleEvent lastEvent) {
-                    if (lastEvent != null) {
-                        switch (lastEvent) {
-                            case ATTACH:
-                                return LifecycleEvent.DETACH;
-                            case CREATE:
-                                return LifecycleEvent.DESTROY;
-                            case CREATE_VIEW:
-                                return LifecycleEvent.DESTROY_VIEW;
-                            case START:
-                                return LifecycleEvent.STOP;
-                            case RESUME:
-                                return LifecycleEvent.PAUSE;
-                            case PAUSE:
-                                return LifecycleEvent.STOP;
-                            case STOP:
-                                return LifecycleEvent.DESTROY_VIEW;
-                            case DESTROY_VIEW:
-                                return LifecycleEvent.DESTROY;
-                            case DESTROY:
-                                return LifecycleEvent.DETACH;
-                        }
+                    if (lastEvent == null) {
+                        throw new NullPointerException("Cannot bind to null LifecycleEvent.");
                     }
 
-                    throw new IllegalStateException("Cannot bind to Fragment lifecycle when outside of it.");
+                    switch (lastEvent) {
+                        case ATTACH:
+                            return LifecycleEvent.DETACH;
+                        case CREATE:
+                            return LifecycleEvent.DESTROY;
+                        case CREATE_VIEW:
+                            return LifecycleEvent.DESTROY_VIEW;
+                        case START:
+                            return LifecycleEvent.STOP;
+                        case RESUME:
+                            return LifecycleEvent.PAUSE;
+                        case PAUSE:
+                            return LifecycleEvent.STOP;
+                        case STOP:
+                            return LifecycleEvent.DESTROY_VIEW;
+                        case DESTROY_VIEW:
+                            return LifecycleEvent.DESTROY;
+                        case DESTROY:
+                            return LifecycleEvent.DETACH;
+                        case DETACH:
+                            throw new IllegalStateException("Cannot bind to Fragment lifecycle when outside of it.");
+                        default:
+                            throw new UnsupportedOperationException("Binding to LifecycleEvent " + lastEvent
+                                    + " not yet implemented");
+                    }
                 }
             };
 }
