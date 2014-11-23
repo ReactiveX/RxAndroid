@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.os.Build;
 import android.os.Handler;
 
@@ -136,6 +137,15 @@ public final class ContentObservable {
      */
     public static Observable<String> fromSharedPreferencesChanges(SharedPreferences sharedPreferences){
         return Observable.create(new OnSubscribeSharedPreferenceChange(sharedPreferences));
+    }
+
+    /**
+     * Create Observable that emits the specified {@link android.database.Cursor} for each available position
+     * of the cursor moving to the next position before each call and closing the cursor whether the
+     * Observable completes or an error occurs.
+     */
+    public static Observable<Cursor> fromCursor(final Cursor cursor) {
+        return Observable.create(new OnSubscribeCursor(cursor));
     }
 
     private ContentObservable() {
