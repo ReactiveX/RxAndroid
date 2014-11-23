@@ -20,7 +20,6 @@ import rx.Subscriber;
 import rx.Subscription;
 
 /**
- * An internal class that is used from #{@link rx.android.view.ViewObservable#bindView}.
  * This emits an event when the given #{@code View} is detached from the window for the first time.
  */
 final class OnSubscribeViewDetachedFromWindowFirst implements Observable.OnSubscribe<View> {
@@ -40,7 +39,7 @@ final class OnSubscribeViewDetachedFromWindowFirst implements Observable.OnSubsc
     // This could be split into a couple of anonymous classes.
     // We pack it into one for the sake of memory efficiency.
     private static class SubscriptionAdapter implements View.OnAttachStateChangeListener,
-        Subscription {
+            Subscription {
         private Subscriber<? super View> subscriber;
         private View view;
 
