@@ -25,12 +25,12 @@ import rx.Subscription;
 import rx.functions.Action0;
 import rx.subscriptions.Subscriptions;
 
-class OperatorLocalBroadcastRegister implements Observable.OnSubscribe<Intent> {
+class OnSubscribeLocalBroadcastRegister implements Observable.OnSubscribe<Intent> {
 
     private final Context context;
     private final IntentFilter intentFilter;
 
-    public OperatorLocalBroadcastRegister(Context context, IntentFilter intentFilter) {
+    public OnSubscribeLocalBroadcastRegister(Context context, IntentFilter intentFilter) {
         this.context = context;
         this.intentFilter = intentFilter;
     }
