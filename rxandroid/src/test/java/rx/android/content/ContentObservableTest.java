@@ -23,9 +23,11 @@ import org.mockito.MockitoAnnotations;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
+
 import rx.Observable;
 import rx.Observer;
 import rx.android.content.ContentObservable;
+import rx.android.TestUtil;
 import rx.observers.TestObserver;
 
 import android.app.Activity;
@@ -33,6 +35,7 @@ import android.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 
 import java.util.concurrent.Callable;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -101,6 +104,30 @@ public class ContentObservableTest {
         }
     }
 
+    @Test
+    public void bindFragmentToSourceFromDifferentThread() throws InterruptedException {
+        CountDownLatch done = new CountDownLatch(1);
+        ContentObservable.bindFragment(fragment, TestUtil.atBackgroundThread(done)).subscribe(new TestObserver<String>(observer));
+        done.await();
+
+        Robolectric.runUiThreadTasksIncludingDelayedTasks();
+
+        verify(observer).onNext(TestUtil.STRING_EXPECTATION);
+        verify(observer).onCompleted();
+    }
+
+    @Test
+    public void bindSupportFragmentToSourceFromDifferentThread() throws InterruptedException {
+        CountDownLatch done = new CountDownLatch(1);
+        ContentObservable.bindFragment(supportFragment, TestUtil.atBackgroundThread(done)).subscribe(new TestObserver<String>(observer));
+        done.await();
+
+        Robolectric.runUiThreadTasksIncludingDelayedTasks();
+
+        verify(observer).onNext(TestUtil.STRING_EXPECTATION);
+        verify(observer).onCompleted();
+    }
+
     @Test(expected = IllegalStateException.class)
     public void itThrowsIfObserverCallsFromActivityFromBackgroundThread() throws Throwable {
         final Future<Object> future = Executors.newSingleThreadExecutor().submit(new Callable<Object>() {
@@ -116,4 +143,18 @@ public class ContentObservableTest {
             throw e.getCause();
         }
     }
+
+    @Test
+    public void bindActivityToSourceFromDifferentThread() throws InterruptedException {
+        CountDownLatch done = new CountDownLatch(1);
+        ContentObservable.bindActivity(activity, TestUtil.atBackgroundThread(done)).subscribe(new TestObserver<String>(observer));
+        done.await();
+
+        Robolectric.runUiThreadTasksIncludingDelayedTasks();
+
+        verify(observer).onNext(TestUtil.STRING_EXPECTATION);
+        verify(observer).onCompleted();
+    }
+
+
 }

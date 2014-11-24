@@ -65,7 +65,7 @@ public final class ContentObservable {
      */
     public static <T> Observable<T> bindActivity(Activity activity, Observable<T> source) {
         Assertions.assertUiThread();
-        return source.lift(new OperatorConditionalBinding<T, Activity>(activity, ACTIVITY_VALIDATOR)).observeOn(mainThread());
+        return source.observeOn(mainThread()).lift(new OperatorConditionalBinding<T, Activity>(activity, ACTIVITY_VALIDATOR));
     }
 
     /**

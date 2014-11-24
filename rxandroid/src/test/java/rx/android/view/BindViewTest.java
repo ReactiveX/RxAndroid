@@ -16,8 +16,11 @@ import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
+import java.util.concurrent.CountDownLatch;
+
 import rx.Observer;
 import rx.Subscription;
+import rx.android.TestUtil;
 import rx.subjects.PublishSubject;
 
 @RunWith(RobolectricTestRunner.class)
@@ -117,6 +120,18 @@ public class BindViewTest {
         contentView.removeView(target);
 
         verifyNoMoreInteractions(observer);
+    }
+
+    @Test
+    public void bindViewInDifferentThread() throws InterruptedException {
+        CountDownLatch done = new CountDownLatch(1);
+        ViewObservable.bindView(target, TestUtil.atBackgroundThread(done)).subscribe(observer);
+        done.await();
+
+        Robolectric.runUiThreadTasksIncludingDelayedTasks();
+
+        verify(observer).onNext(TestUtil.STRING_EXPECTATION);
+        verify(observer).onCompleted();
     }
 
     @Test(expected = IllegalArgumentException.class)

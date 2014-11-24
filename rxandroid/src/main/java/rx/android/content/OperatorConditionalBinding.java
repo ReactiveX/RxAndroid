@@ -15,6 +15,7 @@ package rx.android.content;
 
 import rx.Observable;
 import rx.Subscriber;
+import rx.android.internal.Assertions;
 import rx.functions.Func1;
 import rx.internal.util.UtilityFunctions;
 
@@ -53,6 +54,7 @@ final class OperatorConditionalBinding<T, R> implements Observable.Operator<T, T
 
             @Override
             public void onCompleted() {
+                Assertions.assertUiThread();
                 if (shouldForwardNotification()) {
                     child.onCompleted();
                 } else {
@@ -62,6 +64,7 @@ final class OperatorConditionalBinding<T, R> implements Observable.Operator<T, T
 
             @Override
             public void onError(Throwable e) {
+                Assertions.assertUiThread();
                 if (shouldForwardNotification()) {
                     child.onError(e);
                 } else {
@@ -71,6 +74,7 @@ final class OperatorConditionalBinding<T, R> implements Observable.Operator<T, T
 
             @Override
             public void onNext(T t) {
+                Assertions.assertUiThread();
                 if (shouldForwardNotification()) {
                     child.onNext(t);
                 } else {
