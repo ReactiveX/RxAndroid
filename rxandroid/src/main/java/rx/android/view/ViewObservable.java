@@ -51,6 +51,6 @@ public final class ViewObservable {
         if (view == null || source == null)
             throw new IllegalArgumentException("View and Observable must be given");
         Assertions.assertUiThread();
-        return source.takeUntil(Observable.create(new OperatorViewDetachedFromWindowFirst(view))).observeOn(mainThread());
+        return source.takeUntil(Observable.create(new OnSubscribeViewDetachedFromWindowFirst(view))).observeOn(mainThread());
     }
 }
