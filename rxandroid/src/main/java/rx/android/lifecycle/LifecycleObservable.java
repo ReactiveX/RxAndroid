@@ -27,11 +27,11 @@ public class LifecycleObservable {
     /**
      * Binds the given source to a lifecycle.
      * <p/>
-     * When the lifecycle event occurs, the source will cease to receive any notifications.
+     * When the lifecycle event occurs, the source will cease to emit any notifications.
      *
      * @param lifecycle the lifecycle sequence
      * @param source    the source sequence
-     * @param event     the event which should conclude notifications to the source
+     * @param event     the event which should conclude notifications from the source
      */
     public static <T> Observable<T> bindUntilLifecycleEvent(Observable<LifecycleEvent> lifecycle,
                                                             Observable<T> source,
@@ -55,8 +55,8 @@ public class LifecycleObservable {
     /**
      * Binds the given source to an Activity lifecycle.
      * <p/>
-     * This helper automatically determines (based on the lifecycle sequence itself) when it should
-     * stop sending notifications to the source. In the case that the lifecycle sequence is in the
+     * This helper automatically determines (based on the lifecycle sequence itself) when the source
+     * should stop emitting items. In the case that the lifecycle sequence is in the
      * creation phase (CREATE, START, etc) it will choose the equivalent destructive phase (DESTROY,
      * STOP, etc). If used in the destructive phase, the notifications will cease at the next event;
      * for example, if used in PAUSE, it will unsubscribe in STOP.
@@ -74,8 +74,8 @@ public class LifecycleObservable {
     /**
      * Binds the given source to a Fragment lifecycle.
      * <p/>
-     * This helper automatically determines (based on the lifecycle sequence itself) when it should
-     * stop sending notifications to the source. In the case that the lifecycle sequence is in the
+     * This helper automatically determines (based on the lifecycle sequence itself) when the source
+     * should stop emitting items. In the case that the lifecycle sequence is in the
      * creation phase (CREATE, START, etc) it will choose the equivalent destructive phase (DESTROY,
      * STOP, etc). If used in the destructive phase, the notifications will cease at the next event;
      * for example, if used in PAUSE, it will unsubscribe in STOP.
@@ -108,7 +108,7 @@ public class LifecycleObservable {
                                 sharedLifecycle.skip(1),
                                 new Func2<LifecycleEvent, LifecycleEvent, Boolean>() {
                                     @Override
-                                    public Boolean call(LifecycleEvent lifecycleEvent, LifecycleEvent bindUntilEvent) {
+                                    public Boolean call(LifecycleEvent bindUntilEvent, LifecycleEvent lifecycleEvent) {
                                         return lifecycleEvent == bindUntilEvent;
                                     }
                                 })
