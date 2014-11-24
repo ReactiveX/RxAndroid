@@ -2,9 +2,12 @@ language: android
 
 jdk:
   - oraclejdk7
+  - oraclejdk8
 
 android:
   components:
-    - android-20
+    - build-tools-21.1.1
+    - android-21
 
-script: "./gradlew build"
+script:
+  - ./gradlew build
