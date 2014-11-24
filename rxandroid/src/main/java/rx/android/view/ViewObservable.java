@@ -30,7 +30,7 @@ public final class ViewObservable {
     }
 
     public static Observable<OnClickEvent> clicks(final View view, final boolean emitInitialValue) {
-        return Observable.create(new OperatorViewClick(view, emitInitialValue));
+        return Observable.create(new OnSubscribeViewClick(view, emitInitialValue));
     }
 
     /**

@@ -17,7 +17,7 @@ public final class WidgetObservable {
     }
 
     public static Observable<OnTextChangeEvent> text(final TextView input, final boolean emitInitialValue) {
-        return Observable.create(new OperatorTextViewInput(input, emitInitialValue));
+        return Observable.create(new OnSubscribeTextViewInput(input, emitInitialValue));
     }
 
     public static Observable<OnCheckedChangeEvent> input(final CompoundButton button) {
@@ -25,11 +25,11 @@ public final class WidgetObservable {
     }
 
     public static Observable<OnCheckedChangeEvent> input(final CompoundButton button, final boolean emitInitialValue) {
-        return Observable.create(new OperatorCompoundButtonInput(button, emitInitialValue));
+        return Observable.create(new OnSubscribeCompoundButtonInput(button, emitInitialValue));
     }
 
     public static Observable<OnItemClickEvent> itemClicks(final AdapterView<?> adapterView) {
-        return Observable.create(new OperatorAdapterViewOnItemClick(adapterView));
+        return Observable.create(new OnSubscribeAdapterViewOnItemClick(adapterView));
     }
 
     /**

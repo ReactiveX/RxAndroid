@@ -102,7 +102,7 @@ public final class ContentObservable {
      * @param filter Selects the Intent broadcasts to be received.
      */
     public static Observable<Intent> fromBroadcast(Context context, IntentFilter filter){
-        return Observable.create(new OperatorBroadcastRegister(context, filter, null, null));
+        return Observable.create(new OnSubscribeBroadcastRegister(context, filter, null, null));
     }
 
     /**
@@ -116,7 +116,7 @@ public final class ContentObservable {
      *      the Intent.  If null, the main thread of the process will be used.
      */
     public static Observable<Intent> fromBroadcast(Context context, IntentFilter filter, String broadcastPermission, Handler schedulerHandler){
-        return Observable.create(new OperatorBroadcastRegister(context, filter, broadcastPermission, schedulerHandler));
+        return Observable.create(new OnSubscribeBroadcastRegister(context, filter, broadcastPermission, schedulerHandler));
     }
 
     /**
@@ -126,7 +126,7 @@ public final class ContentObservable {
      * @param filter Selects the Intent broadcasts to be received.
      */
     public static Observable<Intent> fromLocalBroadcast(Context context, IntentFilter filter){
-        return Observable.create(new OperatorLocalBroadcastRegister(context, filter));
+        return Observable.create(new OnSubscribeLocalBroadcastRegister(context, filter));
     }
 
     /**
@@ -135,7 +135,7 @@ public final class ContentObservable {
      * Items will be observed on the main Android UI thread
      */
     public static Observable<String> fromSharedPreferencesChanges(SharedPreferences sharedPreferences){
-        return Observable.create(new OperatorSharedPreferenceChange(sharedPreferences));
+        return Observable.create(new OnSubscribeSharedPreferenceChange(sharedPreferences));
     }
 
     private ContentObservable() {
