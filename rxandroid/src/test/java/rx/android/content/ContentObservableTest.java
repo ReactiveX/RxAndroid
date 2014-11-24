@@ -13,26 +13,20 @@
  */
 package rx.android.content;
 
-import static org.mockito.Mockito.verify;
+import android.app.Activity;
+import android.app.Fragment;
+import android.database.Cursor;
+import android.support.v4.app.FragmentActivity;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
-
-import rx.Observable;
-import rx.Observer;
-import rx.android.content.ContentObservable;
-import rx.android.TestUtil;
-import rx.observers.TestObserver;
-
-import android.app.Activity;
-import android.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
@@ -40,6 +34,21 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+
+import rx.Observable;
+import rx.Observer;
+import rx.Subscriber;
+import rx.android.TestUtil;
+import rx.observers.TestObserver;
+import rx.observers.TestSubscriber;
+
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 
 @RunWith(RobolectricTestRunner.class)
@@ -157,4 +166,70 @@ public class ContentObservableTest {
     }
 
 
+    public void givenCursorWhenFromCursorInvokedThenObservableCallsOnNextWhileHasNext() {
+        final Subscriber<Cursor> subscriber = spy(new TestSubscriber<Cursor>());
+        final Cursor cursor = mock(Cursor.class);
+
+        when(cursor.isAfterLast()).thenReturn(false, false, true);
+        when(cursor.moveToNext()).thenReturn(true, true, false);
+        when(cursor.getCount()).thenReturn(2);
+
+        Observable<Cursor> observable = ContentObservable.fromCursor(cursor);
+        observable.subscribe(subscriber);
+
+        verify(subscriber, times(2)).onNext(cursor);
+        verify(subscriber, never()).onError(Matchers.any(Throwable.class));
+        verify(subscriber).onCompleted();
+    }
+
+    @Test
+    public void givenEmptyCursorWhenFromCursorInvokedThenObservableCompletesWithoutCallingOnNext() {
+        final Subscriber<Cursor> subscriber = spy(new TestSubscriber<Cursor>());
+        final Cursor cursor = mock(Cursor.class);
+
+        Observable<Cursor> observable = ContentObservable.fromCursor(cursor);
+        observable.subscribe(subscriber);
+
+        verify(subscriber, never()).onNext(cursor);
+        verify(subscriber, never()).onError(Matchers.any(Throwable.class));
+        verify(subscriber).onCompleted();
+    }
+
+    @Test
+    public void givenCursorWhenFromCursorCalledThenEmitsAndClosesCursorAfterCompletion() {
+        final Subscriber<Cursor> subscriber = spy(new TestSubscriber<Cursor>());
+        final Cursor cursor = mock(Cursor.class);
+
+        when(cursor.isAfterLast()).thenReturn(false, true);
+        when(cursor.moveToNext()).thenReturn(true, false);
+        when(cursor.getCount()).thenReturn(1);
+
+        Observable<Cursor> observable = ContentObservable.fromCursor(cursor);
+        observable.subscribe(subscriber);
+
+        verify(subscriber, never()).onError(Matchers.any(Throwable.class));
+        verify(subscriber).onNext(cursor);
+        verify(cursor).close();
+        verify(subscriber).onCompleted();
+    }
+
+    @Test
+    public void givenCursorWhenFromCursorCalledThenEmitsAndClosesCursorAfterError() {
+        final Subscriber<Cursor> subscriber = spy(new TestSubscriber<Cursor>());
+        final Cursor cursor = mock(Cursor.class);
+        final RuntimeException throwable = mock(RuntimeException.class);
+        doThrow(throwable).when(subscriber).onNext(cursor);
+
+        when(cursor.isAfterLast()).thenReturn(false, true);
+        when(cursor.moveToNext()).thenReturn(true, false);
+        when(cursor.getCount()).thenReturn(1);
+
+        Observable<Cursor> observable = ContentObservable.fromCursor(cursor);
+        observable.subscribe(subscriber);
+
+        verify(subscriber, never()).onCompleted();
+        verify(subscriber).onNext(cursor);
+        verify(subscriber).onError(throwable);
+        verify(cursor).close();
+    }
 }
