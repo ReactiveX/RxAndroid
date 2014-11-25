@@ -51,7 +51,7 @@ public class ReactiveDialog<T> extends DialogFragment {
     public Observable<Result<T>> show(final FragmentManager manager) {
         return Observable.create(new Observable.OnSubscribe<Result<T>>() {
             @Override
-            public void call(rx.Subscriber<? super Result<T>> subscriber) {
+            public void call(Subscriber<? super Result<T>> subscriber) {
                 final long key = subscriberVault.store(subscriber);
                 storeSubscriberKey(key);
                 subscriber.add(new Subscription() {
