@@ -168,11 +168,11 @@ public class ReactiveDialog<T> extends DialogFragment {
         private final boolean cancelled;
 
         static <V> Result<V> asSuccess(V value){
-            return new Result(value, false);
+            return new Result<V>(value, false);
         }
 
         static <V> Result<V> asCancelled() {
-            return new Result(null, true);
+            return new Result<V>(null, true);
         }
 
         private Result(V value, boolean cancelled) {
