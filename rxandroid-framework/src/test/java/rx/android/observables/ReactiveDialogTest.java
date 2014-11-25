@@ -71,12 +71,12 @@ public class ReactiveDialogTest {
 
 
         assertNotNull(ShadowDialog.getLatestDialog());
-        assertFalse(result.isCancelled());
+        assertFalse(result.isCanceled());
         assertEquals(result.getValue(), "this");
     }
 
     @Test()
-    public void itSendsCancelledResultIfDialogIsCancelledToObserver() {
+    public void itSendsCanceledResultIfDialogIsCanceledToObserver() {
         ArgumentCaptor<Result> argumentCaptor = ArgumentCaptor.forClass(Result.class);
         Observable<Result<String>> observable = reactiveDialog.show(fragmentManager);
         observable.subscribe(mockResultObserver);
@@ -85,7 +85,7 @@ public class ReactiveDialogTest {
         verify(mockResultObserver).onNext(argumentCaptor.capture());
 
         assertNotNull(ShadowDialog.getLatestDialog());
-        assertTrue(argumentCaptor.getValue().isCancelled());
+        assertTrue(argumentCaptor.getValue().isCanceled());
     }
 
     @Test
@@ -100,7 +100,7 @@ public class ReactiveDialogTest {
     }
 
     @Test()
-    public void unwrappedObservableIgnoresCancelledCancelledEvents() {
+    public void unwrappedObservableIgnoresCanceledCanceledEvents() {
         Observable<String> observable = reactiveDialog.showIgnoringCancelEvents(fragmentManager);
         observable.subscribe(mockObserver);
 

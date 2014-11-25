@@ -79,7 +79,7 @@ public class ReactiveDialog<T> extends DialogFragment {
                 .filter(new Func1<Result<T>, Boolean>() {
                     @Override
                     public Boolean call(Result<T> tResult) {
-                        return !tResult.isCancelled();
+                        return !tResult.isCanceled();
                     }
                 })
                 .map(new Func1<Result<T>, T>() {
@@ -144,7 +144,7 @@ public class ReactiveDialog<T> extends DialogFragment {
 
         @Override
         public void onCancel() {
-            subscriber.onNext(Result.<T>asCancelled());
+            subscriber.onNext(Result.<T>asCanceled());
             subscriber.onCompleted();
             subscriberVault.remove(getSubscriberKey());
         }
@@ -165,27 +165,27 @@ public class ReactiveDialog<T> extends DialogFragment {
     public final static class Result<V> {
 
         private final V value;
-        private final boolean cancelled;
+        private final boolean canceled;
 
         static <V> Result<V> asSuccess(V value){
             return new Result<V>(value, false);
         }
 
-        static <V> Result<V> asCancelled() {
+        static <V> Result<V> asCanceled() {
             return new Result<V>(null, true);
         }
 
-        private Result(V value, boolean cancelled) {
+        private Result(V value, boolean canceled) {
             this.value = value;
-            this.cancelled = cancelled;
+            this.canceled = canceled;
         }
 
         public V getValue() {
             return value;
         }
 
-        public boolean isCancelled() {
-            return cancelled;
+        public boolean isCanceled() {
+            return canceled;
         }
     }
 }
