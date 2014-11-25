@@ -120,7 +120,7 @@ public class ReactiveDialog<T> extends DialogFragment {
 
     /**
      * A wrapper for the subscriber from the observable.
-     * The wrapper add specialised failures such as CancelledException and removes itself from the vault upon completion or failure.
+     * The wrapper takes care of wrapping values into a result object before passing them and removes itself from the vault upon completion or failure.
      */
     private class ReactiveDialogObserver implements ReactiveDialogListener<T> {
 
