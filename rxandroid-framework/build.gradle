@@ -1,0 +1,31 @@
+buildscript {
+    repositories { jcenter() }
+    dependencies {
+        classpath 'com.netflix.nebula:gradle-rxjava-project-plugin:1.12.+'
+        classpath 'com.netflix.nebula:gradle-extra-configurations-plugin:1.12.+'
+    }
+}
+
+apply plugin: 'rxjava-project'
+apply plugin: 'provided-base'
+
+dependencies {
+    compile "io.reactivex:rxjava:$rxJavaVersion"
+    provided 'com.google.android:android:4.0.1.2'
+    provided 'com.google.android:support-v4:r7'
+
+    // testing
+    testCompile 'junit:junit-dep:4.11'
+    testCompile 'org.mockito:mockito-core:1.10.8'
+    testCompile('org.robolectric:robolectric:2.4') {
+        exclude group: 'com.android.support'
+    }
+}
+
+test {
+    testLogging {
+        exceptionFormat "full"
+        events "started"
+        displayGranularity 2
+    }
+}

@@ -48,6 +48,9 @@ out
 *.iml
 atlassian-ide-plugin.xml
 
+# AndroidStudio specific files/directories
+local.properties
+
 # Eclipse specific files/directories
 .classpath
 .project
