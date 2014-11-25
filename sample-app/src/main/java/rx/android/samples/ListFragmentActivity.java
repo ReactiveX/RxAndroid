@@ -64,12 +64,12 @@ public class ListFragmentActivity extends Activity {
                 .subscribe(new Action1<OnListViewScrollEvent>() {
                     @Override
                     public void call(OnListViewScrollEvent event) {
-                        if (event.totalItemCount == 0) {
+                        if (event.totalItemCount() == 0) {
                             return;
                         }
 
                         int progress =
-                            (int) ((100.0 * (event.firstVisibleItem + event.visibleItemCount)) / event.totalItemCount);
+                            (int) ((100.0 * (event.firstVisibleItem() + event.visibleItemCount())) / event.totalItemCount());
                         progressBar.setProgress(progress);
                     }
                 });

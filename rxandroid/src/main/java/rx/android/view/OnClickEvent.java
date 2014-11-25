@@ -15,10 +15,13 @@ package rx.android.view;
 
 import android.view.View;
 
-public class OnClickEvent {
-    public final View view;
+import com.google.auto.value.AutoValue;
 
-    public OnClickEvent(final View view) {
-        this.view = view;
+@AutoValue
+public abstract class OnClickEvent {
+    public abstract View view();
+
+    public static OnClickEvent create(View view) {
+        return new AutoValue_OnClickEvent(view);
     }
 }

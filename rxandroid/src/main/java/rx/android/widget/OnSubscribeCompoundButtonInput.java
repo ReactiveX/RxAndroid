@@ -45,7 +45,7 @@ class OnSubscribeCompoundButtonInput implements Observable.OnSubscribe<OnChecked
         final CompoundButton.OnCheckedChangeListener listener = new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(final CompoundButton view, final boolean checked) {
-                observer.onNext(new OnCheckedChangeEvent(button, checked));
+                observer.onNext(OnCheckedChangeEvent.create(button, checked));
             }
         };
 
@@ -57,7 +57,7 @@ class OnSubscribeCompoundButtonInput implements Observable.OnSubscribe<OnChecked
         });
 
         if (emitInitialValue) {
-            observer.onNext(new OnCheckedChangeEvent(button));
+            observer.onNext(OnCheckedChangeEvent.create(button));
         }
 
         composite.addOnCheckedChangeListener(listener);

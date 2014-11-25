@@ -38,7 +38,7 @@ class OnSubscribeTextViewInput implements Observable.OnSubscribe<OnTextChangeEve
         final TextWatcher watcher = new SimpleTextWatcher() {
             @Override
             public void afterTextChanged(final Editable editable) {
-                observer.onNext(new OnTextChangeEvent(input));
+                observer.onNext(OnTextChangeEvent.create(input));
             }
         };
 
@@ -50,7 +50,7 @@ class OnSubscribeTextViewInput implements Observable.OnSubscribe<OnTextChangeEve
         });
 
         if (emitInitialValue) {
-            observer.onNext(new OnTextChangeEvent(input));
+            observer.onNext(OnTextChangeEvent.create(input));
         }
 
         input.addTextChangedListener(watcher);

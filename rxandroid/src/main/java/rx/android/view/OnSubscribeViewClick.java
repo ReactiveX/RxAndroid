@@ -43,7 +43,7 @@ final class OnSubscribeViewClick implements Observable.OnSubscribe<OnClickEvent>
         final View.OnClickListener listener = new View.OnClickListener() {
             @Override
             public void onClick(final View clicked) {
-                observer.onNext(new OnClickEvent(view));
+                observer.onNext(OnClickEvent.create(view));
             }
         };
 
@@ -55,7 +55,7 @@ final class OnSubscribeViewClick implements Observable.OnSubscribe<OnClickEvent>
         });
 
         if (emitInitialValue) {
-            observer.onNext(new OnClickEvent(view));
+            observer.onNext(OnClickEvent.create(view));
         }
 
         composite.addOnClickListener(listener);

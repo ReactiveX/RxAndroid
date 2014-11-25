@@ -1,11 +1,27 @@
 // Multi-module modules aren't really supported
 version = rootProject.version
 
+configurations {
+    // This is a rough approximation of Android plug-in's 'provided' configuration, where
+    // you can give compile-time only dependencies.
+    compileOnly
+}
+
+dependencies {
+    compileOnly "com.google.auto.value:auto-value:1.0-rc1"
+}
+
 test {
     testLogging {
         exceptionFormat "full"
         events "started"
         displayGranularity 2
+    }
+}
+
+sourceSets {
+    main {
+        compileClasspath += configurations.compileOnly
     }
 }
 
