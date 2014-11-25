@@ -15,7 +15,6 @@
  */
 package rx.android.observables;
 
-import java.lang.Long;
 import java.util.HashMap;
 import java.util.Map;
 

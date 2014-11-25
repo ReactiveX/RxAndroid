@@ -30,7 +30,10 @@ import org.robolectric.shadows.ShadowDialog;
 import rx.Observable;
 import rx.Observer;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -68,7 +71,6 @@ public class ReactiveDialogTest {
         reactiveDialog.getListener().onCompleteWith("this");
         verify(mockResultObserver).onNext(argumentCaptor.capture());
         Result result = argumentCaptor.getValue();
-
 
         assertNotNull(ShadowDialog.getLatestDialog());
         assertFalse(result.isCanceled());
