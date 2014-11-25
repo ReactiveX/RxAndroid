@@ -116,11 +116,11 @@ public final class ViewActions {
     /**
      * Set the text of a {@link TextView} based on values emitted by an Observable.
      */
-    public static Action1<? super CharSequence> setText(final TextView textView) {
-        return new Action1<CharSequence>() {
+    public static Action1<? super CharSequence> setText(TextView textView) {
+        return new ViewAction1<TextView, CharSequence>(textView) {
             @Override
-            public void call(CharSequence charSequence) {
-                textView.setText(charSequence);
+            public void call(TextView view, CharSequence text) {
+                view.setText(text);
             }
         };
     }
@@ -128,11 +128,11 @@ public final class ViewActions {
     /**
      * Set the text of a {@link TextView} based on values emitted by an Observable.
      */
-    public static Action1<? super Integer> setTextResource(final TextView textView) {
-        return new Action1<Integer>() {
+    public static Action1<? super Integer> setTextResource(TextView textView) {
+        return new ViewAction1<TextView, Integer>(textView) {
             @Override
-            public void call(Integer integer) {
-                textView.setText(integer);
+            public void call(TextView view, Integer resId) {
+                view.setText(resId);
             }
         };
     }
