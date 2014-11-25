@@ -162,7 +162,7 @@ public class ReactiveDialog<T> extends DialogFragment {
         }
     }
 
-    public static class Result<V> {
+    public final static class Result<V> {
 
         private final V value;
         private final boolean cancelled;
