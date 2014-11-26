@@ -29,7 +29,7 @@ public class TestUtil {
         throw new AssertionError("No instances");
     }
 
-    static public final String STRING_EXPECTATION = "Hello";
+    public static final String STRING_EXPECTATION = "Hello";
 
     public static View createView() {
         return new View(Robolectric.application);
