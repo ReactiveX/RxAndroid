@@ -21,7 +21,7 @@ import rx.functions.Func2;
 public class LifecycleObservable {
 
     private LifecycleObservable() {
-        throw new AssertionError("LifeCycleObservable cannot be instantiated.");
+        throw new AssertionError("No instances");
     }
 
     /**

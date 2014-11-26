@@ -22,9 +22,8 @@ import rx.subscriptions.Subscriptions;
 import android.os.Looper;
 
 public final class AndroidSubscriptions {
-
     private AndroidSubscriptions() {
-        // no instance
+        throw new AssertionError("No instances");
     }
 
     /**
