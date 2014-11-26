@@ -18,7 +18,7 @@ import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.subscriptions.Subscriptions;
 
-import static rx.android.content.ContentObservable.bindFragment;
+import static rx.android.app.AppObservable.bindFragment;
 
 /**
  * Problem:

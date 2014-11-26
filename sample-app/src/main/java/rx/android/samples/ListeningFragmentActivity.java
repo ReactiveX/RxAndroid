@@ -11,7 +11,7 @@ import android.widget.Toast;
 
 import rx.Subscriber;
 import rx.Subscription;
-import rx.android.content.ContentObservable;
+import rx.android.app.AppObservable;
 import rx.observables.ConnectableObservable;
 import rx.subscriptions.Subscriptions;
 
@@ -74,7 +74,7 @@ public class ListeningFragmentActivity extends Activity {
             final TextView textView = (TextView) view.findViewById(android.R.id.text1);
 
             // re-connect to sequence
-            subscription = ContentObservable.bindFragment(this, strings).subscribe(new Subscriber<String>() {
+            subscription = AppObservable.bindFragment(this, strings).subscribe(new Subscriber<String>() {
 
                 @Override
                 public void onCompleted() {
