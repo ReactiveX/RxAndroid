@@ -16,70 +16,19 @@ package rx.android.widget;
 
 import android.widget.AbsListView;
 
-public class OnListViewScrollEvent {
-    public final AbsListView listView;
-    public final int scrollState;
-    public final int firstVisibleItem;
-    public final int visibleItemCount;
-    public final int totalItemCount;
+import com.google.auto.value.AutoValue;
 
-    public OnListViewScrollEvent(
+@AutoValue
+public abstract class OnListViewScrollEvent {
+    public abstract AbsListView listView();
+    public abstract int scrollState();
+    public abstract int firstVisibleItem();
+    public abstract int visibleItemCount();
+    public abstract int totalItemCount();
+
+    public static OnListViewScrollEvent create(
         AbsListView listView, int scrollState, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-        this.listView = listView;
-        this.scrollState = scrollState;
-        this.firstVisibleItem = firstVisibleItem;
-        this.visibleItemCount = visibleItemCount;
-        this.totalItemCount = totalItemCount;
+        return new AutoValue_OnListViewScrollEvent(listView, scrollState, firstVisibleItem, visibleItemCount, totalItemCount);
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        OnListViewScrollEvent that = (OnListViewScrollEvent) o;
-
-        if (firstVisibleItem != that.firstVisibleItem) {
-            return false;
-        }
-        if (scrollState != that.scrollState) {
-            return false;
-        }
-        if (totalItemCount != that.totalItemCount) {
-            return false;
-        }
-        if (visibleItemCount != that.visibleItemCount) {
-            return false;
-        }
-        if (!listView.equals(that.listView)) {
-            return false;
-        }
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = listView.hashCode();
-        result = 31 * result + scrollState;
-        result = 31 * result + firstVisibleItem;
-        result = 31 * result + visibleItemCount;
-        result = 31 * result + totalItemCount;
-        return result;
-    }
-
-    @Override
-    public String toString() {
-        return "OnListViewScrollEvent{" +
-            "listView=" + listView +
-            ", scrollState=" + scrollState +
-            ", firstVisibleItem=" + firstVisibleItem +
-            ", visibleItemCount=" + visibleItemCount +
-            ", totalItemCount=" + totalItemCount +
-            '}';
-    }
 }

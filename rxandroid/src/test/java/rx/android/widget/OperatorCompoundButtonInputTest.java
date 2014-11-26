@@ -32,7 +32,7 @@ import static org.mockito.Mockito.*;
 @RunWith(RobolectricTestRunner.class)
 public class OperatorCompoundButtonInputTest {
     private static OnCheckedChangeEvent mkMockedEvent(final CompoundButton button, final boolean value) {
-        return refEq(new OnCheckedChangeEvent(button, value));
+        return refEq(OnCheckedChangeEvent.create(button, value));
     }
 
     private static CompoundButton mkCompoundButton(final boolean value) {

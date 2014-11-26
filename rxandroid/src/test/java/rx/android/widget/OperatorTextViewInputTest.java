@@ -43,11 +43,11 @@ public class OperatorTextViewInputTest {
 
                 final OnTextChangeEvent event = (OnTextChangeEvent) argument;
 
-                if (event.view != view) {
+                if (event.view() != view) {
                     return false;
                 }
 
-                return TextUtils.equals(event.text, text);
+                return TextUtils.equals(event.text(), text);
             }
         });
     }

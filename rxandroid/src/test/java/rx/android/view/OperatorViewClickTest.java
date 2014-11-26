@@ -37,7 +37,7 @@ import static org.mockito.Mockito.times;
 @RunWith(RobolectricTestRunner.class)
 public class OperatorViewClickTest {
     private static OnClickEvent mkMockedEvent(final View view) {
-        return refEq(new OnClickEvent(view));
+        return refEq(OnClickEvent.create(view));
     }
 
     @Test

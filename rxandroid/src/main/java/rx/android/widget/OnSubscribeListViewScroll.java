@@ -50,7 +50,7 @@ class OnSubscribeListViewScroll implements Observable.OnSubscribe<OnListViewScro
 
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-                OnListViewScrollEvent event = new OnListViewScrollEvent(view, this.currentScrollState, firstVisibleItem,
+                OnListViewScrollEvent event = OnListViewScrollEvent.create(view, this.currentScrollState, firstVisibleItem,
                     visibleItemCount, totalItemCount);
                 observer.onNext(event);
             }
