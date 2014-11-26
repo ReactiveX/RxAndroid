@@ -21,13 +21,12 @@ import android.os.Looper;
  * Schedulers that have Android specific functionality
  */
 public class AndroidSchedulers {
+    private AndroidSchedulers(){
+        throw new AssertionError("No instances");
+    }
 
     private static final Scheduler MAIN_THREAD_SCHEDULER =
             new HandlerThreadScheduler(new Handler(Looper.getMainLooper()));
-
-    private AndroidSchedulers(){
-
-    }
 
     /**
      * {@link Scheduler} which uses the provided {@link Handler} to execute an action

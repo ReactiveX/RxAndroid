@@ -10,6 +10,7 @@ import rx.android.view.OnCheckedChangeEvent;
 
 public final class WidgetObservable {
     private WidgetObservable() {
+        throw new AssertionError("No instances");
     }
 
     public static Observable<OnTextChangeEvent> text(final TextView input) {

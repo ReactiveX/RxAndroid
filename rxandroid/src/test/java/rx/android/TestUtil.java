@@ -25,12 +25,11 @@ import rx.Observable;
 import rx.Subscriber;
 
 public class TestUtil {
+    private TestUtil() {
+        throw new AssertionError("No instances");
+    }
 
     static public final String STRING_EXPECTATION = "Hello";
-
-    private TestUtil() {
-        throw new AssertionError("Utility class");
-    }
 
     public static View createView() {
         return new View(Robolectric.application);
