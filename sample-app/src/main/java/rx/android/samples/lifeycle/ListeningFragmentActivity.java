@@ -1,4 +1,4 @@
-package rx.android.samples;
+package rx.android.samples.lifeycle;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -8,13 +8,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import rx.Subscriber;
 import rx.Subscription;
+import rx.android.samples.R;
+import rx.android.samples.SampleObservables;
 import rx.android.content.ContentObservable;
 import rx.observables.ConnectableObservable;
 import rx.subscriptions.Subscriptions;
-
 
 /**
  * Problem:

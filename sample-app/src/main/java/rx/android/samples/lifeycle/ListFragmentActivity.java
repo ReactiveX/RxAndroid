@@ -1,4 +1,4 @@
-package rx.android.samples;
+package rx.android.samples.lifeycle;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -12,6 +12,8 @@ import android.widget.ProgressBar;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.content.ContentObservable;
+import rx.android.samples.R;
+import rx.android.samples.SampleObservables;
 import rx.android.widget.OnListViewScrollEvent;
 import rx.android.widget.WidgetObservable;
 import rx.functions.Action1;

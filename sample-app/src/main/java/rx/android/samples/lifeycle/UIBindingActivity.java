@@ -1,4 +1,4 @@
-package rx.android.samples;
+package rx.android.samples.lifeycle;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -13,6 +13,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import rx.Observable;
 import rx.Subscription;
+import rx.android.samples.R;
+import rx.android.samples.SampleObservables;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
