@@ -18,10 +18,10 @@ import android.os.Handler;
 import android.os.Looper;
 
 /**
- * Schedulers that have Android specific functionality
+ * Schedulers that have Android-specific functionality
  */
-public class AndroidSchedulers {
-    private AndroidSchedulers(){
+public final class AndroidSchedulers {
+    private AndroidSchedulers() {
         throw new AssertionError("No instances");
     }
 
@@ -29,18 +29,14 @@ public class AndroidSchedulers {
             new HandlerThreadScheduler(new Handler(Looper.getMainLooper()));
 
     /**
-     * {@link Scheduler} which uses the provided {@link Handler} to execute an action
-     * @param handler The handler that will be used when executing the action
-     * @return A handler based scheduler
+     * {@link Scheduler} which uses the provided {@link Handler} to execute actions.
      */
     public static Scheduler handlerThread(final Handler handler) {
         return new HandlerThreadScheduler(handler);
     }
 
     /**
-     * {@link Scheduler} which will execute an action on the main Android UI thread.
-     *
-     * @return A Main {@link Looper} based scheduler
+     * {@link Scheduler} which will execute actions on the Android UI thread.
      */
     public static Scheduler mainThread() {
         return MAIN_THREAD_SCHEDULER;

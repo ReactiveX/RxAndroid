@@ -41,7 +41,7 @@ import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(manifest=Config.NONE)
-public class HandlerThreadSchedulerTest {
+public class AndroidSchedulersTest {
 
     @Test
     public void shouldScheduleImmediateActionOnHandlerThread() {
@@ -49,7 +49,7 @@ public class HandlerThreadSchedulerTest {
         @SuppressWarnings("unchecked")
         final Action0 action = mock(Action0.class);
 
-        Scheduler scheduler = new HandlerThreadScheduler(handler);
+        Scheduler scheduler = AndroidSchedulers.handlerThread(handler);
         Worker inner = scheduler.createWorker();
         inner.schedule(action);
 
@@ -68,7 +68,7 @@ public class HandlerThreadSchedulerTest {
         @SuppressWarnings("unchecked")
         final Action0 action = mock(Action0.class);
 
-        Scheduler scheduler = new HandlerThreadScheduler(handler);
+        Scheduler scheduler = AndroidSchedulers.handlerThread(handler);
         Worker inner = scheduler.createWorker();
         inner.schedule(action, 1L, TimeUnit.SECONDS);
 
@@ -85,8 +85,9 @@ public class HandlerThreadSchedulerTest {
     public void shouldRemoveCallbacksFromHandlerWhenUnsubscribedSubscription() {
         final Handler handler = spy(new Handler());
         final Observable.OnSubscribe<Integer> onSubscribe = mock(Observable.OnSubscribe.class);
-        final Subscription subscription = Observable.create(onSubscribe).subscribeOn(
-                new HandlerThreadScheduler(handler)).subscribe();
+        final Subscription subscription = Observable.create(onSubscribe)
+                .subscribeOn(AndroidSchedulers.handlerThread(handler))
+                .subscribe();
 
         verify(onSubscribe).call(Matchers.any(Subscriber.class));
 
@@ -100,7 +101,7 @@ public class HandlerThreadSchedulerTest {
         final Observable.OnSubscribe<Integer> onSubscribe = mock(Observable.OnSubscribe.class);
         final Handler handler = spy(new Handler());
 
-        final Scheduler scheduler = new HandlerThreadScheduler(handler);
+        final Scheduler scheduler = AndroidSchedulers.handlerThread(handler);
         final Worker worker = spy(scheduler.createWorker());
 
         final Scheduler spyScheduler = spy(scheduler);
