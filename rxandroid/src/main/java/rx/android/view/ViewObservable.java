@@ -23,6 +23,7 @@ import static rx.android.schedulers.AndroidSchedulers.mainThread;
 public final class ViewObservable {
 
     private ViewObservable() {
+        throw new AssertionError("No instances");
     }
 
     public static Observable<OnClickEvent> clicks(final View view) {
