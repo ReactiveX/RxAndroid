@@ -24,18 +24,18 @@ import rx.subscriptions.Subscriptions;
 import android.os.Handler;
 
 /**
- * Schedules actions to run on an Android Handler thread.
+ * @deprecated Use {@link AndroidSchedulers#handlerThread}. This type will not be part of the
+ * public API in a future release.
  */
+@Deprecated
 public class HandlerThreadScheduler extends Scheduler {
 
     private final Handler handler;
 
     /**
-     * Constructs a {@link HandlerThreadScheduler} using the given {@link Handler}
-     *
-     * @param handler
-     *            {@link Handler} to use when scheduling actions
+     * @deprecated Use {@link AndroidSchedulers#handlerThread}.
      */
+    @Deprecated
     public HandlerThreadScheduler(Handler handler) {
         this.handler = handler;
     }
