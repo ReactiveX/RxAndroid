@@ -1,35 +1,57 @@
 buildscript {
-  repositories { jcenter() }
-  dependencies {
-    classpath 'com.netflix.nebula:gradle-rxjava-project-plugin:1.12.+'
-    classpath 'com.netflix.nebula:gradle-extra-configurations-plugin:1.12.+'
-  }
-  configurations.classpath.resolutionStrategy {
-    // The above dependency will bring in guava, which then pollutes child projects
-    force 'com.google.guava:guava:15.0'
-  }
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.netflix.nebula:gradle-rxjava-project-plugin:1.12.+'
+    }
+    configurations.classpath.resolutionStrategy {
+        // The above dependency will bring in guava, which then pollutes child projects
+        force 'com.google.guava:guava:15.0'
 
+        // TODO future person: you'll need this when you go Gradle 2.0+
+        // The 'nebula-test' plugin depends on Spock which is Groovy version specific (gross!). Explicitly
+        // force the version which matches our Groovy version.
+        //eachDependency { DependencyResolveDetails details ->
+        //    if (details.requested.name == 'spock-core') {
+        //        details.useTarget group: details.requested.group, name: details.requested.name, version: '0.7-groovy-2.0'
+        //    }
+        //}
+    }
+}
+
+subprojects {
+    buildscript {
+        repositories {
+            jcenter()
+        }
+        dependencies {
+            classpath 'com.netflix.nebula:gradle-rxjava-project-plugin:1.12.+'
+            classpath 'com.netflix.nebula:gradle-extra-configurations-plugin:1.12.+'
+            classpath 'com.android.tools.build:gradle:0.12.+'
+        }
+    }
+    repositories {
+        jcenter()
+    }
 }
 
 apply plugin: 'rxjava-project'
 bintrayUpload.enabled = false
 
-def libraryModules = subprojects.findAll { it.name != 'sample-app' }
-configure(libraryModules) {
-  apply plugin: 'rxjava-project'
-  apply plugin: 'provided-base'
+ext {
+    minSdkVersion = 10
+    compileSdkVersion = 21
+    buildToolsVersion = '21.1.1'
 
-  dependencies {
-    compile "io.reactivex:rxjava:$rxJavaVersion"
-    provided 'com.google.android:android:4.0.1.2'
-    provided 'com.google.android:support-v4:r7'
+    androidRuntime = 'com.google.android:android:4.1.1.4'
+    androidSupportV4 = 'com.google.android:support-v4:r7'
 
-    // testing
-    testCompile 'junit:junit-dep:4.10'
-    testCompile 'org.mockito:mockito-core:1.8.5'
-    testCompile('org.robolectric:robolectric:2.3') {
-      exclude group: 'com.android.support'
-    }
-  }
+    rxJava = 'io.reactivex:rxjava:1.0.0'
+
+    autoValue = 'com.google.auto.value:auto-value:1.0-rc1'
+
+    junit = 'junit:junit:4.11'
+    mockito = 'org.mockito:mockito-core:1.10.8'
+    robolectric = 'org.robolectric:robolectric:2.4'
 }
-

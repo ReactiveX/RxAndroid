@@ -1,6 +1,9 @@
 // Multi-module modules aren't really supported
 version = rootProject.version
 
+apply plugin: 'rxjava-project'
+apply plugin: 'provided-base'
+
 configurations {
     // This is a rough approximation of Android plug-in's 'provided' configuration, where
     // you can give compile-time only dependencies.
@@ -8,7 +11,16 @@ configurations {
 }
 
 dependencies {
-    compileOnly "com.google.auto.value:auto-value:1.0-rc1"
+    compile rootProject.ext.rxJava
+
+    provided rootProject.ext.androidRuntime
+    provided rootProject.ext.androidSupportV4
+
+    compileOnly rootProject.ext.autoValue
+
+    testCompile rootProject.ext.junit
+    testCompile rootProject.ext.mockito
+    testCompile rootProject.ext.robolectric
 }
 
 test {
@@ -24,4 +36,3 @@ sourceSets {
         compileClasspath += configurations.compileOnly
     }
 }
-
