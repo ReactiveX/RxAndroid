@@ -11,7 +11,7 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import rx.Observable;
 import rx.Subscriber;
-import rx.android.content.ContentObservable;
+import rx.android.app.AppObservable;
 import rx.android.widget.OnListViewScrollEvent;
 import rx.android.widget.WidgetObservable;
 import rx.functions.Action1;
@@ -54,13 +54,13 @@ public class ListFragmentActivity extends Activity {
             ListView listView = (ListView) view.findViewById(android.R.id.list);
             listView.setAdapter(adapter);
 
-            ContentObservable.bindFragment(this, SampleObservables.numberStrings(1, 500, 100))
+            AppObservable.bindFragment(this, SampleObservables.numberStrings(1, 500, 100))
                 .observeOn(mainThread())
                 .lift(new BindAdapter())
                 .subscribe();
 
             final ProgressBar progressBar = (ProgressBar) view.findViewById(android.R.id.progress);
-            ContentObservable.bindFragment(this, WidgetObservable.listScrollEvents(listView))
+            AppObservable.bindFragment(this, WidgetObservable.listScrollEvents(listView))
                 .subscribe(new Action1<OnListViewScrollEvent>() {
                     @Override
                     public void call(OnListViewScrollEvent event) {
