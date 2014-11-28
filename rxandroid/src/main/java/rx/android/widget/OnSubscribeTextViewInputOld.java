@@ -13,32 +13,34 @@
  */
 package rx.android.widget;
 
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.widget.TextView;
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
-import rx.android.AndroidSubscriptions;
 import rx.android.internal.Assertions;
+import rx.android.AndroidSubscriptions;
 import rx.functions.Action0;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.widget.TextView;
 
-class OnSubscribeTextViewInput<T extends TextView> implements Observable.OnSubscribe<T> {
+/** @deprecated this class will be removed soon */
+@Deprecated
+class OnSubscribeTextViewInputOld implements Observable.OnSubscribe<OnTextChangeEvent> {
     private final boolean emitInitialValue;
-    private final T input;
+    private final TextView input;
 
-    public OnSubscribeTextViewInput(final T input, final boolean emitInitialValue) {
+    public OnSubscribeTextViewInputOld(final TextView input, final boolean emitInitialValue) {
         this.input = input;
         this.emitInitialValue = emitInitialValue;
     }
 
     @Override
-    public void call(final Subscriber<? super T> observer) {
+    public void call(final Subscriber<? super OnTextChangeEvent> observer) {
         Assertions.assertUiThread();
-        final TextWatcher watcher = new SimpleTextWatcher() {
+        final TextWatcher watcher = new OnSubscribeTextViewInput.SimpleTextWatcher() {
             @Override
             public void afterTextChanged(final Editable editable) {
-                observer.onNext(input);
+                observer.onNext(OnTextChangeEvent.create(input));
             }
         };
 
@@ -50,28 +52,11 @@ class OnSubscribeTextViewInput<T extends TextView> implements Observable.OnSubsc
         });
 
         if (emitInitialValue) {
-            observer.onNext(input);
+            observer.onNext(OnTextChangeEvent.create(input));
         }
 
         input.addTextChangedListener(watcher);
         observer.add(subscription);
-    }
-
-    static class SimpleTextWatcher implements TextWatcher {
-        @Override
-        public void beforeTextChanged(final CharSequence sequence, final int start, final int count, final int after) {
-            // nothing to do
-        }
-
-        @Override
-        public void onTextChanged(final CharSequence sequence, final int start, final int before, final int count) {
-            // nothing to do
-        }
-
-        @Override
-        public void afterTextChanged(final Editable editable) {
-            // nothing to do
-        }
     }
 }
 

@@ -26,12 +26,24 @@ public final class ViewObservable {
         throw new AssertionError("No instances");
     }
 
+    /** @deprecated this method will soon be replaced by renamed {@link #forClicks} */
+    @Deprecated
     public static Observable<OnClickEvent> clicks(final View view) {
         return clicks(view, false);
     }
 
+    /** @deprecated this method will soon be replaced by renamed {@link #forClicks} */
+    @Deprecated
     public static Observable<OnClickEvent> clicks(final View view, final boolean emitInitialValue) {
-        return Observable.create(new OnSubscribeViewClick(view, emitInitialValue));
+        return Observable.create(new OnSubscribeViewClickOld(view, emitInitialValue));
+    }
+
+    public static <T extends View> Observable<T> forClicks(final T view, final boolean emitInitialValue) {
+        return Observable.create(new OnSubscribeViewClick<T>(view, emitInitialValue));
+    }
+
+    public static <T extends View> Observable<T> forClicks(final T view) {
+        return forClicks(view, false);
     }
 
     /**

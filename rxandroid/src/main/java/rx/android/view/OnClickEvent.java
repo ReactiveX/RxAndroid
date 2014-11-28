@@ -17,6 +17,8 @@ import android.view.View;
 
 import com.google.auto.value.AutoValue;
 
+/** @deprecated this class will be removed soon */
+@Deprecated
 @AutoValue
 public abstract class OnClickEvent {
     public abstract View view();

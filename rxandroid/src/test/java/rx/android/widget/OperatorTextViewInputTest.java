@@ -13,50 +13,31 @@
  */
 package rx.android.widget;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.times;
+
 import android.app.Activity;
-import android.text.TextUtils;
 import android.widget.EditText;
 import android.widget.TextView;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentMatcher;
 import org.mockito.InOrder;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
+import rx.functions.Func1;
 import rx.observers.TestObserver;
-
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.inOrder;
-import static org.mockito.Mockito.argThat;
 
 @RunWith(RobolectricTestRunner.class)
 public class OperatorTextViewInputTest {
-    private static OnTextChangeEvent mkMockedEvent(final TextView view, final CharSequence text) {
-        return argThat(new ArgumentMatcher<OnTextChangeEvent>() {
-            @Override
-            public boolean matches(final Object argument) {
-                if (!(argument instanceof OnTextChangeEvent)) {
-                    return false;
-                }
 
-                final OnTextChangeEvent event = (OnTextChangeEvent) argument;
-
-                if (event.view() != view) {
-                    return false;
-                }
-
-                return TextUtils.equals(event.text(), text);
-            }
-        });
-    }
-
-    private static TextView mkTextView(final CharSequence value) {
+    private static TextView createTextView(final String value) {
         final Activity activity = Robolectric.buildActivity(Activity.class).create().get();
         final TextView text = new TextView(activity);
 
@@ -67,7 +48,7 @@ public class OperatorTextViewInputTest {
         return text;
     }
 
-    private static EditText mkEditText(final CharSequence value) {
+    private static EditText createEditText(final String value) {
         final Activity activity = Robolectric.buildActivity(Activity.class).create().get();
         final EditText text = new EditText(activity);
 
@@ -81,27 +62,27 @@ public class OperatorTextViewInputTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testOverloadedMethodDefaultsWithoutInitialValue() {
-        final TextView input = mkTextView("initial");
-        final Observable<OnTextChangeEvent> observable = WidgetObservable.text(input);
-        final Observer<OnTextChangeEvent> observer = mock(Observer.class);
-        final Subscription subscription = observable.subscribe(new TestObserver<OnTextChangeEvent>(observer));
+        final TextView input = createTextView("initial");
+        final Observable<TextView> observable = WidgetObservable.forText(input);
+        final Observer<TextView> observer = mock(Observer.class);
+        final Subscription subscription = observable.subscribe(new TestObserver<TextView>(observer));
 
         final InOrder inOrder = inOrder(observer);
 
-        inOrder.verify(observer, never()).onNext(any(OnTextChangeEvent.class));
+        inOrder.verify(observer, never()).onNext(any(TextView.class));
 
         input.setText("1");
-        inOrder.verify(observer, times(1)).onNext(mkMockedEvent(input, "1"));
+        inOrder.verify(observer, times(1)).onNext(input);
 
         input.setText("2");
-        inOrder.verify(observer, times(1)).onNext(mkMockedEvent(input, "2"));
+        inOrder.verify(observer, times(1)).onNext(input);
 
         input.setText("3");
-        inOrder.verify(observer, times(1)).onNext(mkMockedEvent(input, "3"));
+        inOrder.verify(observer, times(1)).onNext(input);
 
         subscription.unsubscribe();
         input.setText("4");
-        inOrder.verify(observer, never()).onNext(any(OnTextChangeEvent.class));
+        inOrder.verify(observer, never()).onNext(any(TextView.class));
 
         inOrder.verify(observer, never()).onError(any(Throwable.class));
         inOrder.verify(observer, never()).onCompleted();
@@ -110,27 +91,27 @@ public class OperatorTextViewInputTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testWithoutInitialValue() {
-        final TextView input = mkTextView("initial");
-        final Observable<OnTextChangeEvent> observable = WidgetObservable.text(input, false);
-        final Observer<OnTextChangeEvent> observer = mock(Observer.class);
-        final Subscription subscription = observable.subscribe(new TestObserver<OnTextChangeEvent>(observer));
+        final TextView input = createTextView("initial");
+        final Observable<TextView> observable = WidgetObservable.forText(input, false);
+        final Observer<TextView> observer = mock(Observer.class);
+        final Subscription subscription = observable.subscribe(new TestObserver<TextView>(observer));
 
         final InOrder inOrder = inOrder(observer);
 
-        inOrder.verify(observer, never()).onNext(any(OnTextChangeEvent.class));
+        inOrder.verify(observer, never()).onNext(any(TextView.class));
 
         input.setText("1");
-        inOrder.verify(observer, times(1)).onNext(mkMockedEvent(input, "1"));
+        inOrder.verify(observer, times(1)).onNext(input);
 
         input.setText("2");
-        inOrder.verify(observer, times(1)).onNext(mkMockedEvent(input, "2"));
+        inOrder.verify(observer, times(1)).onNext(input);
 
         input.setText("3");
-        inOrder.verify(observer, times(1)).onNext(mkMockedEvent(input, "3"));
+        inOrder.verify(observer, times(1)).onNext(input);
 
         subscription.unsubscribe();
         input.setText("4");
-        inOrder.verify(observer, never()).onNext(any(OnTextChangeEvent.class));
+        inOrder.verify(observer, never()).onNext(any(TextView.class));
 
         inOrder.verify(observer, never()).onError(any(Throwable.class));
         inOrder.verify(observer, never()).onCompleted();
@@ -139,27 +120,27 @@ public class OperatorTextViewInputTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testWithInitialValue() {
-        final TextView input = mkTextView("initial");
-        final Observable<OnTextChangeEvent> observable = WidgetObservable.text(input, true);
-        final Observer<OnTextChangeEvent> observer = mock(Observer.class);
-        final Subscription subscription = observable.subscribe(new TestObserver<OnTextChangeEvent>(observer));
+        final TextView input = createTextView("initial");
+        final Observable<TextView> observable = WidgetObservable.forText(input, true);
+        final Observer<TextView> observer = mock(Observer.class);
+        final Subscription subscription = observable.subscribe(new TestObserver<TextView>(observer));
 
         final InOrder inOrder = inOrder(observer);
 
-        inOrder.verify(observer, times(1)).onNext(mkMockedEvent(input, "initial"));
+        inOrder.verify(observer, times(1)).onNext(input);
 
-        input.setText("1");
-        inOrder.verify(observer, times(1)).onNext(mkMockedEvent(input, "1"));
+        input.setText("one");
+        inOrder.verify(observer, times(1)).onNext(input);
 
-        input.setText("2");
-        inOrder.verify(observer, times(1)).onNext(mkMockedEvent(input, "2"));
+        input.setText("two");
+        inOrder.verify(observer, times(1)).onNext(input);
 
-        input.setText("3");
-        inOrder.verify(observer, times(1)).onNext(mkMockedEvent(input, "3"));
+        input.setText("three");
+        inOrder.verify(observer, times(1)).onNext(input);
 
         subscription.unsubscribe();
-        input.setText("4");
-        inOrder.verify(observer, never()).onNext(any(OnTextChangeEvent.class));
+        input.setText("four");
+        inOrder.verify(observer, never()).onNext(any(TextView.class));
 
         inOrder.verify(observer, never()).onError(any(Throwable.class));
         inOrder.verify(observer, never()).onCompleted();
@@ -168,35 +149,35 @@ public class OperatorTextViewInputTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testMultipleSubscriptions() {
-        final TextView input = mkTextView("initial");
-        final Observable<OnTextChangeEvent> observable = WidgetObservable.text(input, false);
+        final TextView input = createTextView("initial");
+        final Observable<TextView> observable = WidgetObservable.forText(input, false);
 
-        final Observer<OnTextChangeEvent> observer1 = mock(Observer.class);
-        final Observer<OnTextChangeEvent> observer2 = mock(Observer.class);
+        final Observer<TextView> observer1 = mock(Observer.class);
+        final Observer<TextView> observer2 = mock(Observer.class);
 
-        final Subscription subscription1 = observable.subscribe(new TestObserver<OnTextChangeEvent>(observer1));
-        final Subscription subscription2 = observable.subscribe(new TestObserver<OnTextChangeEvent>(observer2));
+        final Subscription subscription1 = observable.subscribe(new TestObserver<TextView>(observer1));
+        final Subscription subscription2 = observable.subscribe(new TestObserver<TextView>(observer2));
 
         final InOrder inOrder1 = inOrder(observer1);
         final InOrder inOrder2 = inOrder(observer2);
 
         input.setText("1");
-        inOrder1.verify(observer1, times(1)).onNext(mkMockedEvent(input, "1"));
-        inOrder2.verify(observer2, times(1)).onNext(mkMockedEvent(input, "1"));
+        inOrder1.verify(observer1, times(1)).onNext(input);
+        inOrder2.verify(observer2, times(1)).onNext(input);
 
         input.setText("2");
-        inOrder1.verify(observer1, times(1)).onNext(mkMockedEvent(input, "2"));
-        inOrder2.verify(observer2, times(1)).onNext(mkMockedEvent(input, "2"));
+        inOrder1.verify(observer1, times(1)).onNext(input);
+        inOrder2.verify(observer2, times(1)).onNext(input);
         subscription1.unsubscribe();
 
         input.setText("3");
-        inOrder1.verify(observer1, never()).onNext(any(OnTextChangeEvent.class));
-        inOrder2.verify(observer2, times(1)).onNext(mkMockedEvent(input, "3"));
+        inOrder1.verify(observer1, never()).onNext(any(TextView.class));
+        inOrder2.verify(observer2, times(1)).onNext(input);
         subscription2.unsubscribe();
 
         input.setText("4");
-        inOrder1.verify(observer1, never()).onNext(any(OnTextChangeEvent.class));
-        inOrder2.verify(observer2, never()).onNext(any(OnTextChangeEvent.class));
+        inOrder1.verify(observer1, never()).onNext(any(TextView.class));
+        inOrder2.verify(observer2, never()).onNext(any(TextView.class));
 
         inOrder1.verify(observer1, never()).onError(any(Throwable.class));
         inOrder2.verify(observer2, never()).onError(any(Throwable.class));
@@ -208,17 +189,46 @@ public class OperatorTextViewInputTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testTextViewSubclass() {
-        final EditText input = mkEditText("initial");
-        final Observable<OnTextChangeEvent> observable = WidgetObservable.text(input, false);
-        final Observer<OnTextChangeEvent> observer = mock(Observer.class);
-        observable.subscribe(new TestObserver<OnTextChangeEvent>(observer));
+        final EditText input = createEditText("initial");
+        final Observable<EditText> observable = WidgetObservable.forText(input, false);
+        final Observer<EditText> observer = mock(Observer.class);
+        observable.subscribe(new TestObserver<EditText>(observer));
 
         final InOrder inOrder = inOrder(observer);
 
-        inOrder.verify(observer, never()).onNext(any(OnTextChangeEvent.class));
+        inOrder.verify(observer, never()).onNext(any(EditText.class));
 
         input.setText("1");
-        inOrder.verify(observer, times(1)).onNext(mkMockedEvent(input, "1"));
+        inOrder.verify(observer, times(1)).onNext(input);
     }
-}
 
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testLegacyStringObservableCompatibility() {
+        final EditText input = createEditText("initial");
+        final Observable<String> observable = WidgetObservable.forText(input, false)
+            .map(new Func1<EditText, String>() {
+
+                    @Override
+                    public String call(EditText view) {
+                        return view.getText().toString();
+                    }
+                });
+        final Observer<String> observer = mock(Observer.class);
+        observable.subscribe(new TestObserver<String>(observer));
+
+        final InOrder inOrder = inOrder(observer);
+
+        inOrder.verify(observer, never()).onNext(anyString());
+
+        input.setText("1");
+        inOrder.verify(observer, times(1)).onNext("1");
+
+        input.setText("2");
+        inOrder.verify(observer, times(1)).onNext("2");
+
+        input.setText("3");
+        inOrder.verify(observer, times(1)).onNext("3");
+    }
+
+}

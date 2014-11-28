@@ -16,6 +16,8 @@ package rx.android.view;
 import android.widget.CompoundButton;
 import com.google.auto.value.AutoValue;
 
+/** @deprecated this class will be removed soon */
+@Deprecated
 @AutoValue
 public abstract class OnCheckedChangeEvent {
     public abstract CompoundButton view();

@@ -17,8 +17,8 @@ import android.view.View;
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
-import rx.android.internal.Assertions;
 import rx.android.AndroidSubscriptions;
+import rx.android.internal.Assertions;
 import rx.functions.Action0;
 
 import java.util.ArrayList;
@@ -26,24 +26,24 @@ import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-final class OnSubscribeViewClick implements Observable.OnSubscribe<OnClickEvent> {
+final class OnSubscribeViewClick<T extends View> implements Observable.OnSubscribe<T> {
     private final boolean emitInitialValue;
-    private final View view;
+    private final T view;
 
-    public OnSubscribeViewClick(final View view, final boolean emitInitialValue) {
+    public OnSubscribeViewClick(final T view, final boolean emitInitialValue) {
         this.emitInitialValue = emitInitialValue;
         this.view = view;
     }
 
     @Override
-    public void call(final Subscriber<? super OnClickEvent> observer) {
+    public void call(final Subscriber<? super T> observer) {
         Assertions.assertUiThread();
         final CompositeOnClickListener composite = CachedListeners.getFromViewOrCreate(view);
 
         final View.OnClickListener listener = new View.OnClickListener() {
             @Override
             public void onClick(final View clicked) {
-                observer.onNext(OnClickEvent.create(view));
+                observer.onNext(view);
             }
         };
 
@@ -55,14 +55,14 @@ final class OnSubscribeViewClick implements Observable.OnSubscribe<OnClickEvent>
         });
 
         if (emitInitialValue) {
-            observer.onNext(OnClickEvent.create(view));
+            observer.onNext(view);
         }
 
         composite.addOnClickListener(listener);
         observer.add(subscription);
     }
 
-    private static class CompositeOnClickListener implements View.OnClickListener {
+    static class CompositeOnClickListener implements View.OnClickListener {
         private final List<View.OnClickListener> listeners = new ArrayList<View.OnClickListener>();
 
         public boolean addOnClickListener(final View.OnClickListener listener) {
@@ -81,11 +81,11 @@ final class OnSubscribeViewClick implements Observable.OnSubscribe<OnClickEvent>
         }
     }
 
-    private static class CachedListeners {
-        private static final Map<View, CompositeOnClickListener> sCachedListeners = new WeakHashMap<View, CompositeOnClickListener>();
+    static class CachedListeners {
+        private static final Map<View, CompositeOnClickListener> cachedListeners = new WeakHashMap<View, CompositeOnClickListener>();
 
         public static CompositeOnClickListener getFromViewOrCreate(final View view) {
-            final CompositeOnClickListener cached = sCachedListeners.get(view);
+            final CompositeOnClickListener cached = cachedListeners.get(view);
 
             if (cached != null) {
                 return cached;
@@ -93,7 +93,7 @@ final class OnSubscribeViewClick implements Observable.OnSubscribe<OnClickEvent>
 
             final CompositeOnClickListener listener = new CompositeOnClickListener();
 
-            sCachedListeners.put(view, listener);
+            cachedListeners.put(view, listener);
             view.setOnClickListener(listener);
 
             return listener;

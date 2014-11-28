@@ -18,6 +18,8 @@ import android.widget.TextView;
 
 import com.google.auto.value.AutoValue;
 
+/** @deprecated this class will be removed soon */
+@Deprecated
 @AutoValue
 public abstract class OnTextChangeEvent {
     public abstract TextView view();
