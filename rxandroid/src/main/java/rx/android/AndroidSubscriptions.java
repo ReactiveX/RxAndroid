@@ -27,10 +27,8 @@ public final class AndroidSubscriptions {
     }
 
     /**
-     * Create a {@link Subscription} that always runs <code>unsubscribe</code> in the UI thread.
-     * 
-     * @param unsubscribe
-     * @return a {@link Subscription} that always runs <code>unsubscribe</code> in the UI thread.
+     * Create a {@link Subscription} that always runs the specified {@code unsubscribe} on the
+     * UI thread.
      */
     public static Subscription unsubscribeInUiThread(final Action0 unsubscribe) {
         return Subscriptions.create(new Action0() {
