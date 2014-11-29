@@ -21,16 +21,7 @@ import rx.internal.util.UtilityFunctions;
 
 import android.util.Log;
 
-/**
- * Ties a source sequence to the given target object using a predicate. If the predicate fails
- * to validate, the sequence unsubscribes itself and releases the bound reference.
- * <p>
- * You can also pass in an optional predicate function, which whenever it evaluates to false
- * on the target object, will also result in the operator unsubscribing from the sequence.
- *
- * @param <T> the type of the objects emitted to a subscriber
- * @param <R> the type of the target object to bind to
- */
+// TODO delete along with AppObservable.
 final class OperatorConditionalBinding<T, R> implements Observable.Operator<T, T> {
 
     private static final String LOG_TAG = "ConditionalBinding";
