@@ -23,6 +23,14 @@ import rx.functions.Func1;
 
 import static rx.android.schedulers.AndroidSchedulers.mainThread;
 
+/**
+ * @deprecated The functionality of this class is being removed as it was determined to not
+ * provide enough value. Despite binding observables to an activity or fragment lifecycle, they
+ * only prevented items from emitting after 'pause'. The contents of the subscription were still
+ * referenced and had to be managed separately otherwise memory leaks would occur. Since you have
+ * manage the subscription anyway, these bindings are redundant.
+ */
+@Deprecated
 public final class AppObservable {
     private AppObservable() {
         throw new AssertionError("No instances");
@@ -61,38 +69,26 @@ public final class AppObservable {
     public static final boolean USES_SUPPORT_FRAGMENTS;
 
     /**
-     * Binds the given source sequence to an activity.
-     * <p>
-     * This helper will schedule the given sequence to be observed on the main UI thread and ensure
-     * that no notifications will be forwarded to the activity in case it is scheduled to finish.
-     * <p>
-     * You should unsubscribe from the returned Observable in onDestroy at the latest, in order to not
-     * leak the activity or an inner subscriber. Conversely, when the source sequence can outlive the activity,
-     * make sure to bind to new instances of the activity again, e.g. after going through configuration changes.
-     * Refer to the samples project for actual examples.
-     *
-     * @param activity the activity to bind the source sequence to
-     * @param source   the source sequence
+     * @deprecated The functionality of this class is being removed as it was determined to not
+     * provide enough value. Despite binding observables to an activity or fragment lifecycle, they
+     * only prevented items from emitting after 'pause'. The contents of the subscription were still
+     * referenced and had to be managed separately otherwise memory leaks would occur. Since you have
+     * manage the subscription anyway, these bindings are redundant.
      */
+    @Deprecated
     public static <T> Observable<T> bindActivity(Activity activity, Observable<T> source) {
         Assertions.assertUiThread();
         return source.observeOn(mainThread()).lift(new OperatorConditionalBinding<T, Activity>(activity, ACTIVITY_VALIDATOR));
     }
 
     /**
-     * Binds the given source sequence to a fragment (native or support-v4).
-     * <p>
-     * This helper will schedule the given sequence to be observed on the main UI thread and ensure
-     * that no notifications will be forwarded to the fragment in case it gets detached from its
-     * activity or the activity is scheduled to finish.
-     * <p>
-     * You should unsubscribe from the returned Observable in onDestroy for normal fragments, or in onDestroyView
-     * for retained fragments, in order to not leak any references to the host activity or the fragment.
-     * Refer to the samples project for actual examples.
-     *
-     * @param fragment the fragment to bind the source sequence to
-     * @param source   the source sequence
+     * @deprecated The functionality of this class is being removed as it was determined to not
+     * provide enough value. Despite binding observables to an activity or fragment lifecycle, they
+     * only prevented items from emitting after 'pause'. The contents of the subscription were still
+     * referenced and had to be managed separately otherwise memory leaks would occur. Since you have
+     * manage the subscription anyway, these bindings are redundant.
      */
+    @Deprecated
     public static <T> Observable<T> bindFragment(Object fragment, Observable<T> source) {
         Assertions.assertUiThread();
         final Observable<T> o = source.observeOn(mainThread());
