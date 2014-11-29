@@ -13,6 +13,7 @@
  */
 package rx.android;
 
+import android.os.Handler;
 import rx.Scheduler.Worker;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -38,6 +39,30 @@ public final class AndroidSubscriptions {
                     unsubscribe.call();
                 } else {
                     final Worker inner = AndroidSchedulers.mainThread().createWorker();
+                    inner.schedule(new Action0() {
+                        @Override
+                        public void call() {
+                            unsubscribe.call();
+                            inner.unsubscribe();
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    /**
+     * Create a {@link Subscription} that always runs <code>unsubscribe</code> in the thread,
+     * associated with given {@link Handler}.
+     */
+    public static Subscription unsubscribeInHandlerThread(final Action0 unsubscribe, final Handler handler) {
+        return Subscriptions.create(new Action0() {
+            @Override
+            public void call() {
+                if (handler.getLooper() == Looper.myLooper()) {
+                    unsubscribe.call();
+                } else {
+                    final Worker inner = AndroidSchedulers.handlerThread(handler).createWorker();
                     inner.schedule(new Action0() {
                         @Override
                         public void call() {
