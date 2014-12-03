@@ -17,8 +17,11 @@ import android.view.View;
 import android.widget.TextView;
 import rx.functions.Action1;
 
+import static rx.android.internal.Preconditions.checkNotNull;
+import static rx.android.internal.Preconditions.checkArgument;
+
 /**
- * Utility class for the Action interfaces for use with Android {@link View}s.
+ * Utility class for the {@code Action} interfaces for use with {@linkplain View views}.
  */
 public final class ViewActions {
 
@@ -27,96 +30,136 @@ public final class ViewActions {
     }
 
     /**
-     * Set whether a view is enabled based on {@code boolean} values that are emitted by an
-     * Observable.
-     *
-     * @param view
-     *            to modify
-     * @return an {@link Action1} that sets the enabled of a view when boolean values are emitted.
+     * Create an {@linkplain Action1 action} which controls the supplied view's
+     * {@linkplain View#setEnabled enabled property}.
+     * <p>
+     * Note: the created action will not keep a strong reference to the view.
      */
     public static Action1<? super Boolean> setEnabled(View view) {
-        return new ViewActionSetEnabled(view);
+        checkNotNull(view, "view");
+        return new ViewAction1<View, Boolean>(view) {
+            @Override
+            public void call(View view, Boolean enabled) {
+                view.setEnabled(enabled);
+            }
+        };
     }
 
     /**
-     * Set whether a view is activated based on {@code boolean} values that are emitted by an
-     * Observable.
-     *
-     * @param view
-     *            to modify
-     * @return an {@link Action1} that sets the activated of a view when boolean values are emitted.
+     * Create an {@linkplain Action1 action} which controls the supplied view's
+     * {@linkplain View#setActivated activated property}.
+     * <p>
+     * Note: the created action will not keep a strong reference to the view.
      */
     public static Action1<? super Boolean> setActivated(View view) {
-        return new ViewActionSetActivated(view);
+        checkNotNull(view, "view");
+        return new ViewAction1<View, Boolean>(view) {
+            @Override
+            public void call(View view, Boolean activated) {
+                view.setActivated(activated);
+            }
+        };
     }
 
     /**
-     * Set whether a view is clickable based on {@code boolean} values that are emitted by an
-     * Observable.
-     *
-     * @param view
-     *            to modify
-     * @return an {@link Action1} that sets the clickable of a view when boolean values are emitted.
+     * Create an {@linkplain Action1 action} which controls the supplied view's
+     * {@linkplain View#setClickable clickable property}.
+     * <p>
+     * Note: the created action will not keep a strong reference to the view.
      */
     public static Action1<? super Boolean> setClickable(View view) {
-        return new ViewActionSetClickable(view);
+        checkNotNull(view, "view");
+        return new ViewAction1<View, Boolean>(view) {
+            @Override
+            public void call(View view, Boolean clickable) {
+                view.setClickable(clickable);
+            }
+        };
     }
 
     /**
-     * Set whether a view is focusable based on {@code boolean} values that are emitted by an
-     * Observable.
-     *
-     * @param view
-     *            to modify
-     * @return an {@link Action1} that sets the focusable of a view when boolean values are emitted.
+     * Create an {@linkplain Action1 action} which controls the supplied view's
+     * {@linkplain View#setFocusable focusable property}.
+     * <p>
+     * Note: the created action will not keep a strong reference to the view.
      */
     public static Action1<? super Boolean> setFocusable(View view) {
-        return new ViewActionSetFocusable(view);
+        checkNotNull(view, "view");
+        return new ViewAction1<View, Boolean>(view) {
+            @Override
+            public void call(View view, Boolean focusable) {
+                view.setFocusable(focusable);
+            }
+        };
     }
 
     /**
-     * Set whether a view is selected based on {@code boolean} values that are emitted by an
-     * Observable.
-     *
-     * @param view
-     *            to modify
-     * @return an {@link Action1} that sets the selected of a view when boolean values are emitted.
+     * Create an {@linkplain Action1 action} which controls the supplied view's
+     * {@linkplain View#setSelected selected property}.
+     * <p>
+     * Note: the created action will not keep a strong reference to the view.
      */
     public static Action1<? super Boolean> setSelected(View view) {
-        return new ViewActionSetSelected(view);
+        checkNotNull(view, "view");
+        return new ViewAction1<View, Boolean>(view) {
+            @Override
+            public void call(View view, Boolean selected) {
+                view.setSelected(selected);
+            }
+        };
     }
 
     /**
-     * Set the visibility of a view based on {@code boolean} values that are emitted by an
-     * Observable. When {@code false} is emitted, visibility is set to {@link View#GONE}.
+     * Create an {@linkplain Action1 action} which controls the supplied view's
+     * {@linkplain View#setVisibility visibility property}. {@code true} values are mapped to
+     * {@link View#VISIBLE} and {@code false} values to {@link View#GONE}.
+     * <p>
+     * Note: the created action will not keep a strong reference to the view.
      *
-     * @param view
-     *            to modify
-     * @return an {@link Action1} that sets the visibility of a view when boolean values are emitted.
+     * @see #setVisibility(View, int)
      */
     public static Action1<? super Boolean> setVisibility(View view) {
-        return new ViewActionSetVisibility(view);
+        return setVisibility(view, View.GONE);
     }
 
     /**
-     * Set the visibility of a view based on {@code boolean} values that are emitted by an
-     * Observable.
+     * Create an {@linkplain Action1 action} which controls the supplied view's
+     * {@linkplain View#setVisibility visibility property}. {@code true} values are mapped to
+     * {@link View#VISIBLE} and {@code false} values to the supplied visibility.
+     * <p>
+     * Note: the created action will not keep a strong reference to the view.
      *
-     * @param view
-     *            to modify
-     * @param visibilityOnFalse
-     *            value to use on {@link View#setVisibility(int)} when a {@code false} is emitted by
-     *            the {@link rx.Observable}
-     * @return an {@link Action1} that sets the visibility of a view when boolean values are emitted.
+     * @param visibilityOnFalse {@link View#INVISIBLE} or {@link View#GONE}.
+     *
+     * @see #setVisibility(View, int)
      */
-    public static Action1<? super Boolean> setVisibility(View view, int visibilityOnFalse) {
-        return new ViewActionSetVisibility(view, visibilityOnFalse);
+    public static Action1<? super Boolean> setVisibility(View view, final int visibilityOnFalse) {
+        checkNotNull(view, "view");
+        // TODO use support annotation's validation when we become a real Android library.
+        checkArgument(visibilityOnFalse != View.VISIBLE,
+                    "Binding false to VISIBLE has no effect and is thus disallowed.");
+        if (visibilityOnFalse != View.INVISIBLE && visibilityOnFalse != View.GONE) {
+            throw new IllegalArgumentException(visibilityOnFalse + " is not a valid visibility value.");
+        }
+        return new ViewAction1<View, Boolean>(view) {
+            @Override
+            public void call(View view, Boolean value) {
+                int visibility = value ? View.VISIBLE : visibilityOnFalse;
+                view.setVisibility(visibility);
+            }
+        };
     }
 
     /**
-     * Set the text of a {@link TextView} based on values emitted by an Observable.
+     * Create an {@linkplain Action1 action} which controls the supplied view's
+     * {@linkplain TextView#setText(CharSequence) text property}.
+     * <p>
+     * Note: the created action will not keep a strong reference to the view.
+     *
+     * @see #setTextResource
      */
     public static Action1<? super CharSequence> setText(TextView textView) {
+        checkNotNull(textView, "textView");
         return new ViewAction1<TextView, CharSequence>(textView) {
             @Override
             public void call(TextView view, CharSequence text) {
@@ -126,9 +169,15 @@ public final class ViewActions {
     }
 
     /**
-     * Set the text of a {@link TextView} based on values emitted by an Observable.
+     * Create an {@linkplain Action1 action} which controls the supplied view's
+     * {@linkplain TextView#setText(int) text property}.
+     * <p>
+     * Note: the created action will not keep a strong reference to the view.
+     *
+     * @see #setText
      */
     public static Action1<? super Integer> setTextResource(TextView textView) {
+        checkNotNull(textView, "textView");
         return new ViewAction1<TextView, Integer>(textView) {
             @Override
             public void call(TextView view, Integer resId) {
