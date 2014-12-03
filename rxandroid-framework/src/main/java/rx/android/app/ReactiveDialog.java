@@ -30,7 +30,7 @@ import rx.functions.Func1;
  * @param <T> The type of data expected as return value from the fragment, can be boolean for confirmation dialogs,
  *            or more complex for data input dialogs.
  */
-public class ReactiveDialog<T> extends DialogFragment {
+public class ReactiveDialog<T> extends RxDialogFragment {
 
     private static final String REACTIVE_DIALOG_KEY = "REACTIVE_DIALOG_KEY";
 
