@@ -27,7 +27,12 @@ import rx.Subscription;
 import rx.android.view.OnCheckedChangeEvent;
 import rx.observers.TestObserver;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.refEq;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.mock;
 
 @RunWith(RobolectricTestRunner.class)
 public class OperatorCompoundButtonInputTest {

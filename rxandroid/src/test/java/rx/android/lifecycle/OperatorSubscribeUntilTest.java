@@ -30,7 +30,9 @@ import rx.observers.TestSubscriber;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.atLeastOnce;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(manifest = Config.NONE)

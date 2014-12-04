@@ -22,7 +22,6 @@ import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
 import org.robolectric.RobolectricTestRunner;
 import rx.Subscriber;
-import rx.android.app.OperatorConditionalBinding;
 import rx.functions.Func1;
 import rx.internal.util.UtilityFunctions;
 import rx.observers.TestSubscriber;
