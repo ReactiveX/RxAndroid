@@ -28,7 +28,7 @@ public final class ContentObservable {
     }
 
     /**
-     * Create Observable that wraps BroadcastReceiver and emmit received intents.
+     * Create Observable that wraps BroadcastReceiver and emits received intents.
      *
      * @param filter Selects the Intent broadcasts to be received.
      */
@@ -37,7 +37,7 @@ public final class ContentObservable {
     }
 
     /**
-     * Create Observable that wraps BroadcastReceiver and emmit received intents.
+     * Create Observable that wraps BroadcastReceiver and emits received intents.
      *
      * @param filter Selects the Intent broadcasts to be received.
      * @param broadcastPermission String naming a permissions that a
@@ -52,7 +52,7 @@ public final class ContentObservable {
 
     /**
      * Create Observable that wraps BroadcastReceiver and connects to LocalBroadcastManager
-     * to emmit received intents.
+     * to emit received intents.
      *
      * @param filter Selects the Intent broadcasts to be received.
      */
