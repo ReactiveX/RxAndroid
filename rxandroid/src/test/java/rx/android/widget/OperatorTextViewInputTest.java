@@ -29,7 +29,11 @@ import rx.Subscription;
 import rx.observers.TestObserver;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.argThat;
 
 @RunWith(RobolectricTestRunner.class)
 public class OperatorTextViewInputTest {

@@ -8,7 +8,6 @@ buildscript {
     // The above dependency will bring in guava, which then pollutes child projects
     force 'com.google.guava:guava:15.0'
   }
-
 }
 
 apply plugin: 'rxjava-project'
@@ -19,8 +18,15 @@ configure(libraryModules) {
   apply plugin: 'rxjava-project'
   apply plugin: 'provided-base'
 
+  repositories {
+    maven {
+      url "file://$System.env.ANDROID_HOME/extras/android/m2repository"
+    }
+  }
+
   dependencies {
     compile "io.reactivex:rxjava:$rxJavaVersion"
+    compile 'com.android.support:support-annotations:20.0.0'
     provided 'com.google.android:android:4.0.1.2'
     provided 'com.google.android:support-v4:r7'
 
