@@ -1,8 +1,8 @@
 buildscript {
   repositories { jcenter() }
   dependencies {
-    classpath 'com.netflix.nebula:gradle-rxjava-project-plugin:1.12.13'
-    classpath 'com.netflix.nebula:gradle-extra-configurations-plugin:1.12.3'
+    classpath 'com.netflix.nebula:gradle-rxjava-project-plugin:2.+'
+    classpath 'com.netflix.nebula:gradle-extra-configurations-plugin:2.+'
   }
   configurations.classpath.resolutionStrategy {
     // The above dependency will bring in guava, which then pollutes child projects
@@ -17,6 +17,7 @@ bintrayUpload.enabled = false
 def libraryModules = subprojects.findAll { it.name != 'sample-app' }
 configure(libraryModules) {
   apply plugin: 'rxjava-project'
+  apply plugin: 'java'
   apply plugin: 'provided-base'
 
   dependencies {
