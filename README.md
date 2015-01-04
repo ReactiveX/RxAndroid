@@ -43,19 +43,19 @@ Example for Maven:
 <dependency>
     <groupId>io.reactivex</groupId>
     <artifactId>rxandroid</artifactId>
-    <version>0.23.0</version>
+    <version>0.24.0</version>
 </dependency>
 ```
 
 and for Ivy:
 
 ```xml
-<dependency org="io.reactivex" name="rxandroid" rev="0.23.0" />
+<dependency org="io.reactivex" name="rxandroid" rev="0.24.0" />
 ```
 
 and for Gradle:
 ```groovy
-compile 'io.reactivex:rxandroid:0.23.0'
+compile 'io.reactivex:rxandroid:0.24.0'
 ```
 
 ## Build
