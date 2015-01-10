@@ -1,7 +1,7 @@
 buildscript {
     repositories { jcenter() }
     dependencies { 
-        classpath 'com.android.tools.build:gradle:1.+' // Android gradle 1.+ is for Gradle 2.+ projects
+        classpath 'com.android.tools.build:gradle:1.0.0'
         projects
     }
 }
