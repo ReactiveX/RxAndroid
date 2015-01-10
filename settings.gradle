@@ -2,4 +2,4 @@ rootProject.name='rxandroid-root'
 
 include 'rxandroid'
 include 'rxandroid-framework'
-//include 'sample-app'
+include 'sample-app'
