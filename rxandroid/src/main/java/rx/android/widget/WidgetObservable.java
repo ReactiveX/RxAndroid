@@ -3,6 +3,7 @@ package rx.android.widget;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.CompoundButton;
+import android.widget.SearchView;
 import android.widget.TextView;
 
 import rx.Observable;
@@ -31,6 +32,16 @@ public final class WidgetObservable {
 
     public static Observable<OnItemClickEvent> itemClicks(final AdapterView<?> adapterView) {
         return Observable.create(new OnSubscribeAdapterViewOnItemClick(adapterView));
+    }
+
+    public static Observable<String> queryTextSubmit(final SearchView searchView) {
+        SearchViewQueryText searchViewQueryText = new SearchViewQueryText(searchView);
+        return searchViewQueryText.OnSubscribeQueryTextSubmit();
+    }
+
+    public static Observable<String> queryTextChange(final SearchView searchView) {
+        SearchViewQueryText searchViewQueryText = new SearchViewQueryText(searchView);
+        return searchViewQueryText.OnSubscribeQueryTextChange();
     }
 
     /**
