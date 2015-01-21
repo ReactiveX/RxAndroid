@@ -14,7 +14,6 @@
 package rx.android.widget;
 
 import android.app.Activity;
-import android.widget.EditText;
 import android.widget.SearchView;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,7 +26,10 @@ import rx.Subscription;
 import rx.observers.TestObserver;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 
 @RunWith(RobolectricTestRunner.class)
 public class OperatorSearchViewInputTest {

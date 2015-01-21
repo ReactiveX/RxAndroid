@@ -22,21 +22,13 @@ import java.util.WeakHashMap;
 
 import rx.Observable;
 import rx.Subscriber;
-import rx.Subscription;
 import rx.android.AndroidSubscriptions;
 import rx.android.internal.Assertions;
 import rx.functions.Action0;
 
+public final class SearchViewQueryText {
 
-public class SearchViewQueryText {
-
-    private final SearchView searchView;
-
-    public SearchViewQueryText(SearchView searchView) {
-        this.searchView = searchView;
-    }
-
-    public Observable<String> OnSubscribeQueryTextSubmit() {
+    public static Observable<String> submit(final SearchView searchView) {
         return Observable.create(new Observable.OnSubscribe<String>() {
             @Override
             public void call(final Subscriber<? super String> subscriber) {
@@ -66,7 +58,7 @@ public class SearchViewQueryText {
         });
     }
 
-    public Observable<String> OnSubscribeQueryTextChange() {
+    public static Observable<String> change(final SearchView searchView) {
         return Observable.create(new Observable.OnSubscribe<String>() {
             @Override
             public void call(final Subscriber<? super String> subscriber) {
@@ -112,7 +104,7 @@ public class SearchViewQueryText {
 
         @Override
         public boolean onQueryTextSubmit(String query) {
-            for(SearchView.OnQueryTextListener listener: listeners) {
+            for (SearchView.OnQueryTextListener listener: listeners) {
                 listener.onQueryTextSubmit(query);
             }
             return false;
@@ -120,7 +112,7 @@ public class SearchViewQueryText {
 
         @Override
         public boolean onQueryTextChange(String newText) {
-            for(SearchView.OnQueryTextListener listener: listeners) {
+            for (SearchView.OnQueryTextListener listener: listeners) {
                 listener.onQueryTextChange(newText);
             }
             return false;
@@ -130,18 +122,18 @@ public class SearchViewQueryText {
 
 
     private static class CachedListeners {
-        private static final Map<SearchView, CompositeOnQueryTextSubmitListener> sCachedListeners =
+        private static final Map<SearchView, CompositeOnQueryTextSubmitListener> cachedListeners =
                 new WeakHashMap<SearchView, CompositeOnQueryTextSubmitListener>();
 
         public static CompositeOnQueryTextSubmitListener getFromViewOrCreate(final SearchView view) {
-            final CompositeOnQueryTextSubmitListener cached = sCachedListeners.get(view);
+            final CompositeOnQueryTextSubmitListener cached = cachedListeners.get(view);
             if (cached != null) {
                 return cached;
             }
 
             final CompositeOnQueryTextSubmitListener listener = new CompositeOnQueryTextSubmitListener();
 
-            sCachedListeners.put(view, listener);
+            cachedListeners.put(view, listener);
             view.setOnQueryTextListener(listener);
 
             return listener;

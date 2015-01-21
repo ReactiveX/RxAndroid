@@ -35,13 +35,11 @@ public final class WidgetObservable {
     }
 
     public static Observable<String> queryTextSubmit(final SearchView searchView) {
-        SearchViewQueryText searchViewQueryText = new SearchViewQueryText(searchView);
-        return searchViewQueryText.OnSubscribeQueryTextSubmit();
+        return SearchViewQueryText.submit(searchView);
     }
 
     public static Observable<String> queryTextChange(final SearchView searchView) {
-        SearchViewQueryText searchViewQueryText = new SearchViewQueryText(searchView);
-        return searchViewQueryText.OnSubscribeQueryTextChange();
+        return SearchViewQueryText.change(searchView);
     }
 
     /**
