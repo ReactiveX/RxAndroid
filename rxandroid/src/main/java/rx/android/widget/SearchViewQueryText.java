@@ -26,8 +26,17 @@ import rx.android.AndroidSubscriptions;
 import rx.android.internal.Assertions;
 import rx.functions.Action0;
 
-public final class SearchViewQueryText {
+final class SearchViewQueryText {
 
+
+    /**
+     * Returns an observable from onQuerySubmit on the OnQueryTextListener.
+     * <p/>
+     * When the SearchView query text is submitted, it will send the query string onNext.
+     *
+     * @param searchView the search view to create an observable for
+     * @return An observable<String> which will send the query String onNext.
+     */
     public static Observable<String> submit(final SearchView searchView) {
         return Observable.create(new Observable.OnSubscribe<String>() {
             @Override
@@ -58,6 +67,14 @@ public final class SearchViewQueryText {
         });
     }
 
+    /**
+     * Returns an observable from onQueryChange for the OnQueryTextListener.
+     * <p/>
+     * When the SearchView query text changes, it will send the newText string onNext.
+     *
+     * @param searchView the search view to create an observable for
+     * @return An observable<String> which will send the newText String onNext.
+     */
     public static Observable<String> change(final SearchView searchView) {
         return Observable.create(new Observable.OnSubscribe<String>() {
             @Override
