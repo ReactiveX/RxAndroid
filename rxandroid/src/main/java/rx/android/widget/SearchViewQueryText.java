@@ -28,7 +28,6 @@ import rx.functions.Action0;
 
 final class SearchViewQueryText {
 
-
     /**
      * Returns an observable from onQuerySubmit on the OnQueryTextListener.
      * <p/>
@@ -105,10 +104,7 @@ final class SearchViewQueryText {
         });
     }
 
-
-
     private static class CompositeOnQueryTextSubmitListener implements SearchView.OnQueryTextListener {
-
         private final List<SearchView.OnQueryTextListener> listeners = new ArrayList<SearchView.OnQueryTextListener>();
 
         public boolean addOnQueryTextListener(final SearchView.OnQueryTextListener listener) {
@@ -134,9 +130,7 @@ final class SearchViewQueryText {
             }
             return false;
         }
-
     }
-
 
     private static class CachedListeners {
         private static final Map<SearchView, CompositeOnQueryTextSubmitListener> cachedListeners =
@@ -156,5 +150,4 @@ final class SearchViewQueryText {
             return listener;
         }
     }
-
 }
