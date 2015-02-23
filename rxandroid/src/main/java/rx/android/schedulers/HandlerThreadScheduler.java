@@ -17,6 +17,7 @@ import java.util.concurrent.TimeUnit;
 
 import rx.Scheduler;
 import rx.Subscription;
+import rx.android.plugins.RxAndroidPlugins;
 import rx.functions.Action0;
 import rx.internal.schedulers.ScheduledAction;
 import rx.subscriptions.CompositeSubscription;
@@ -66,7 +67,9 @@ public class HandlerThreadScheduler extends Scheduler {
         }
 
         @Override
-        public Subscription schedule(final Action0 action, long delayTime, TimeUnit unit) {
+        public Subscription schedule(Action0 action, long delayTime, TimeUnit unit) {
+            action = RxAndroidPlugins.getInstance().getSchedulersHook().onSchedule(action);
+
             final ScheduledAction scheduledAction = new ScheduledAction(action);
             scheduledAction.add(Subscriptions.create(new Action0() {
                 @Override
