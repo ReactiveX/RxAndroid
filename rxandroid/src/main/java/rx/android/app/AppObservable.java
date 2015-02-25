@@ -110,9 +110,7 @@ public final class AppObservable {
      * @param source   the source sequence
      */
     public static <T> Observable<T> bindFragment(Fragment fragment, Observable<T> source) {
-        Assertions.assertUiThread();
-        final Observable<T> o = source.observeOn(mainThread());
-        return o.lift(new OperatorConditionalBinding<T, Fragment>(fragment, FRAGMENT_VALIDATOR));
+        return bindFragmentInternal(fragment, source);
     }
 
     /**
@@ -130,8 +128,6 @@ public final class AppObservable {
      * @param source   the source sequence
      */
     public static <T> Observable<T> bindFragment(android.support.v4.app.Fragment fragment, Observable<T> source) {
-        Assertions.assertUiThread();
-        final Observable<T> o = source.observeOn(mainThread());
-        return o.lift(new OperatorConditionalBinding<T, android.support.v4.app.Fragment>(fragment, FRAGMENTV4_VALIDATOR));
+        return bindFragmentInternal(fragment, source);
     }
 }
