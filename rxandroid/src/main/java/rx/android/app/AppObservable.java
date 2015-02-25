@@ -15,7 +15,6 @@ package rx.android.app;
 
 import android.app.Activity;
 import android.app.Fragment;
-import android.os.Build;
 
 import rx.Observable;
 import rx.android.internal.Assertions;
@@ -62,10 +61,10 @@ public final class AppObservable {
 
     /**
      * Binds the given source sequence to an activity.
-     * <p>
+     * <p/>
      * This helper will schedule the given sequence to be observed on the main UI thread and ensure
      * that no notifications will be forwarded to the activity in case it is scheduled to finish.
-     * <p>
+     * <p/>
      * You should unsubscribe from the returned Observable in onDestroy at the latest, in order to not
      * leak the activity or an inner subscriber. Conversely, when the source sequence can outlive the activity,
      * make sure to bind to new instances of the activity again, e.g. after going through configuration changes.
@@ -79,13 +78,30 @@ public final class AppObservable {
         return source.observeOn(mainThread()).lift(new OperatorConditionalBinding<T, Activity>(activity, ACTIVITY_VALIDATOR));
     }
 
+    @Deprecated
+    public static <T> Observable<T> bindFragment(Object fragment, Observable<T> source) {
+        return bindFragmentInternal(fragment, source);
+    }
+
+    private static <T> Observable<T> bindFragmentInternal(Object fragment, Observable<T> source) {
+        Assertions.assertUiThread();
+        final Observable<T> o = source.observeOn(mainThread());
+        if (USES_SUPPORT_FRAGMENTS && fragment instanceof android.support.v4.app.Fragment) {
+            android.support.v4.app.Fragment f = (android.support.v4.app.Fragment) fragment;
+            return o.lift(new OperatorConditionalBinding<T, android.support.v4.app.Fragment>(f, FRAGMENTV4_VALIDATOR));
+        } else {
+            Fragment f = (Fragment) fragment;
+            return o.lift(new OperatorConditionalBinding<T, Fragment>(f, FRAGMENT_VALIDATOR));
+        }
+    }
+
     /**
      * Binds the given source sequence to a fragment (native or support-v4).
-     * <p>
+     * <p/>
      * This helper will schedule the given sequence to be observed on the main UI thread and ensure
      * that no notifications will be forwarded to the fragment in case it gets detached from its
      * activity or the activity is scheduled to finish.
-     * <p>
+     * <p/>
      * You should unsubscribe from the returned Observable in onDestroy for normal fragments, or in onDestroyView
      * for retained fragments, in order to not leak any references to the host activity or the fragment.
      * Refer to the samples project for actual examples.
@@ -93,17 +109,29 @@ public final class AppObservable {
      * @param fragment the fragment to bind the source sequence to
      * @param source   the source sequence
      */
-    public static <T> Observable<T> bindFragment(Object fragment, Observable<T> source) {
+    public static <T> Observable<T> bindFragment(Fragment fragment, Observable<T> source) {
         Assertions.assertUiThread();
         final Observable<T> o = source.observeOn(mainThread());
-        if (USES_SUPPORT_FRAGMENTS && fragment instanceof android.support.v4.app.Fragment) {
-            android.support.v4.app.Fragment f = (android.support.v4.app.Fragment) fragment;
-            return o.lift(new OperatorConditionalBinding<T, android.support.v4.app.Fragment>(f, FRAGMENTV4_VALIDATOR));
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB && fragment instanceof Fragment) {
-            Fragment f = (Fragment) fragment;
-            return o.lift(new OperatorConditionalBinding<T, Fragment>(f, FRAGMENT_VALIDATOR));
-        } else {
-            throw new IllegalArgumentException("Target fragment is neither a native nor support library Fragment");
-        }
+        return o.lift(new OperatorConditionalBinding<T, Fragment>(fragment, FRAGMENT_VALIDATOR));
+    }
+
+    /**
+     * Binds the given source sequence to a fragment (native or support-v4).
+     * <p/>
+     * This helper will schedule the given sequence to be observed on the main UI thread and ensure
+     * that no notifications will be forwarded to the fragment in case it gets detached from its
+     * activity or the activity is scheduled to finish.
+     * <p/>
+     * You should unsubscribe from the returned Observable in onDestroy for normal fragments, or in onDestroyView
+     * for retained fragments, in order to not leak any references to the host activity or the fragment.
+     * Refer to the samples project for actual examples.
+     *
+     * @param fragment the fragment to bind the source sequence to
+     * @param source   the source sequence
+     */
+    public static <T> Observable<T> bindFragment(android.support.v4.app.Fragment fragment, Observable<T> source) {
+        Assertions.assertUiThread();
+        final Observable<T> o = source.observeOn(mainThread());
+        return o.lift(new OperatorConditionalBinding<T, android.support.v4.app.Fragment>(fragment, FRAGMENTV4_VALIDATOR));
     }
 }
