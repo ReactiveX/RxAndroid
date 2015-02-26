@@ -1,6 +1,7 @@
 package rx.android.plugins;
 
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -14,18 +15,21 @@ public final class RxAndroidPluginsTest {
         RxAndroidPlugins.getInstance().reset();
     }
 
-    @After public void tearDown() {
+    @Before @After
+    public void setUpAndTearDown() {
         resetPlugins();
     }
 
-    @Test public void registeredSchedulersHookIsUsed() {
+    @Test
+    public void registeredSchedulersHookIsUsed() {
         RxAndroidPlugins plugins = new RxAndroidPlugins();
         RxAndroidSchedulersHook hook = new RxAndroidSchedulersHook();
         plugins.registerSchedulersHook(hook);
         assertSame(hook, plugins.getSchedulersHook());
     }
 
-    @Test public void registerSchedulersHookViaSystemProperty() {
+    @Test
+    public void registerSchedulersHookViaSystemProperty() {
         System.setProperty("rxandroid.plugin.RxAndroidSchedulersHook.implementation",
                 "rx.android.plugins.RxAndroidPluginsTest$CustomHook");
         assertEquals(CustomHook.class,
@@ -35,7 +39,8 @@ public final class RxAndroidPluginsTest {
     static class CustomHook extends RxAndroidSchedulersHook {
     }
 
-    @Test public void registerSchedulersHookTwiceFails() {
+    @Test
+    public void registerSchedulersHookTwiceFails() {
         RxAndroidPlugins plugins = new RxAndroidPlugins();
         RxAndroidSchedulersHook hook = new RxAndroidSchedulersHook();
         plugins.registerSchedulersHook(hook);
