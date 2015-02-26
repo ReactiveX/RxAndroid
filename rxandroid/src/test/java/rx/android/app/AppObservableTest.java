@@ -69,7 +69,7 @@ public class AppObservableTest {
 
     @Test
     public void itSupportsFragmentsFromTheSupportV4Library() {
-        AppObservable.bindFragment(supportFragment, Observable.just("success")).subscribe(new TestObserver<String>(observer));
+        AppObservable.bindSupportFragment(supportFragment, Observable.just("success")).subscribe(new TestObserver<String>(observer));
         verify(observer).onNext("success");
         verify(observer).onCompleted();
     }
@@ -79,11 +79,6 @@ public class AppObservableTest {
         AppObservable.bindFragment(fragment, Observable.just("success")).subscribe(new TestObserver<String>(observer));
         verify(observer).onNext("success");
         verify(observer).onCompleted();
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void itThrowsIfObjectPassedIsNotAFragment() {
-        AppObservable.bindFragment("not a fragment", Observable.never());
     }
 
     @Test(expected = IllegalStateException.class)
@@ -117,7 +112,7 @@ public class AppObservableTest {
     @Test
     public void bindSupportFragmentToSourceFromDifferentThread() throws InterruptedException {
         CountDownLatch done = new CountDownLatch(1);
-        AppObservable.bindFragment(supportFragment, TestUtil.atBackgroundThread(done)).subscribe(new TestObserver<String>(observer));
+        AppObservable.bindSupportFragment(supportFragment, TestUtil.atBackgroundThread(done)).subscribe(new TestObserver<String>(observer));
         done.await();
 
         Robolectric.runUiThreadTasksIncludingDelayedTasks();
