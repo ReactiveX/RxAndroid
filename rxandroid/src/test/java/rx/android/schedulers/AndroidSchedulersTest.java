@@ -17,6 +17,7 @@ import android.os.Handler;
 
 import java.util.concurrent.atomic.AtomicReference;
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -50,8 +51,8 @@ import static org.mockito.Mockito.when;
 @Config(manifest=Config.NONE)
 public class AndroidSchedulersTest {
 
-    @After
-    public void tearDown() {
+    @Before @After
+    public void setUpAndTearDown() {
         RxAndroidPluginsTest.resetPlugins();
     }
 
