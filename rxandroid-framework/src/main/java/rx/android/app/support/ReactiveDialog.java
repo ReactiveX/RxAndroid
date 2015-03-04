@@ -1,13 +1,28 @@
+/**
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package rx.android.app.support;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import rx.Observable;
-import rx.Observer;
 import rx.Subscriber;
 import rx.Subscription;
-import rx.android.app.SubscriberVault;
+import rx.android.app.ReactiveDialogListener;
+import rx.android.app.ReactiveDialogObserver;
+import rx.android.app.ReactiveDialogResult;
+import rx.android.app.internal.SubscriberVault;
 import rx.functions.Func1;
 
 /**
@@ -22,20 +37,14 @@ public class ReactiveDialog<T> extends RxDialogFragment {
 
     private static final SubscriberVault subscriberVault = new SubscriberVault();
 
-    public interface ReactiveDialogListener<V> extends Observer<V> {
-        void onCompleteWith(V value);
-
-        void onCancel();
-    }
-
     /**
      * Returns an observable for the dialog result.
      * The dialog is shown at subscription time.
      */
-    public Observable<Result<T>> show(final FragmentManager manager) {
-        return Observable.create(new Observable.OnSubscribe<Result<T>>() {
+    public Observable<ReactiveDialogResult<T>> show(final FragmentManager manager) {
+        return Observable.create(new Observable.OnSubscribe<ReactiveDialogResult<T>>() {
             @Override
-            public void call(Subscriber<? super Result<T>> subscriber) {
+            public void call(Subscriber<? super ReactiveDialogResult<T>> subscriber) {
                 final long key = subscriberVault.store(subscriber);
                 storeSubscriberKey(key);
                 subscriber.add(new Subscription() {
@@ -60,15 +69,15 @@ public class ReactiveDialog<T> extends RxDialogFragment {
      */
     public Observable<T> showIgnoringCancelEvents(final FragmentManager manager) {
         return show(manager)
-                .filter(new Func1<Result<T>, Boolean>() {
+                .filter(new Func1<ReactiveDialogResult<T>, Boolean>() {
                     @Override
-                    public Boolean call(Result<T> tResult) {
+                    public Boolean call(ReactiveDialogResult<T> tResult) {
                         return !tResult.isCanceled();
                     }
                 })
-                .map(new Func1<Result<T>, T>() {
+                .map(new Func1<ReactiveDialogResult<T>, T>() {
                     @Override
-                    public T call(Result<T> tResult) {
+                    public T call(ReactiveDialogResult<T> tResult) {
                         return tResult.getValue();
                     }
                 });
@@ -84,11 +93,11 @@ public class ReactiveDialog<T> extends RxDialogFragment {
      * Get the wrapped subscriber for the observable.
      */
     protected ReactiveDialogListener<T> getListener() {
-        Subscriber<Result<T>> subscriber = subscriberVault.get(getSubscriberKey());
+        Subscriber<ReactiveDialogResult<T>> subscriber = subscriberVault.get(getSubscriberKey());
         if (subscriber == null) {
             throw new IllegalStateException("No listener attached, you are probably trying to deliver a result after completion of the observable");
         }
-        return new ReactiveDialogObserver(subscriber);
+        return new ReactiveDialogObserver<T>(subscriber, subscriberVault, getSubscriberKey());
     }
 
     private void storeSubscriberKey(long key) {
@@ -102,74 +111,4 @@ public class ReactiveDialog<T> extends RxDialogFragment {
         return getArguments().getLong(REACTIVE_DIALOG_KEY);
     }
 
-    /**
-     * A wrapper for the subscriber from the observable.
-     * The wrapper takes care of wrapping values into a result object before passing them and removes itself from the vault upon completion or failure.
-     */
-    private class ReactiveDialogObserver implements ReactiveDialogListener<T> {
-
-        private final Subscriber<? super Result<T>> subscriber;
-
-        public ReactiveDialogObserver(Subscriber<? super Result<T>> subscriber) {
-            this.subscriber = subscriber;
-        }
-
-        @Override
-        public void onNext(T value) {
-            subscriber.onNext(Result.asSuccess(value));
-        }
-
-        @Override
-        public void onCompleteWith(T value) {
-            subscriber.onNext(Result.asSuccess(value));
-            subscriber.onCompleted();
-            subscriberVault.remove(getSubscriberKey());
-        }
-
-        @Override
-        public void onCancel() {
-            subscriber.onNext(Result.<T>asCanceled());
-            subscriber.onCompleted();
-            subscriberVault.remove(getSubscriberKey());
-        }
-
-        @Override
-        public void onError(Throwable throwable) {
-            subscriber.onError(throwable);
-            subscriberVault.remove(getSubscriberKey());
-        }
-
-        @Override
-        public void onCompleted() {
-            subscriber.onCompleted();
-            subscriberVault.remove(getSubscriberKey());
-        }
-    }
-
-    public final static class Result<V> {
-
-        private final V value;
-        private final boolean canceled;
-
-        static <V> Result<V> asSuccess(V value) {
-            return new Result<V>(value, false);
-        }
-
-        static <V> Result<V> asCanceled() {
-            return new Result<V>(null, true);
-        }
-
-        private Result(V value, boolean canceled) {
-            this.value = value;
-            this.canceled = canceled;
-        }
-
-        public V getValue() {
-            return value;
-        }
-
-        public boolean isCanceled() {
-            return canceled;
-        }
-    }
 }

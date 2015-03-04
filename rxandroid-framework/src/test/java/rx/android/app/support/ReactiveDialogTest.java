@@ -1,3 +1,16 @@
+/**
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package rx.android.app.support;
 
 import android.support.v4.app.FragmentActivity;
@@ -12,9 +25,12 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.shadows.ShadowDialog;
 import rx.Observable;
 import rx.Observer;
+import rx.android.app.ReactiveDialogResult;
 
-import static org.junit.Assert.*;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -27,7 +43,7 @@ public class ReactiveDialogTest {
     private Observer<String> mockObserver;
 
     @Mock
-    private Observer<ReactiveDialog.Result<String>> mockResultObserver;
+    private Observer<ReactiveDialogResult<String>> mockResultObserver;
 
     private ReactiveDialog<String> reactiveDialog;
     private FragmentManager fragmentManager;
@@ -44,13 +60,13 @@ public class ReactiveDialogTest {
 
     @Test
     public void itSendsListenerEventToObserver() {
-        ArgumentCaptor<ReactiveDialog.Result> argumentCaptor = ArgumentCaptor.forClass(ReactiveDialog.Result.class);
-        Observable<ReactiveDialog.Result<String>> observable = reactiveDialog.show(fragmentManager);
+        ArgumentCaptor<ReactiveDialogResult> argumentCaptor = ArgumentCaptor.forClass(ReactiveDialogResult.class);
+        Observable<ReactiveDialogResult<String>> observable = reactiveDialog.show(fragmentManager);
         observable.subscribe(mockResultObserver);
 
         reactiveDialog.getListener().onCompleteWith("this");
         verify(mockResultObserver).onNext(argumentCaptor.capture());
-        ReactiveDialog.Result result = argumentCaptor.getValue();
+        ReactiveDialogResult result = argumentCaptor.getValue();
 
         assertNotNull(ShadowDialog.getLatestDialog());
         assertFalse(result.isCanceled());
@@ -59,8 +75,8 @@ public class ReactiveDialogTest {
 
     @Test
     public void itSendsCanceledResultIfDialogIsCanceledToObserver() {
-        ArgumentCaptor<ReactiveDialog.Result> argumentCaptor = ArgumentCaptor.forClass(ReactiveDialog.Result.class);
-        Observable<ReactiveDialog.Result<String>> observable = reactiveDialog.show(fragmentManager);
+        ArgumentCaptor<ReactiveDialogResult> argumentCaptor = ArgumentCaptor.forClass(ReactiveDialogResult.class);
+        Observable<ReactiveDialogResult<String>> observable = reactiveDialog.show(fragmentManager);
         observable.subscribe(mockResultObserver);
 
         reactiveDialog.getListener().onCancel();
@@ -94,7 +110,7 @@ public class ReactiveDialogTest {
 
     @Test
     public void itSendsListenerErrorsToObserver() {
-        Observable<ReactiveDialog.Result<String>> observable = reactiveDialog.show(fragmentManager);
+        Observable<ReactiveDialogResult<String>> observable = reactiveDialog.show(fragmentManager);
         observable.subscribe(mockResultObserver);
         Throwable throwable = new Throwable();
 
@@ -106,7 +122,7 @@ public class ReactiveDialogTest {
 
     @Test(expected = IllegalStateException.class)
     public void itFailsIfDeliverAfterCompletion() {
-        Observable<ReactiveDialog.Result<String>> observable = reactiveDialog.show(fragmentManager);
+        Observable<ReactiveDialogResult<String>> observable = reactiveDialog.show(fragmentManager);
         observable.subscribe(mockResultObserver);
 
         reactiveDialog.getListener().onCompleted();

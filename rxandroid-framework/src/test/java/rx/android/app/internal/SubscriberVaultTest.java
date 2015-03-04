@@ -11,7 +11,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package rx.android.app;
+package rx.android.app.internal;
 
 import org.junit.Before;
 import org.junit.Test;

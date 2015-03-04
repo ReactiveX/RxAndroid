@@ -36,7 +36,6 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static rx.android.app.ReactiveDialog.Result;
 
 @RunWith(RobolectricTestRunner.class)
 public class ReactiveDialogTest {
@@ -45,7 +44,7 @@ public class ReactiveDialogTest {
     private Observer<String> mockObserver;
 
     @Mock
-    private Observer<Result<String>> mockResultObserver;
+    private Observer<ReactiveDialogResult<String>> mockResultObserver;
 
     private ReactiveDialog<String> reactiveDialog;
     private FragmentManager fragmentManager;
@@ -62,13 +61,13 @@ public class ReactiveDialogTest {
 
     @Test
     public void itSendsListenerEventToObserver() {
-        ArgumentCaptor<Result> argumentCaptor = ArgumentCaptor.forClass(Result.class);
-        Observable<Result<String>> observable = reactiveDialog.show(fragmentManager);
+        ArgumentCaptor<ReactiveDialogResult> argumentCaptor = ArgumentCaptor.forClass(ReactiveDialogResult.class);
+        Observable<ReactiveDialogResult<String>> observable = reactiveDialog.show(fragmentManager);
         observable.subscribe(mockResultObserver);
 
         reactiveDialog.getListener().onCompleteWith("this");
         verify(mockResultObserver).onNext(argumentCaptor.capture());
-        Result result = argumentCaptor.getValue();
+        ReactiveDialogResult result = argumentCaptor.getValue();
 
         assertNotNull(ShadowDialog.getLatestDialog());
         assertFalse(result.isCanceled());
@@ -77,8 +76,8 @@ public class ReactiveDialogTest {
 
     @Test
     public void itSendsCanceledResultIfDialogIsCanceledToObserver() {
-        ArgumentCaptor<Result> argumentCaptor = ArgumentCaptor.forClass(Result.class);
-        Observable<Result<String>> observable = reactiveDialog.show(fragmentManager);
+        ArgumentCaptor<ReactiveDialogResult> argumentCaptor = ArgumentCaptor.forClass(ReactiveDialogResult.class);
+        Observable<ReactiveDialogResult<String>> observable = reactiveDialog.show(fragmentManager);
         observable.subscribe(mockResultObserver);
 
         reactiveDialog.getListener().onCancel();
@@ -112,7 +111,7 @@ public class ReactiveDialogTest {
 
     @Test
     public void itSendsListenerErrorsToObserver() {
-        Observable<Result<String>> observable = reactiveDialog.show(fragmentManager);
+        Observable<ReactiveDialogResult<String>> observable = reactiveDialog.show(fragmentManager);
         observable.subscribe(mockResultObserver);
         Throwable throwable = new Throwable();
 
@@ -124,7 +123,7 @@ public class ReactiveDialogTest {
 
     @Test(expected = IllegalStateException.class)
     public void itFailsIfDeliverAfterCompletion() {
-        Observable<Result<String>> observable = reactiveDialog.show(fragmentManager);
+        Observable<ReactiveDialogResult<String>> observable = reactiveDialog.show(fragmentManager);
         observable.subscribe(mockResultObserver);
 
         reactiveDialog.getListener().onCompleted();
