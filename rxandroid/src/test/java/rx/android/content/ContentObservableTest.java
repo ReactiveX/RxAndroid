@@ -37,6 +37,8 @@ import static org.mockito.Mockito.when;
 @RunWith(RobolectricTestRunner.class)
 @Config(manifest = Config.NONE)
 public class ContentObservableTest {
+
+    @Test
     public void givenCursorWhenFromCursorInvokedThenObservableCallsOnNextWhileHasNext() {
         final Subscriber<Cursor> subscriber = spy(new TestSubscriber<Cursor>());
         final Cursor cursor = mock(Cursor.class);
