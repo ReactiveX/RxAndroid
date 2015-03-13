@@ -87,7 +87,7 @@ public class ContentObservableTest {
     }
 
     @Test
-    public void givenCursorWhenFromCursorCalledThenEmitsAndClosesCursorAfterError() {
+    public void givenCursorWhenFromCursorCalledThenEmitsAndClosesCursorAfterSubscriberError() {
         final Subscriber<Cursor> subscriber = spy(new TestSubscriber<Cursor>());
         final Cursor cursor = mock(Cursor.class);
         final RuntimeException throwable = mock(RuntimeException.class);
@@ -105,4 +105,24 @@ public class ContentObservableTest {
         verify(subscriber).onError(throwable);
         verify(cursor).close();
     }
+
+    @Test
+    public void givenCursorWhenFromCursorCalledThenEmitsAndClosesCursorAfterObservableError() {
+        final Subscriber<Cursor> subscriber = spy(new TestSubscriber<Cursor>());
+        final Cursor cursor = mock(Cursor.class);
+        final RuntimeException throwable = mock(RuntimeException.class);
+
+        when(cursor.isAfterLast()).thenReturn(false, false, true);
+        when(cursor.moveToNext()).thenReturn(true).thenThrow(throwable);
+        when(cursor.getCount()).thenReturn(2);
+
+        Observable<Cursor> observable = ContentObservable.fromCursor(cursor);
+        observable.subscribe(subscriber);
+
+        verify(subscriber, never()).onCompleted();
+        verify(subscriber).onNext(cursor);
+        verify(subscriber).onError(throwable);
+        verify(cursor).close();
+    }
+
 }
