@@ -18,9 +18,8 @@ import android.widget.CompoundButton;
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
-import rx.android.view.OnCheckedChangeEvent;
-import rx.android.internal.Assertions;
 import rx.android.AndroidSubscriptions;
+import rx.android.internal.Assertions;
 import rx.functions.Action0;
 
 import java.util.ArrayList;
@@ -28,7 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-class OnSubscribeCompoundButtonInput implements Observable.OnSubscribe<OnCheckedChangeEvent> {
+class OnSubscribeCompoundButtonInput implements Observable.OnSubscribe<Boolean> {
     private final boolean emitInitialValue;
     private final CompoundButton button;
 
@@ -38,14 +37,14 @@ class OnSubscribeCompoundButtonInput implements Observable.OnSubscribe<OnChecked
     }
 
     @Override
-    public void call(final Subscriber<? super OnCheckedChangeEvent> observer) {
+    public void call(final Subscriber<? super Boolean> observer) {
         Assertions.assertUiThread();
         final CompositeOnCheckedChangeListener composite = CachedListeners.getFromViewOrCreate(button);
 
         final CompoundButton.OnCheckedChangeListener listener = new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(final CompoundButton view, final boolean checked) {
-                observer.onNext(OnCheckedChangeEvent.create(button, checked));
+                observer.onNext(button.isChecked());
             }
         };
 
@@ -57,14 +56,14 @@ class OnSubscribeCompoundButtonInput implements Observable.OnSubscribe<OnChecked
         });
 
         if (emitInitialValue) {
-            observer.onNext(OnCheckedChangeEvent.create(button));
+            observer.onNext(button.isChecked());
         }
 
         composite.addOnCheckedChangeListener(listener);
         observer.add(subscription);
     }
 
-    private static class CompositeOnCheckedChangeListener implements CompoundButton.OnCheckedChangeListener {
+    static class CompositeOnCheckedChangeListener implements CompoundButton.OnCheckedChangeListener {
         private final List<CompoundButton.OnCheckedChangeListener> listeners = new ArrayList<CompoundButton.OnCheckedChangeListener>();
 
         public boolean addOnCheckedChangeListener(final CompoundButton.OnCheckedChangeListener listener) {
@@ -83,11 +82,11 @@ class OnSubscribeCompoundButtonInput implements Observable.OnSubscribe<OnChecked
         }
     }
 
-    private static class CachedListeners {
-        private static final Map<View, CompositeOnCheckedChangeListener> sCachedListeners = new WeakHashMap<View, CompositeOnCheckedChangeListener>();
+    static class CachedListeners {
+        private static final Map<View, CompositeOnCheckedChangeListener> cachedListeners = new WeakHashMap<View, CompositeOnCheckedChangeListener>();
 
         public static CompositeOnCheckedChangeListener getFromViewOrCreate(final CompoundButton button) {
-            final CompositeOnCheckedChangeListener cached = sCachedListeners.get(button);
+            final CompositeOnCheckedChangeListener cached = cachedListeners.get(button);
 
             if (cached != null) {
                 return cached;
@@ -95,7 +94,7 @@ class OnSubscribeCompoundButtonInput implements Observable.OnSubscribe<OnChecked
 
             final CompositeOnCheckedChangeListener listener = new CompositeOnCheckedChangeListener();
 
-            sCachedListeners.put(button, listener);
+            cachedListeners.put(button, listener);
             button.setOnCheckedChangeListener(listener);
 
             return listener;

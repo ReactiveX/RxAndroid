@@ -1,3 +1,16 @@
+/**
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package rx.android.widget;
 
 import android.widget.AbsListView;
@@ -13,20 +26,44 @@ public final class WidgetObservable {
         throw new AssertionError("No instances");
     }
 
+    /** @deprecated this method will soon be replaced by renamed {@link #forText} */
+    @Deprecated
     public static Observable<OnTextChangeEvent> text(final TextView input) {
         return text(input, false);
     }
 
+    /** @deprecated this method will soon be replaced by renamed {@link #forText} */
+    @Deprecated
     public static Observable<OnTextChangeEvent> text(final TextView input, final boolean emitInitialValue) {
-        return Observable.create(new OnSubscribeTextViewInput(input, emitInitialValue));
+        return Observable.create(new OnSubscribeTextViewInputOld(input, emitInitialValue));
     }
 
+    public static <T extends TextView> Observable<T> forText(final T textView) {
+        return forText(textView, false);
+    }
+
+    public static <T extends TextView> Observable<T> forText(final T textView, final boolean emitInitialValue) {
+        return Observable.create(new OnSubscribeTextViewInput<T>(textView, emitInitialValue));
+    }
+
+    /** @deprecated this method will soon be removed, use {@link #toggle} instead */
+    @Deprecated
     public static Observable<OnCheckedChangeEvent> input(final CompoundButton button) {
         return input(button, false);
     }
 
+    /** @deprecated this method will soon be removed, use {@link #toggle} instead */
+    @Deprecated
     public static Observable<OnCheckedChangeEvent> input(final CompoundButton button, final boolean emitInitialValue) {
-        return Observable.create(new OnSubscribeCompoundButtonInput(button, emitInitialValue));
+        return Observable.create(new OnSubscribeCompoundButtonInputOld(button, emitInitialValue));
+    }
+
+    public static Observable<Boolean> toggle(final CompoundButton view) {
+        return toggle(view, false);
+    }
+
+    public static Observable<Boolean> toggle(final CompoundButton view, final boolean emitInitialValue) {
+        return Observable.create(new OnSubscribeCompoundButtonInput(view, emitInitialValue));
     }
 
     public static Observable<OnItemClickEvent> itemClicks(final AdapterView<?> adapterView) {
