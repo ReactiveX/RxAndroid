@@ -15,8 +15,6 @@ package rx.android.app;
 
 import android.app.Activity;
 import android.app.Fragment;
-import android.os.Build;
-
 import rx.Observable;
 import rx.android.internal.Assertions;
 import rx.functions.Func1;
@@ -26,17 +24,6 @@ import static rx.android.schedulers.AndroidSchedulers.mainThread;
 public final class AppObservable {
     private AppObservable() {
         throw new AssertionError("No instances");
-    }
-
-    static {
-        boolean supportFragmentsAvailable = false;
-        try {
-            Class.forName("android.support.v4.app.Fragment");
-            supportFragmentsAvailable = true;
-        } catch (ClassNotFoundException e) {
-        }
-
-        USES_SUPPORT_FRAGMENTS = supportFragmentsAvailable;
     }
 
     private static final Func1<Activity, Boolean> ACTIVITY_VALIDATOR = new Func1<Activity, Boolean>() {
@@ -58,7 +45,6 @@ public final class AppObservable {
                     return fragment.isAdded() && !fragment.getActivity().isFinishing();
                 }
             };
-    public static final boolean USES_SUPPORT_FRAGMENTS;
 
     /**
      * Binds the given source sequence to an activity.
@@ -76,11 +62,12 @@ public final class AppObservable {
      */
     public static <T> Observable<T> bindActivity(Activity activity, Observable<T> source) {
         Assertions.assertUiThread();
-        return source.observeOn(mainThread()).lift(new OperatorConditionalBinding<T, Activity>(activity, ACTIVITY_VALIDATOR));
+        return source.observeOn(mainThread())
+                .lift(new OperatorConditionalBinding<T, Activity>(activity, ACTIVITY_VALIDATOR));
     }
 
     /**
-     * Binds the given source sequence to a fragment (native or support-v4).
+     * Binds the given source sequence to a fragment.
      * <p>
      * This helper will schedule the given sequence to be observed on the main UI thread and ensure
      * that no notifications will be forwarded to the fragment in case it gets detached from its
@@ -93,17 +80,20 @@ public final class AppObservable {
      * @param fragment the fragment to bind the source sequence to
      * @param source   the source sequence
      */
-    public static <T> Observable<T> bindFragment(Object fragment, Observable<T> source) {
+    public static <T> Observable<T> bindFragment(Fragment fragment, Observable<T> source) {
         Assertions.assertUiThread();
-        final Observable<T> o = source.observeOn(mainThread());
-        if (USES_SUPPORT_FRAGMENTS && fragment instanceof android.support.v4.app.Fragment) {
-            android.support.v4.app.Fragment f = (android.support.v4.app.Fragment) fragment;
-            return o.lift(new OperatorConditionalBinding<T, android.support.v4.app.Fragment>(f, FRAGMENTV4_VALIDATOR));
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB && fragment instanceof Fragment) {
-            Fragment f = (Fragment) fragment;
-            return o.lift(new OperatorConditionalBinding<T, Fragment>(f, FRAGMENT_VALIDATOR));
-        } else {
-            throw new IllegalArgumentException("Target fragment is neither a native nor support library Fragment");
-        }
+        return source.observeOn(mainThread())
+                .lift(new OperatorConditionalBinding<T, Fragment>(fragment, FRAGMENT_VALIDATOR));
+    }
+
+    /**
+     * Binds the given source sequence to a support-v4 fragment.
+     *
+     * @see #bindFragment(Fragment, Observable)
+     */
+    public static <T> Observable<T> bindSupportFragment(android.support.v4.app.Fragment fragment, Observable<T> source) {
+        Assertions.assertUiThread();
+        return source.observeOn(mainThread())
+                .lift(new OperatorConditionalBinding<T, android.support.v4.app.Fragment>(fragment, FRAGMENTV4_VALIDATOR));
     }
 }

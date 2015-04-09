@@ -16,6 +16,7 @@ package rx.android.schedulers;
 import rx.Scheduler;
 import android.os.Handler;
 import android.os.Looper;
+import rx.android.plugins.RxAndroidPlugins;
 
 /**
  * Schedulers that have Android-specific functionality
@@ -39,6 +40,8 @@ public final class AndroidSchedulers {
      * {@link Scheduler} which will execute actions on the Android UI thread.
      */
     public static Scheduler mainThread() {
-        return MAIN_THREAD_SCHEDULER;
+        Scheduler scheduler =
+                RxAndroidPlugins.getInstance().getSchedulersHook().getMainThreadScheduler();
+        return scheduler != null ? scheduler : MAIN_THREAD_SCHEDULER;
     }
 }
