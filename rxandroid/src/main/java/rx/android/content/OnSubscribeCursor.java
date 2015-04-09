@@ -35,12 +35,18 @@ final class OnSubscribeCursor implements Observable.OnSubscribe<Cursor> {
             while (!subscriber.isUnsubscribed() && cursor.moveToNext()) {
                 subscriber.onNext(cursor);
             }
+            if (!subscriber.isUnsubscribed()) {
+                subscriber.onCompleted();
+            }
+        } catch (Throwable e) {
+            if (!subscriber.isUnsubscribed()) {
+                subscriber.onError(e);
+            }
         } finally {
             if (!cursor.isClosed()) {
                 cursor.close();
             }
         }
-        subscriber.onCompleted();
     }
 
 }

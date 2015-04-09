@@ -15,6 +15,9 @@ package rx.android.schedulers;
 
 import android.os.Handler;
 
+import java.util.concurrent.atomic.AtomicReference;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -30,8 +33,13 @@ import rx.Scheduler;
 import rx.Scheduler.Worker;
 import rx.Subscriber;
 import rx.Subscription;
+import rx.android.plugins.RxAndroidPlugins;
+import rx.android.plugins.RxAndroidPluginsTest;
+import rx.android.plugins.RxAndroidSchedulersHook;
 import rx.functions.Action0;
+import rx.schedulers.Schedulers;
 
+import static org.junit.Assert.assertSame;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -42,6 +50,11 @@ import static org.mockito.Mockito.when;
 @RunWith(RobolectricTestRunner.class)
 @Config(manifest=Config.NONE)
 public class AndroidSchedulersTest {
+
+    @Before @After
+    public void setUpAndTearDown() {
+        RxAndroidPluginsTest.resetPlugins();
+    }
 
     @Test
     public void shouldScheduleImmediateActionOnHandlerThread() {
@@ -122,5 +135,47 @@ public class AndroidSchedulersTest {
 
         verify(onSubscribe, never()).call(Matchers.any(Subscriber.class));
         verify(handler).removeCallbacks(Matchers.any(Runnable.class));
+    }
+
+    @Test public void mainThreadCallsThroughToHook() {
+        final Scheduler scheduler = Schedulers.immediate();
+        RxAndroidSchedulersHook hook = new RxAndroidSchedulersHook() {
+            @Override public Scheduler getMainThreadScheduler() {
+                return scheduler;
+            }
+        };
+        RxAndroidPlugins.getInstance().registerSchedulersHook(hook);
+
+        Scheduler mainThread = AndroidSchedulers.mainThread();
+        assertSame(Schedulers.immediate(), mainThread);
+    }
+
+    @Test public void handlerSchedulerCallsThroughToHook() {
+        final AtomicReference<Action0> actionRef = new AtomicReference<Action0>();
+        RxAndroidPlugins.getInstance().registerSchedulersHook(new RxAndroidSchedulersHook() {
+            @Override public Action0 onSchedule(Action0 action) {
+                actionRef.set(action);
+                return super.onSchedule(action);
+            }
+        });
+
+        Handler handler = mock(Handler.class);
+        @SuppressWarnings("unchecked")
+        Action0 action = mock(Action0.class);
+
+        Scheduler scheduler = AndroidSchedulers.handlerThread(handler);
+        Worker inner = scheduler.createWorker();
+        inner.schedule(action);
+
+        // Verify the action was passed through the schedulers hook.
+        assertSame(action, actionRef.get());
+
+        // Verify that we post to the given Handler.
+        ArgumentCaptor<Runnable> runnable = ArgumentCaptor.forClass(Runnable.class);
+        verify(handler).postDelayed(runnable.capture(), eq(0L));
+
+        // Verify that the given handler delegates to our action.
+        runnable.getValue().run();
+        verify(action).call();
     }
 }

@@ -1,6 +1,3 @@
-<a href='https://travis-ci.org/ReactiveX/RxAndroid/builds'><img src='https://travis-ci.org/ReactiveX/RxAndroid.svg?branch=0.x'></a>
-<a href='http://search.maven.org/#search%7Cga%7C1%7Crxandroid'><img src='http://img.shields.io/maven-central/v/io.reactivex/rxandroid.svg'></a>
-
 # RxAndroid: Reactive Extensions for Android
 
 Android specific bindings for [RxJava](http://github.com/ReactiveX/RxJava).
@@ -37,6 +34,8 @@ The RxJava 0.20.x branch is being maintained with bug fixes on the `com.netflix.
 
 Binaries and dependency information for Maven, Ivy, Gradle and others can be found at [http://search.maven.org](http://search.maven.org/#search%7Cga%7C1%7Crxandroid).
 
+<a href='http://search.maven.org/#search%7Cga%7C1%7Crxandroid'><img src='http://img.shields.io/maven-central/v/io.reactivex/rxandroid.svg'></a>
+
 Example for Maven:
 
 ```xml
@@ -69,6 +68,8 @@ $ ./gradlew build
 ```
 
 Futher details on building can be found on the RxJava [Getting Started](https://github.com/ReactiveX/RxJava/wiki/Getting-Started) page of the wiki.
+
+<a href='https://travis-ci.org/ReactiveX/RxAndroid/builds'><img src='https://travis-ci.org/ReactiveX/RxAndroid.svg?branch=0.x'></a>
 
 
 # Sample usage
