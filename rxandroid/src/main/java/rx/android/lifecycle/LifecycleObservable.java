@@ -14,9 +14,14 @@
 
 package rx.android.lifecycle;
 
+import android.annotation.TargetApi;
+import android.app.Activity;
+import android.os.Build;
+
 import rx.Observable;
 import rx.functions.Func1;
 import rx.functions.Func2;
+import rx.subjects.BehaviorSubject;
 
 public class LifecycleObservable {
 
@@ -69,6 +74,30 @@ public class LifecycleObservable {
      */
     public static <T> Observable<T> bindActivityLifecycle(Observable<LifecycleEvent> lifecycle, Observable<T> source) {
         return bindLifecycle(lifecycle, source, ACTIVITY_LIFECYCLE);
+    }
+
+    /**
+     * Similar to {@link #bindActivityLifecycle(Observable, Observable)} but uses
+     * {@link android.app.Application.ActivityLifecycleCallbacks} provided in
+     * API 14 to listen for Activity lifecycle.
+     *
+     * @param activity the activity we want to monitor lifecycle sequence for
+     * @param source   the source sequence
+     */
+
+    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+    public static <T> Observable<T> bindActivityLifecycle(Activity activity, Observable<T> source) {
+        // Make sure we're running on ICS or higher to use ActivityLifecycleCallbacks
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+            throw new IllegalStateException ("This method is only available on API >= 14");
+
+        } else {
+            final BehaviorSubject<LifecycleEvent> lifecycleSubject = BehaviorSubject.create();
+
+            activity.getApplication().registerActivityLifecycleCallbacks(new LifecycleHelper(activity, lifecycleSubject));
+
+            return LifecycleObservable.bindActivityLifecycle(lifecycleSubject.asObservable(), source);
+        }
     }
 
     /**
