@@ -19,7 +19,6 @@ class LifecycleHelper implements Application.ActivityLifecycleCallbacks {
     private final BehaviorSubject<LifecycleEvent> lifecycleSubject;
     /**
      * Help track if {@link #onActivityCreated(Activity, Bundle)} was called
-     * This is Thread safe, since it's confined to the <i>main Thread</i>
      */
     private boolean isCreateCalled = false;
     /**
