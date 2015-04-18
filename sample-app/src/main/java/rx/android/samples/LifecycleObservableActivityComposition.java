@@ -21,6 +21,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import rx.Subscription;
+import rx.android.lifecycle.LifecycleEvent;
 import rx.android.lifecycle.LifecycleObservable;
 import rx.android.view.OnClickEvent;
 import rx.android.view.ViewObservable;
@@ -52,7 +53,9 @@ public class LifecycleObservableActivityComposition extends Activity {
         super.onStart();
 
         subscription =
-                LifecycleObservable.bindActivityLifecycle(this, ViewObservable.clicks(button))
+                LifecycleObservable.bindActivityLifecycle(this,
+                        ViewObservable.clicks(button),
+                        LifecycleEvent.START)
                         .subscribe(new Action1<OnClickEvent>() {
                             @Override
                             public void call(OnClickEvent onClickEvent) {

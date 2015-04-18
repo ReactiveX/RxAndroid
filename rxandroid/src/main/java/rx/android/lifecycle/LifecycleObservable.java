@@ -21,7 +21,6 @@ import android.os.Build;
 import rx.Observable;
 import rx.functions.Func1;
 import rx.functions.Func2;
-import rx.subjects.BehaviorSubject;
 
 public class LifecycleObservable {
 
@@ -81,23 +80,43 @@ public class LifecycleObservable {
      * {@link android.app.Application.ActivityLifecycleCallbacks} provided in
      * API 14 to listen for Activity lifecycle.
      *
+     *</p>
+     * This helps figuring out the corresponding next lifecycle event in which to unsubscribe.
+     * <pre>
+     * {@code
+     *  class MyActivity extends Activity {
+     *    protected void onStart() {
+     *      super.onStart();
+     *      subscription = LifecycleObservable.bindActivityLifecycle(
+     *          this,
+     *          ViewObservable.clicks(button),
+     *          LifecycleEvent.START)
+     *         .subscribe(...);
+     *   }
+     *  }
+     * }
+     * </pre>
+     *
      * @param activity the activity we want to monitor lifecycle sequence for
      * @param source   the source sequence
+     * @param bindEvent the binding {@link LifecycleEvent} associated with the <code>source</code> Observable.
      */
-
     @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
-    public static <T> Observable<T> bindActivityLifecycle(Activity activity, Observable<T> source) {
+    public static <T> Observable<T> bindActivityLifecycle(Activity activity, Observable<T> source, final LifecycleEvent bindEvent) {
         // Make sure we're running on ICS or higher to use ActivityLifecycleCallbacks
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
             throw new IllegalStateException ("This method is only available on API >= 14");
-
-        } else {
-            final BehaviorSubject<LifecycleEvent> lifecycleSubject = BehaviorSubject.create();
-
-            activity.getApplication().registerActivityLifecycleCallbacks(new LifecycleHelper(activity, lifecycleSubject));
-
-            return LifecycleObservable.bindActivityLifecycle(lifecycleSubject.asObservable(), source);
         }
+
+        OnSubscribeActivityLifecycleCallbacks lifecycleCallbacks = new OnSubscribeActivityLifecycleCallbacks(activity);
+        Observable<T> observable =  bindLifecycle(
+                Observable.create(lifecycleCallbacks),
+                source,
+                bindEvent);
+
+        activity.getApplication().registerActivityLifecycleCallbacks(lifecycleCallbacks);
+
+        return observable;
     }
 
     /**
@@ -151,37 +170,45 @@ public class LifecycleObservable {
         );
     }
 
+    private static <T> Observable<T> bindLifecycle(Observable<LifecycleEvent> lifecycle,
+                                                   Observable<T> source,
+                                                   LifecycleEvent bindEvent) {
+        if (lifecycle == null || source == null) {
+            throw new IllegalArgumentException("Lifecycle and Observable must be given");
+        }
+
+        // Make sure we're truly comparing a single stream to itself
+        Observable<LifecycleEvent> sharedLifecycle = lifecycle.share();
+        final Observable<LifecycleEvent> bindUntil = Observable.just(getActivityStoppingLifecycleEvent(bindEvent));
+
+        // Keep emitting from source until the corresponding event occurs in the lifecycle
+        return source.lift(
+                new OperatorSubscribeUntil<T, Boolean>(
+                        Observable.combineLatest(
+                                bindUntil,
+                                sharedLifecycle,
+                                new Func2<LifecycleEvent, LifecycleEvent, Boolean>() {
+                                    @Override
+                                    public Boolean call(LifecycleEvent bindUntilEvent, LifecycleEvent lifecycleEvent) {
+                                        return lifecycleEvent == bindUntilEvent;
+                                    }
+                                })
+                                .takeFirst(new Func1<Boolean, Boolean>() {
+                                    @Override
+                                    public Boolean call(Boolean shouldComplete) {
+                                        return shouldComplete;
+                                    }
+                                })
+                )
+        );
+    }
+
     // Figures out which corresponding next lifecycle event in which to unsubscribe, for Activities
     private static final Func1<LifecycleEvent, LifecycleEvent> ACTIVITY_LIFECYCLE =
             new Func1<LifecycleEvent, LifecycleEvent>() {
                 @Override
                 public LifecycleEvent call(LifecycleEvent lastEvent) {
-                    if (lastEvent == null) {
-                        throw new NullPointerException("Cannot bind to null LifecycleEvent.");
-                    }
-
-                    switch (lastEvent) {
-                        case CREATE:
-                            return LifecycleEvent.DESTROY;
-                        case START:
-                            return LifecycleEvent.STOP;
-                        case RESUME:
-                            return LifecycleEvent.PAUSE;
-                        case PAUSE:
-                            return LifecycleEvent.STOP;
-                        case STOP:
-                            return LifecycleEvent.DESTROY;
-                        case DESTROY:
-                            throw new IllegalStateException("Cannot bind to Activity lifecycle when outside of it.");
-                        case ATTACH:
-                        case CREATE_VIEW:
-                        case DESTROY_VIEW:
-                        case DETACH:
-                            throw new IllegalStateException("Cannot bind to " + lastEvent + " for an Activity.");
-                        default:
-                            throw new UnsupportedOperationException("Binding to LifecycleEvent " + lastEvent
-                                    + " not yet implemented");
-                    }
+                    return getActivityStoppingLifecycleEvent(lastEvent);
                 }
             };
 
@@ -221,4 +248,33 @@ public class LifecycleObservable {
                     }
                 }
             };
+
+    private static LifecycleEvent getActivityStoppingLifecycleEvent(LifecycleEvent lastEvent) {
+        if (lastEvent == null) {
+            throw new NullPointerException("Cannot bind to null LifecycleEvent.");
+        }
+
+        switch (lastEvent) {
+            case CREATE:
+                return LifecycleEvent.DESTROY;
+            case START:
+                return LifecycleEvent.STOP;
+            case RESUME:
+                return LifecycleEvent.PAUSE;
+            case PAUSE:
+                return LifecycleEvent.STOP;
+            case STOP:
+                return LifecycleEvent.DESTROY;
+            case DESTROY:
+                throw new IllegalStateException("Cannot bind to Activity lifecycle when outside of it.");
+            case ATTACH:
+            case CREATE_VIEW:
+            case DESTROY_VIEW:
+            case DETACH:
+                throw new IllegalStateException("Cannot bind to " + lastEvent + " for an Activity.");
+            default:
+                throw new UnsupportedOperationException("Binding to LifecycleEvent " + lastEvent
+                        + " not yet implemented");
+        }
+    }
 }
