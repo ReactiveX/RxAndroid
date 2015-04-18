@@ -34,7 +34,7 @@ class OnSubscribeActivityLifecycleCallbacks implements Application.ActivityLifec
     public void onActivityCreated(final Activity activity, Bundle bundle) {
         Observable
                 .just(activity)
-                .filter(filter)
+                .filter(sameInstance)
                 .subscribe(sendCreateEvent);
     }
 
@@ -42,7 +42,7 @@ class OnSubscribeActivityLifecycleCallbacks implements Application.ActivityLifec
     public void onActivityStarted(Activity activity) {
         Observable
                 .just(activity)
-                .filter(filter)
+                .filter(sameInstance)
                 .subscribe(sendStartEvent);
     }
 
@@ -50,7 +50,7 @@ class OnSubscribeActivityLifecycleCallbacks implements Application.ActivityLifec
     public void onActivityResumed(Activity activity) {
         Observable
                 .just(activity)
-                .filter(filter)
+                .filter(sameInstance)
                 .subscribe(sendResumeEvent);
     }
 
@@ -58,7 +58,7 @@ class OnSubscribeActivityLifecycleCallbacks implements Application.ActivityLifec
     public void onActivityPaused(Activity activity) {
         Observable
                 .just(activity)
-                .filter(filter)
+                .filter(sameInstance)
                 .subscribe(sendPauseEvent);
     }
 
@@ -66,7 +66,7 @@ class OnSubscribeActivityLifecycleCallbacks implements Application.ActivityLifec
     public void onActivityStopped(Activity activity) {
         Observable
                 .just(activity)
-                .filter(filter)
+                .filter(sameInstance)
                 .subscribe(sendStopEvent);
     }
 
@@ -78,18 +78,18 @@ class OnSubscribeActivityLifecycleCallbacks implements Application.ActivityLifec
     public void onActivityDestroyed(Activity activity) {
         Observable
                 .just(activity)
-                .filter(filter)
+                .filter(sameInstance)
                 .doOnNext(sendDestroyEvent)
                 .subscribe(unregisterActivityLifecycleCallbacks);
 
     }
 
-    private final Func1<Activity, Boolean> filter =
+    private final Func1<Activity, Boolean> sameInstance =
             new Func1<Activity, Boolean>() {
                 @Override
                 public Boolean call(Activity callbackActivity) {
                     // Application notify all instances of ActivityLifecycleCallbacks when a particular
-                    // event is emitted, we use identity comparison to filter out events related
+                    // event is emitted, we use identity comparison to sameInstance out events related
                     // to the instance of Activity we're currently monitoring
                     return callbackActivity == activityToMonitor;
                 }

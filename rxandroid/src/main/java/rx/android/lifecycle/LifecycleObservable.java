@@ -80,21 +80,26 @@ public class LifecycleObservable {
      * {@link android.app.Application.ActivityLifecycleCallbacks} provided in
      * API 14 to listen for Activity lifecycle.
      *
-     * @param activity the activity we want to monitor lifecycle sequence for
-     * @param source   the source sequence
-     * @param bindEvent the binding {@link LifecycleEvent} associated with the <code>source</code> Observable.
-     * <p>
+     *</p>
      * This helps figuring out the corresponding next lifecycle event in which to unsubscribe.
-     * <pre> {@code
-     *  @Override
-     *  protected void onStart() {
+     * <pre>
+     * {@code
+     *  class MyActivity extends Activity {
+     *    protected void onStart() {
      *      super.onStart();
      *      subscription = LifecycleObservable.bindActivityLifecycle(
      *          this,
      *          ViewObservable.clicks(button),
      *          LifecycleEvent.START)
      *         .subscribe(...);
-     * }</pre>
+     *   }
+     *  }
+     * }
+     * </pre>
+     *
+     * @param activity the activity we want to monitor lifecycle sequence for
+     * @param source   the source sequence
+     * @param bindEvent the binding {@link LifecycleEvent} associated with the <code>source</code> Observable.
      */
     @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
     public static <T> Observable<T> bindActivityLifecycle(Activity activity, Observable<T> source, final LifecycleEvent bindEvent) {
@@ -167,14 +172,14 @@ public class LifecycleObservable {
 
     private static <T> Observable<T> bindLifecycle(Observable<LifecycleEvent> lifecycle,
                                                    Observable<T> source,
-                                                   LifecycleEvent registerEvent) {
+                                                   LifecycleEvent bindEvent) {
         if (lifecycle == null || source == null) {
             throw new IllegalArgumentException("Lifecycle and Observable must be given");
         }
 
         // Make sure we're truly comparing a single stream to itself
         Observable<LifecycleEvent> sharedLifecycle = lifecycle.share();
-        final Observable<LifecycleEvent> bindUntil = Observable.just(getActivityStoppingLifecycleEvent(registerEvent));
+        final Observable<LifecycleEvent> bindUntil = Observable.just(getActivityStoppingLifecycleEvent(bindEvent));
 
         // Keep emitting from source until the corresponding event occurs in the lifecycle
         return source.lift(
@@ -237,35 +242,7 @@ public class LifecycleObservable {
             new Func1<LifecycleEvent, LifecycleEvent>() {
                 @Override
                 public LifecycleEvent call(LifecycleEvent lastEvent) {
-                    if (lastEvent == null) {
-                        throw new NullPointerException("Cannot bind to null LifecycleEvent.");
-                    }
-
-                    switch (lastEvent) {
-                        case ATTACH:
-                            return LifecycleEvent.DETACH;
-                        case CREATE:
-                            return LifecycleEvent.DESTROY;
-                        case CREATE_VIEW:
-                            return LifecycleEvent.DESTROY_VIEW;
-                        case START:
-                            return LifecycleEvent.STOP;
-                        case RESUME:
-                            return LifecycleEvent.PAUSE;
-                        case PAUSE:
-                            return LifecycleEvent.STOP;
-                        case STOP:
-                            return LifecycleEvent.DESTROY_VIEW;
-                        case DESTROY_VIEW:
-                            return LifecycleEvent.DESTROY;
-                        case DESTROY:
-                            return LifecycleEvent.DETACH;
-                        case DETACH:
-                            throw new IllegalStateException("Cannot bind to Fragment lifecycle when outside of it.");
-                        default:
-                            throw new UnsupportedOperationException("Binding to LifecycleEvent " + lastEvent
-                                    + " not yet implemented");
-                    }
+                    return getActivityStoppingLifecycleEvent(lastEvent);
                 }
             };
 

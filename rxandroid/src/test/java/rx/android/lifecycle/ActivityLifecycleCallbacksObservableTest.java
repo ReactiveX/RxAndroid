@@ -47,9 +47,8 @@ public class ActivityLifecycleCallbacksObservableTest {
         assertFalse(bindActivityRule.activity.getSubscription().isUnsubscribed());
 
         // We will unsubscribe onDestroy, but the current version of Robolectric doesn't emit this event
-        // correctly  see https://github.com/robolectric/robolectric/issues/1429 (has been fixed on Snapshot BTW)
-        // FIXME update this test once Robolectric bug https://github.com/robolectric/robolectric/issues/1429
-        // once the fix (currently in robolectric:3.0-SNAPSHOT) will be released
+        // correctly  see https://github.com/robolectric/robolectric/issues/1429 (has been fixed in Snapshot BTW)
+        // FIXME update this test once the fix is released (currently in robolectric:3.0-SNAPSHOT)
         //bindActivityRule.controller.destroy();
         //assertTrue(bindActivityRule.activity.getSubscription().isUnsubscribed());
     }
@@ -139,9 +138,8 @@ public class ActivityLifecycleCallbacksObservableTest {
         assertFalse(bindActivityRule.activity.getSubscription().isUnsubscribed());
 
         // We will unsubscribe onDestroy, but the current version of Robolectric doesn't emit this event
-        // correctly  see https://github.com/robolectric/robolectric/issues/1429 (has been fixed on Snapshot BTW)
-        // FIXME update this test once Robolectric bug https://github.com/robolectric/robolectric/issues/1429
-        // once the fix (currently in robolectric:3.0-SNAPSHOT) will be released
+        // correctly  see https://github.com/robolectric/robolectric/issues/1429 (has been fixed in Snapshot BTW)
+        // FIXME update this test once the fix is released (currently in robolectric:3.0-SNAPSHOT)
         //bindActivityRule.controller.destroy();
         //assertTrue(bindActivityRule.activity.getSubscription().isUnsubscribed());
     }
