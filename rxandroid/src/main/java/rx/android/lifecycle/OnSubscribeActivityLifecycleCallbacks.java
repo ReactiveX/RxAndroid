@@ -19,8 +19,6 @@ class OnSubscribeActivityLifecycleCallbacks implements Application.ActivityLifec
     private final Activity activityToMonitor;
     private Subscriber<? super LifecycleEvent> subscriber;
 
-//    private final Observable<Activity> obsActivity;
-
     public OnSubscribeActivityLifecycleCallbacks(Activity instance) {
         activityToMonitor = instance;
     }
