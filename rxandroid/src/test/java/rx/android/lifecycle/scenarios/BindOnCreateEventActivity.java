@@ -17,9 +17,9 @@ public class BindOnCreateEventActivity extends BaseLifecycleActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        subscription = LifecycleObservable.bindActivityLifecycle(this,
+        subscription = LifecycleObservable.bindActivityUntilLifecycle(this,
                 ViewObservable.clicks(button),
-                LifecycleEvent.CREATE)
+                LifecycleEvent.DESTROY)
                 .subscribe(new Action1<OnClickEvent>() {
                     @Override
                     public void call(OnClickEvent onClickEvent) {

@@ -15,9 +15,9 @@ public class BindOnStartEventActivity extends BaseLifecycleActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        subscription = LifecycleObservable.bindActivityLifecycle(this,
+        subscription = LifecycleObservable.bindActivityUntilLifecycle(this,
                 ViewObservable.clicks(button),
-                LifecycleEvent.START)
+                LifecycleEvent.STOP)
                 .subscribe(new Action1<OnClickEvent>() {
                     @Override
                     public void call(OnClickEvent onClickEvent) {

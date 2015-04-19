@@ -15,7 +15,7 @@ public class BindOnDestroyEventActivity extends BaseLifecycleActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        subscription = LifecycleObservable.bindActivityLifecycle(this,
+        subscription = LifecycleObservable.bindActivityUntilLifecycle(this,
                 ViewObservable.clicks(button),
                 LifecycleEvent.DESTROY)
                 .subscribe(new Action1<OnClickEvent>() {
