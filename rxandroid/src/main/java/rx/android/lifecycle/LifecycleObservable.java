@@ -2,9 +2,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * <p/>
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p/>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -90,7 +90,7 @@ public class LifecycleObservable {
      *      subscription = LifecycleObservable.bindActivityLifecycle(
      *          this,
      *          ViewObservable.clicks(button),
-     *          LifecycleEvent.START)
+     *          LifecycleEvent.STOP)
      *         .subscribe(...);
      *   }
      *  }
@@ -99,20 +99,20 @@ public class LifecycleObservable {
      *
      * @param activity the activity we want to monitor lifecycle sequence for
      * @param source   the source sequence
-     * @param bindEvent the binding {@link LifecycleEvent} associated with the <code>source</code> Observable.
+     * @param event the event which should conclude notifications from the source.
      */
     @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
-    public static <T> Observable<T> bindActivityLifecycle(Activity activity, Observable<T> source, final LifecycleEvent bindEvent) {
+    public static <T> Observable<T> bindActivityUntilLifecycle(Activity activity, Observable<T> source, final LifecycleEvent event) {
         // Make sure we're running on ICS or higher to use ActivityLifecycleCallbacks
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-            throw new IllegalStateException ("This method is only available on API >= 14");
+            throw new IllegalStateException("This method is only available on API >= 14");
         }
 
         OnSubscribeActivityLifecycleCallbacks lifecycleCallbacks = new OnSubscribeActivityLifecycleCallbacks(activity);
-        Observable<T> observable =  bindLifecycle(
+        Observable<T> observable = bindLifecycle(
                 Observable.create(lifecycleCallbacks),
                 source,
-                bindEvent);
+                event);
 
         activity.getApplication().registerActivityLifecycleCallbacks(lifecycleCallbacks);
 
@@ -172,16 +172,16 @@ public class LifecycleObservable {
 
     private static <T> Observable<T> bindLifecycle(Observable<LifecycleEvent> lifecycle,
                                                    Observable<T> source,
-                                                   LifecycleEvent bindEvent) {
+                                                   LifecycleEvent event) {
         if (lifecycle == null || source == null) {
             throw new IllegalArgumentException("Lifecycle and Observable must be given");
         }
 
         // Make sure we're truly comparing a single stream to itself
         Observable<LifecycleEvent> sharedLifecycle = lifecycle.share();
-        final Observable<LifecycleEvent> bindUntil = Observable.just(getActivityStoppingLifecycleEvent(bindEvent));
+        final Observable<LifecycleEvent> bindUntil = Observable.just(event);
 
-        // Keep emitting from source until the corresponding event occurs in the lifecycle
+        // Keep emitting from source until the bindUntil event occurs in the lifecycle
         return source.lift(
                 new OperatorSubscribeUntil<T, Boolean>(
                         Observable.combineLatest(
@@ -208,7 +208,32 @@ public class LifecycleObservable {
             new Func1<LifecycleEvent, LifecycleEvent>() {
                 @Override
                 public LifecycleEvent call(LifecycleEvent lastEvent) {
-                    return getActivityStoppingLifecycleEvent(lastEvent);
+                    if (lastEvent == null) {
+                        throw new NullPointerException("Cannot bind to null LifecycleEvent.");
+                    }
+
+                    switch (lastEvent) {
+                        case CREATE:
+                            return LifecycleEvent.DESTROY;
+                        case START:
+                            return LifecycleEvent.STOP;
+                        case RESUME:
+                            return LifecycleEvent.PAUSE;
+                        case PAUSE:
+                            return LifecycleEvent.STOP;
+                        case STOP:
+                            return LifecycleEvent.DESTROY;
+                        case DESTROY:
+                            throw new IllegalStateException("Cannot bind to Activity lifecycle when outside of it.");
+                        case ATTACH:
+                        case CREATE_VIEW:
+                        case DESTROY_VIEW:
+                        case DETACH:
+                            throw new IllegalStateException("Cannot bind to " + lastEvent + " for an Activity.");
+                        default:
+                            throw new UnsupportedOperationException("Binding to LifecycleEvent " + lastEvent
+                                    + " not yet implemented");
+                    }
                 }
             };
 
@@ -249,32 +274,4 @@ public class LifecycleObservable {
                 }
             };
 
-    private static LifecycleEvent getActivityStoppingLifecycleEvent(LifecycleEvent lastEvent) {
-        if (lastEvent == null) {
-            throw new NullPointerException("Cannot bind to null LifecycleEvent.");
-        }
-
-        switch (lastEvent) {
-            case CREATE:
-                return LifecycleEvent.DESTROY;
-            case START:
-                return LifecycleEvent.STOP;
-            case RESUME:
-                return LifecycleEvent.PAUSE;
-            case PAUSE:
-                return LifecycleEvent.STOP;
-            case STOP:
-                return LifecycleEvent.DESTROY;
-            case DESTROY:
-                throw new IllegalStateException("Cannot bind to Activity lifecycle when outside of it.");
-            case ATTACH:
-            case CREATE_VIEW:
-            case DESTROY_VIEW:
-            case DETACH:
-                throw new IllegalStateException("Cannot bind to " + lastEvent + " for an Activity.");
-            default:
-                throw new UnsupportedOperationException("Binding to LifecycleEvent " + lastEvent
-                        + " not yet implemented");
-        }
-    }
 }

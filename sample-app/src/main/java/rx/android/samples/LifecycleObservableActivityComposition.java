@@ -53,9 +53,9 @@ public class LifecycleObservableActivityComposition extends Activity {
         super.onStart();
 
         subscription =
-                LifecycleObservable.bindActivityLifecycle(this,
+                LifecycleObservable.bindActivityUntilLifecycle(this,
                         ViewObservable.clicks(button),
-                        LifecycleEvent.START)
+                        LifecycleEvent.STOP)
                         .subscribe(new Action1<OnClickEvent>() {
                             @Override
                             public void call(OnClickEvent onClickEvent) {

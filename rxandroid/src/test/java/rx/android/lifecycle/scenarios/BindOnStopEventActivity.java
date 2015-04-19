@@ -15,9 +15,9 @@ public class BindOnStopEventActivity extends BaseLifecycleActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        subscription = LifecycleObservable.bindActivityLifecycle(this,
+        subscription = LifecycleObservable.bindActivityUntilLifecycle(this,
                 ViewObservable.clicks(button),
-                LifecycleEvent.STOP)
+                LifecycleEvent.DESTROY)
                 .subscribe(new Action1<OnClickEvent>() {
                     @Override
                     public void call(OnClickEvent onClickEvent) {

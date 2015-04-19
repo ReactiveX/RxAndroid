@@ -15,9 +15,9 @@ public class BindOnPauseEventActivity extends BaseLifecycleActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        subscription = LifecycleObservable.bindActivityLifecycle(this,
+        subscription = LifecycleObservable.bindActivityUntilLifecycle(this,
                 ViewObservable.clicks(button),
-                LifecycleEvent.PAUSE)
+                LifecycleEvent.STOP)
                 .subscribe(new Action1<OnClickEvent>() {
                     @Override
                     public void call(OnClickEvent onClickEvent) {

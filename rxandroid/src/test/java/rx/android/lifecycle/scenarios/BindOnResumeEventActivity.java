@@ -15,9 +15,9 @@ public class BindOnResumeEventActivity extends BaseLifecycleActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        subscription = LifecycleObservable.bindActivityLifecycle(this,
+        subscription = LifecycleObservable.bindActivityUntilLifecycle(this,
                 ViewObservable.clicks(button),
-                LifecycleEvent.RESUME)
+                LifecycleEvent.PAUSE)
                 .subscribe(new Action1<OnClickEvent>() {
                     @Override
                     public void call(OnClickEvent onClickEvent) {
