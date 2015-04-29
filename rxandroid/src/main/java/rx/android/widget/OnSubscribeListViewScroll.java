@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 class OnSubscribeListViewScroll implements Observable.OnSubscribe<OnListViewScrollEvent> {
 
@@ -67,7 +68,7 @@ class OnSubscribeListViewScroll implements Observable.OnSubscribe<OnListViewScro
 
     private static class CompositeOnScrollListener implements AbsListView.OnScrollListener {
 
-        private final List<AbsListView.OnScrollListener> listeners = new ArrayList<AbsListView.OnScrollListener>();
+        private final List<AbsListView.OnScrollListener> listeners = new CopyOnWriteArrayList<AbsListView.OnScrollListener>();
 
         public boolean addOnScrollListener(final AbsListView.OnScrollListener listener) {
             return listeners.add(listener);
