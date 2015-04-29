@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 final class OnSubscribeViewClick implements Observable.OnSubscribe<OnClickEvent> {
     private final boolean emitInitialValue;
@@ -63,7 +64,7 @@ final class OnSubscribeViewClick implements Observable.OnSubscribe<OnClickEvent>
     }
 
     private static class CompositeOnClickListener implements View.OnClickListener {
-        private final List<View.OnClickListener> listeners = new ArrayList<View.OnClickListener>();
+        private final List<View.OnClickListener> listeners = new CopyOnWriteArrayList<View.OnClickListener>();
 
         public boolean addOnClickListener(final View.OnClickListener listener) {
             return listeners.add(listener);
