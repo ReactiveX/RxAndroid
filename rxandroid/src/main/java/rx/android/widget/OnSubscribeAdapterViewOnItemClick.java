@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -61,7 +62,7 @@ class OnSubscribeAdapterViewOnItemClick implements Observable.OnSubscribe<OnItem
     }
 
     private static class CompositeOnClickListener implements AbsListView.OnItemClickListener {
-        private final List<AbsListView.OnItemClickListener> listeners = new ArrayList<AbsListView.OnItemClickListener>();
+        private final List<AbsListView.OnItemClickListener> listeners = new CopyOnWriteArrayList<AbsListView.OnItemClickListener>();
 
         public boolean addOnClickListener(final AbsListView.OnItemClickListener listener) {
             return listeners.add(listener);
