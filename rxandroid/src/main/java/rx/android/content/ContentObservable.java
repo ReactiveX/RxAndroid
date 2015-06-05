@@ -13,11 +13,13 @@
  */
 package rx.android.content;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Handler;
 
 import rx.Observable;
@@ -77,4 +79,35 @@ public final class ContentObservable {
     public static Observable<Cursor> fromCursor(final Cursor cursor) {
         return Observable.create(new OnSubscribeCursor(cursor));
     }
+
+    /**
+     * Create Observable that makes a {@link android.content.ContentResolver} query and emits the
+     * resulting {@link android.database.Cursor} for each available position.
+     *
+     * @param contentResolver
+     * @param uri             The URI, using the content:// scheme, for the content to retrieve.
+     * @param projection      A list of which columns to return.  Passing null will return all
+     *                        columns, which is discouraged to prevent reading data from storage
+     *                        that
+     *                        isn't going to be used.
+     * @param selection       A filter declaring which rows to return,
+     *                        formatted as an SQL WHERE clause
+     *                        (excluding the WHERE itself).  Passing null will return all rows
+     *                        for the
+     *                        given URI.
+     * @param selectionArgs   You may include ?s in selection, which will be replaced by the values
+     *                        from selectionArgs, in the order that they appear in the selection.
+     *                        The values will be bound as Strings.
+     * @param orderBy         How to order the rows, formatted as an SQL ORDER BY clause
+     *                        (excluding the
+     *                        ORDER BY itself).  Passing null will use the default sort order,
+     *                        which may be unordered.
+     * @return
+     */
+    public static Observable<Cursor> fromQuery(ContentResolver contentResolver, Uri uri,
+        String[] projection, String selection, String[] selectionArgs, String orderBy) {
+        return Observable.create(new OnSubscribeQuery(contentResolver, uri, projection,
+            selection, selectionArgs, orderBy));
+    }
+
 }
