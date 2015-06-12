@@ -18,6 +18,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Handler;
 
 import rx.Observable;
@@ -77,4 +78,13 @@ public final class ContentObservable {
     public static Observable<Cursor> fromCursor(final Cursor cursor) {
         return Observable.create(new OnSubscribeCursor(cursor));
     }
+
+    public static Observable<Cursor> loadCursor(Context context, Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
+        return Observable.create(new OnSubscribeLoadCursor(context, uri, projection, selection, selectionArgs, sortOrder));
+    }
+
+    public static Observable<Boolean> registerContentObserver(Context context, Uri uri, boolean notifyForDescendents) {
+        return Observable.create(new OnSubscribeRegisterContentObserver(context, uri, notifyForDescendents));
+    }
+
 }
