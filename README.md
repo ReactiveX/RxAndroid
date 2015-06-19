@@ -90,7 +90,7 @@ public class ReactiveFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Observable.from("one", "two", "three", "four", "five")
+        Observable.just("one", "two", "three", "four", "five")
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(/* an Observer */);
@@ -110,7 +110,7 @@ new Thread(new Runnable() {
     @Override
     public void run() {
         final Handler handler = new Handler(); // bound to this thread
-        Observable.from("one", "two", "three", "four", "five")
+        Observable.just("one", "two", "three", "four", "five")
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.handlerThread(handler))
                 .subscribe(/* an Observer */)
