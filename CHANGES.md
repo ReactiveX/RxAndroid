@@ -1,5 +1,17 @@
 # RxJava Releases #
 
+### Version 0.25 - In Development ###
+
+* New: `RxAndroidPlugins` and its `RxAndroidSchedulersHook` provides a mechanism similar to `RxJavaPlugins` (and its `RxJavaSchedulersHook`) for
+  changing the scheduler returned from `AndroidSchedulers.mainThread()` as well as a callback for each subscription on any `Handler`-based scheduler.
+* Fix: Ensure errors are properly propagated from `ContentObservable.fromCursor`.
+* Fix: `LifecycleObservable` now correctly unsubscribes from its sources.
+
+Breaking changes:
+
+* Users of `AppObservable.bindFragment` with a support-v4 `Fragment` should now use `bindSupportFragment`.
+
+
 ### Version 0.24 – January 3rd 2015 ###
 
 This release has some breaking changes:
