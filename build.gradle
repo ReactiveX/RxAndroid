@@ -4,11 +4,6 @@ buildscript {
     classpath 'com.netflix.nebula:gradle-rxjava-project-plugin:2.+'
     classpath 'com.netflix.nebula:gradle-extra-configurations-plugin:2.+'
   }
-  configurations.classpath.resolutionStrategy {
-    // The above dependency will bring in guava, which then pollutes child projects
-    force 'com.google.guava:guava:15.0'
-  }
-
 }
 
 apply plugin: 'rxjava-project'
@@ -26,9 +21,9 @@ configure(libraryModules) {
     provided 'com.google.android:support-v4:r7'
 
     // testing
-    testCompile 'junit:junit-dep:4.10'
-    testCompile 'org.mockito:mockito-core:1.8.5'
-    testCompile('org.robolectric:robolectric:2.3') {
+    testCompile 'junit:junit:4.12'
+    testCompile 'org.mockito:mockito-core:1.10.19'
+    testCompile('org.robolectric:robolectric:2.4') {
       exclude group: 'com.android.support'
     }
   }
