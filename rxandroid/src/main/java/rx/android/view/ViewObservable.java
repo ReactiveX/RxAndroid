@@ -34,6 +34,15 @@ public final class ViewObservable {
         return Observable.create(new OnSubscribeViewClick(view, emitInitialValue));
     }
 
+    public static Observable<OnFocusChangeEvent> focus(final View input) {
+        return focus(input, false);
+    }
+
+    public static Observable<OnFocusChangeEvent> focus(final View input, final boolean emitInitialValue) {
+        return Observable.create(new OnSubscribeViewFocusChange(input, emitInitialValue));
+    }
+
+
     /**
      * Binds the given source sequence to the view.
      * <p>
