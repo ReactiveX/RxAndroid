@@ -11,15 +11,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package rx.android.app;
+package rx.android.app.support;
 
-import android.app.FragmentManager;
 import android.content.DialogInterface;
 import android.os.Bundle;
-
+import android.support.v4.app.FragmentManager;
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
+import rx.android.app.ReactiveDialogListener;
+import rx.android.app.ReactiveDialogObserver;
+import rx.android.app.ReactiveDialogResult;
 import rx.android.app.internal.SubscriberVault;
 import rx.functions.Func1;
 

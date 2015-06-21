@@ -11,20 +11,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package rx.android.app;
+package rx.android.app.internal;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import rx.Subscriber;
 
-final class SubscriberVault {
+public final class SubscriberVault {
 
     private static long idGenerator;
 
     private final Map<Long, Subscriber> subscriberMap = new HashMap<Long, Subscriber>();
 
-    <T> long store(Subscriber<T> subscriber) {
+    public <T> long store(Subscriber<T> subscriber) {
         long id = idGenerator++;
         subscriberMap.put(id, subscriber);
         return id;

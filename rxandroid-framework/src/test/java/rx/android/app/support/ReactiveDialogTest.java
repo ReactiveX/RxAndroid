@@ -11,11 +11,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package rx.android.app;
+package rx.android.app.support;
 
-import android.app.Activity;
-import android.app.FragmentManager;
-
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,13 +23,13 @@ import org.mockito.Mock;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.shadows.ShadowDialog;
-
 import rx.Observable;
 import rx.Observer;
+import rx.android.app.ReactiveDialogResult;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.never;
@@ -53,10 +52,10 @@ public class ReactiveDialogTest {
     public void setUp() {
         initMocks(this);
         reactiveDialog = new ReactiveDialog<String>();
-        Activity activity = Robolectric
-                .buildActivity(Activity.class).create().start()
+        FragmentActivity activity = Robolectric
+                .buildActivity(FragmentActivity.class).create().start()
                 .resume().get();
-        fragmentManager = activity.getFragmentManager();
+        fragmentManager = activity.getSupportFragmentManager();
     }
 
     @Test
