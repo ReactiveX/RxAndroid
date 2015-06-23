@@ -13,11 +13,13 @@
  */
 package rx.android.content;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Handler;
 
 import rx.Observable;
@@ -25,6 +27,35 @@ import rx.Observable;
 public final class ContentObservable {
     private ContentObservable() {
         throw new AssertionError("No instances");
+    }
+
+    /**
+     * Create Observable that wraps ContentObserver and emits received changed Uris.
+     *
+     * @param contentResolver
+     * @param uri             The URI to watch for changes.  This can be a specific row URI,
+     *                        or a base URI for a whole class of content.
+     * @return
+     */
+    public static Observable<Uri> fromContentObserver(ContentResolver contentResolver, Uri uri) {
+        return Observable.create(new OnSubscribeContentObserverRegister(contentResolver, uri,
+            null));
+    }
+
+    /**
+     * Create Observable that wraps ContentObserver and emits received changed Uris.
+     *
+     * @param contentResolver
+     * @param uri              The URI to watch for changes.  This can be a specific row
+     *                         URI, or a base URI for a whole class of content.
+     * @param schedulerHandler The handler to run {@link android.database
+     *                         .ContentObserver#onChange(boolean)} on, or null if none.
+     * @return
+     */
+    public static Observable<Uri> fromContentObserver(ContentResolver contentResolver, Uri uri,
+        Handler schedulerHandler) {
+        return Observable.create(new OnSubscribeContentObserverRegister(contentResolver, uri,
+            schedulerHandler));
     }
 
     /**
