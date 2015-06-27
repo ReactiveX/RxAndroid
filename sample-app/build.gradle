@@ -25,5 +25,4 @@ android {
 
 dependencies {
     compile project(':rxandroid')
-    compile project(':rxandroid-framework')
 }
