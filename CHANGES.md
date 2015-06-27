@@ -1,6 +1,6 @@
 # RxJava Releases #
 
-### Version 0.25 - In Development ###
+### Version 0.25 - June 27th 2015 ###
 
 * New: `RxAndroidPlugins` and its `RxAndroidSchedulersHook` provides a mechanism similar to `RxJavaPlugins` (and its `RxJavaSchedulersHook`) for
   changing the scheduler returned from `AndroidSchedulers.mainThread()` as well as a callback for each subscription on any `Handler`-based scheduler.
