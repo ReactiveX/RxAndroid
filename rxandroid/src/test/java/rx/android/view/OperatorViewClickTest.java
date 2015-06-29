@@ -129,4 +129,49 @@ public class OperatorViewClickTest {
         inOrder1.verify(observer1, never()).onCompleted();
         inOrder2.verify(observer2, never()).onCompleted();
     }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testTakenSubscription() {
+        final View view = new View(Robolectric.buildActivity(Activity.class).create().get());
+        final Observable<OnClickEvent> observable = ViewObservable.clicks(view, false);
+
+        final Observer<OnClickEvent> observer1 = mock(Observer.class);
+        final Observer<OnClickEvent> observer2 = mock(Observer.class);
+        final Observer<OnClickEvent> observer3 = mock(Observer.class);
+
+        final Subscription subscription1 = observable.take(1).subscribe(new TestObserver<OnClickEvent>(observer1));
+        final Subscription subscription2 = observable.take(2).subscribe(new TestObserver<OnClickEvent>(observer2));
+        final Subscription subscription3 = observable.take(3).subscribe(new TestObserver<OnClickEvent>(observer3));
+
+        final InOrder inOrder1 = inOrder(observer1);
+        final InOrder inOrder2 = inOrder(observer2);
+        final InOrder inOrder3 = inOrder(observer3);
+
+        view.performClick();
+        inOrder1.verify(observer1, times(1)).onNext(mkMockedEvent(view));
+        inOrder2.verify(observer2, times(1)).onNext(mkMockedEvent(view));
+        inOrder3.verify(observer3, times(1)).onNext(mkMockedEvent(view));
+
+        subscription3.unsubscribe();
+
+        inOrder1.verify(observer1, times(1)).onCompleted();
+        inOrder2.verify(observer2, never()).onCompleted();
+        inOrder3.verify(observer3, never()).onCompleted();
+
+        view.performClick();
+        inOrder1.verify(observer1, never()).onNext(any(OnClickEvent.class));
+        inOrder2.verify(observer2, times(1)).onNext(mkMockedEvent(view));
+        inOrder3.verify(observer3, never()).onNext(any(OnClickEvent.class));
+
+        inOrder1.verify(observer1, never()).onError(any(Throwable.class));
+        inOrder2.verify(observer2, never()).onError(any(Throwable.class));
+        inOrder3.verify(observer3, never()).onError(any(Throwable.class));
+
+        inOrder1.verify(observer1, never()).onCompleted();
+        inOrder2.verify(observer2, times(1)).onCompleted();
+        inOrder3.verify(observer3, never()).onCompleted();
+
+        inOrder2.verify(observer2, never()).onCompleted();
+    }
 }

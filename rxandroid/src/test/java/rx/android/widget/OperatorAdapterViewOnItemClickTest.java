@@ -203,6 +203,18 @@ public class OperatorAdapterViewOnItemClickTest {
         performTestAdapterViewMultipleSubscriptionsNeverEmitOnCompletedAfterUnsubscribed(gridView);
     }
 
+    @Test
+    public void testTakenSubscriptionsListViewClickAllViewsEmitAllEventsForOneSubscriber() {
+        final ListView listView = createListView(createValues(10));
+        performTestAdapterViewTakenSubscriptionsClickAllViewsEmitAllEventsForOneSubscriber(listView);
+    }
+
+    @Test
+    public void testTakenSubscriptionsGridViewClickAllViewsEmitAllEventsForOneSubscriber() {
+        final GridView gridView = createGridView(createValues(10));
+        performTestAdapterViewTakenSubscriptionsClickAllViewsEmitAllEventsForOneSubscriber(gridView);
+    }
+
     @SuppressWarnings("unchecked")
     private void performTestAdapterViewNeverEmitEventBeforeSubscribed(AdapterView<? extends Adapter> adapterView) {
         Adapter adapter = adapterView.getAdapter();
@@ -410,5 +422,59 @@ public class OperatorAdapterViewOnItemClickTest {
 
         inOrder1.verify(observer1, never()).onCompleted();
         inOrder2.verify(observer2, never()).onCompleted();
+    }
+
+    @SuppressWarnings("unchecked")
+    private void performTestAdapterViewTakenSubscriptionsClickAllViewsEmitAllEventsForOneSubscriber(AdapterView<? extends Adapter> adapterView) {
+        Adapter adapter = adapterView.getAdapter();
+        Assert.assertNotNull(adapter);
+        final Observable<OnItemClickEvent> observable = WidgetObservable.itemClicks(adapterView);
+
+        final Observer<OnItemClickEvent> observer1 = mock(Observer.class);
+        final Observer<OnItemClickEvent> observer2 = mock(Observer.class);
+        final Observer<OnItemClickEvent> observer3 = mock(Observer.class);
+
+        final Subscription subscription1 = observable.take(1).subscribe(new TestObserver<OnItemClickEvent>(observer1));
+        final Subscription subscription2 = observable.take(2).subscribe(new TestObserver<OnItemClickEvent>(observer2));
+        final Subscription subscription3 = observable.take(adapter.getCount()).subscribe(new TestObserver<OnItemClickEvent>(observer3));
+
+        final InOrder inOrder1 = inOrder(observer1);
+        final InOrder inOrder2 = inOrder(observer2);
+        final InOrder inOrder3 = inOrder(observer3);
+
+        inOrder1.verify(observer1, never()).onNext(any(OnItemClickEvent.class));
+        inOrder2.verify(observer2, never()).onNext(any(OnItemClickEvent.class));
+        inOrder3.verify(observer3, never()).onNext(any(OnItemClickEvent.class));
+
+        final int count = adapter.getCount();
+        for (int i = 0; i < count; i++) {
+            View fakeItem = new View(adapterView.getContext());
+            adapterView.performItemClick(fakeItem, i, i);
+
+            if (i == 0) {
+                inOrder1.verify(observer1, times(1)).onNext(OnItemClickEvent.create(adapterView, fakeItem, i, i));
+                inOrder2.verify(observer2, times(1)).onNext(OnItemClickEvent.create(adapterView, fakeItem, i, i));
+                inOrder3.verify(observer3, times(1)).onNext(OnItemClickEvent.create(adapterView, fakeItem, i, i));
+
+                subscription2.unsubscribe();
+
+                inOrder1.verify(observer1, times(1)).onCompleted();
+                inOrder2.verify(observer2, never()).onCompleted();
+                inOrder3.verify(observer3, never()).onCompleted();
+            } else {
+                inOrder1.verify(observer1, never()).onNext(any(OnItemClickEvent.class));
+                inOrder2.verify(observer2, never()).onNext(any(OnItemClickEvent.class));
+                inOrder3.verify(observer3, times(1)).onNext(OnItemClickEvent.create(adapterView, fakeItem, i, i));
+            }
+        }
+
+        inOrder1.verify(observer1, never()).onCompleted();
+        inOrder2.verify(observer2, never()).onCompleted();
+        inOrder3.verify(observer3, times(1)).onCompleted();
+
+        inOrder1.verify(observer1, never()).onError(any(Throwable.class));
+        inOrder2.verify(observer2, never()).onError(any(Throwable.class));
+
+        inOrder3.verify(observer3, never()).onCompleted();
     }
 }

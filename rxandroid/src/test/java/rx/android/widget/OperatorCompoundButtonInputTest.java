@@ -146,4 +146,58 @@ public class OperatorCompoundButtonInputTest {
         inOrder2.verify(observer2, never()).onError(any(Throwable.class));
         inOrder2.verify(observer2, never()).onCompleted();
     }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testTakenSubscriptions() {
+        final CompoundButton button = mkCompoundButton(false);
+        final Observable<OnCheckedChangeEvent> observable = WidgetObservable.input(button, false);
+
+        final Observer<OnCheckedChangeEvent> observer1 = mock(Observer.class);
+        final Observer<OnCheckedChangeEvent> observer2 = mock(Observer.class);
+        final Observer<OnCheckedChangeEvent> observer3 = mock(Observer.class);
+
+        final Subscription subscription1 = observable.take(1).subscribe(new TestObserver<OnCheckedChangeEvent>(observer1));
+        final Subscription subscription2 = observable.take(2).subscribe(new TestObserver<OnCheckedChangeEvent>(observer2));
+        final Subscription subscription3 = observable.take(3).subscribe(new TestObserver<OnCheckedChangeEvent>(observer3));
+
+        final InOrder inOrder1 = inOrder(observer1);
+        final InOrder inOrder2 = inOrder(observer2);
+        final InOrder inOrder3 = inOrder(observer3);
+
+        inOrder1.verify(observer1, never()).onCompleted();
+        inOrder2.verify(observer2, never()).onCompleted();
+        inOrder3.verify(observer3, never()).onCompleted();
+
+        button.setChecked(true);
+        inOrder1.verify(observer1, times(1)).onNext(mkMockedEvent(button, true));
+        inOrder2.verify(observer2, times(1)).onNext(mkMockedEvent(button, true));
+        inOrder3.verify(observer3, times(1)).onNext(mkMockedEvent(button, true));
+
+        inOrder1.verify(observer1, times(1)).onCompleted();
+        inOrder2.verify(observer2, never()).onCompleted();
+        inOrder3.verify(observer3, never()).onCompleted();
+
+        subscription3.unsubscribe();
+
+        button.setChecked(false);
+        inOrder1.verify(observer1, never()).onNext(any(OnCheckedChangeEvent.class));
+        inOrder2.verify(observer2, times(1)).onNext(mkMockedEvent(button, false));
+        inOrder3.verify(observer3, never()).onNext(any(OnCheckedChangeEvent.class));
+
+        button.setChecked(true);
+        inOrder1.verify(observer1, never()).onNext(any(OnCheckedChangeEvent.class));
+        inOrder2.verify(observer2, never()).onNext(any(OnCheckedChangeEvent.class));
+        inOrder3.verify(observer3, never()).onNext(any(OnCheckedChangeEvent.class));
+
+        inOrder1.verify(observer1, never()).onCompleted();
+        inOrder2.verify(observer2, times(1)).onCompleted();
+        inOrder3.verify(observer3, never()).onCompleted();
+
+        inOrder1.verify(observer1, never()).onError(any(Throwable.class));
+        inOrder2.verify(observer2, never()).onError(any(Throwable.class));
+        inOrder3.verify(observer3, never()).onError(any(Throwable.class));
+
+        inOrder2.verify(observer2, never()).onCompleted();
+    }
 }

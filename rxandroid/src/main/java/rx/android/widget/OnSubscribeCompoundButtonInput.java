@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 class OnSubscribeCompoundButtonInput implements Observable.OnSubscribe<OnCheckedChangeEvent> {
     private final boolean emitInitialValue;
@@ -65,7 +66,7 @@ class OnSubscribeCompoundButtonInput implements Observable.OnSubscribe<OnChecked
     }
 
     private static class CompositeOnCheckedChangeListener implements CompoundButton.OnCheckedChangeListener {
-        private final List<CompoundButton.OnCheckedChangeListener> listeners = new ArrayList<CompoundButton.OnCheckedChangeListener>();
+        private final List<CompoundButton.OnCheckedChangeListener> listeners = new CopyOnWriteArrayList<CompoundButton.OnCheckedChangeListener>();
 
         public boolean addOnCheckedChangeListener(final CompoundButton.OnCheckedChangeListener listener) {
             return listeners.add(listener);
