@@ -64,6 +64,16 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".LifecycleObservableActivityComposition"
+            android:label="Rx Lifecycle 2 No Inheritance">
+
+            <intent-filter>
+                <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <action android:name="android.intent.action.MAIN"/>
+            </intent-filter>
+        </activity>
+
     </application>
 
 </manifest>

@@ -9,6 +9,8 @@ configurations {
 
 dependencies {
     compileOnly "com.google.auto.value:auto-value:1.0-rc1"
+    provided 'com.google.android:annotations:4.1.1.4'
+
 }
 
 test {

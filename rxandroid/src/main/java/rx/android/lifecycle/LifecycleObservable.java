@@ -2,9 +2,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * <p/>
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p/>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -13,6 +13,10 @@
  */
 
 package rx.android.lifecycle;
+
+import android.annotation.TargetApi;
+import android.app.Activity;
+import android.os.Build;
 
 import rx.Observable;
 import rx.functions.Func1;
@@ -72,6 +76,50 @@ public class LifecycleObservable {
     }
 
     /**
+     * Similar to {@link #bindActivityLifecycle(Observable, Observable)} but uses
+     * {@link android.app.Application.ActivityLifecycleCallbacks} provided in
+     * API 14 to listen for Activity lifecycle.
+     *
+     *</p>
+     * This helps figuring out the corresponding next lifecycle event in which to unsubscribe.
+     * <pre>
+     * {@code
+     *  class MyActivity extends Activity {
+     *    protected void onStart() {
+     *      super.onStart();
+     *      subscription = LifecycleObservable.bindActivityLifecycle(
+     *          this,
+     *          ViewObservable.clicks(button),
+     *          LifecycleEvent.STOP)
+     *         .subscribe(...);
+     *   }
+     *  }
+     * }
+     * </pre>
+     *
+     * @param activity the activity we want to monitor lifecycle sequence for
+     * @param source   the source sequence
+     * @param event the event which should conclude notifications from the source.
+     */
+    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+    public static <T> Observable<T> bindActivityUntilLifecycle(Activity activity, Observable<T> source, final LifecycleEvent event) {
+        // Make sure we're running on ICS or higher to use ActivityLifecycleCallbacks
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+            throw new IllegalStateException("This method is only available on API >= 14");
+        }
+
+        OnSubscribeActivityLifecycleCallbacks lifecycleCallbacks = new OnSubscribeActivityLifecycleCallbacks(activity);
+        Observable<T> observable = bindLifecycle(
+                Observable.create(lifecycleCallbacks),
+                source,
+                event);
+
+        activity.getApplication().registerActivityLifecycleCallbacks(lifecycleCallbacks);
+
+        return observable;
+    }
+
+    /**
      * Binds the given source to a Fragment lifecycle.
      * <p/>
      * This helper automatically determines (based on the lifecycle sequence itself) when the source
@@ -106,6 +154,39 @@ public class LifecycleObservable {
                         Observable.combineLatest(
                                 sharedLifecycle.take(1).map(correspondingEvents),
                                 sharedLifecycle.skip(1),
+                                new Func2<LifecycleEvent, LifecycleEvent, Boolean>() {
+                                    @Override
+                                    public Boolean call(LifecycleEvent bindUntilEvent, LifecycleEvent lifecycleEvent) {
+                                        return lifecycleEvent == bindUntilEvent;
+                                    }
+                                })
+                                .takeFirst(new Func1<Boolean, Boolean>() {
+                                    @Override
+                                    public Boolean call(Boolean shouldComplete) {
+                                        return shouldComplete;
+                                    }
+                                })
+                )
+        );
+    }
+
+    private static <T> Observable<T> bindLifecycle(Observable<LifecycleEvent> lifecycle,
+                                                   Observable<T> source,
+                                                   LifecycleEvent event) {
+        if (lifecycle == null || source == null) {
+            throw new IllegalArgumentException("Lifecycle and Observable must be given");
+        }
+
+        // Make sure we're truly comparing a single stream to itself
+        Observable<LifecycleEvent> sharedLifecycle = lifecycle.share();
+        final Observable<LifecycleEvent> bindUntil = Observable.just(event);
+
+        // Keep emitting from source until the bindUntil event occurs in the lifecycle
+        return source.lift(
+                new OperatorSubscribeUntil<T, Boolean>(
+                        Observable.combineLatest(
+                                bindUntil,
+                                sharedLifecycle,
                                 new Func2<LifecycleEvent, LifecycleEvent, Boolean>() {
                                     @Override
                                     public Boolean call(LifecycleEvent bindUntilEvent, LifecycleEvent lifecycleEvent) {
@@ -192,4 +273,5 @@ public class LifecycleObservable {
                     }
                 }
             };
+
 }
