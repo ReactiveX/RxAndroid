@@ -61,8 +61,8 @@ public class LifecycleObservable {
      * STOP, etc). If used in the destructive phase, the notifications will cease at the next event;
      * for example, if used in PAUSE, it will unsubscribe in STOP.
      * <p/>
-     * Due to the differences between the Activity and Fragment lifecycles, this method should only
-     * be used for an Activity lifecycle.
+     * Due to the differences between the Activity, Fragment and Service lifecycles, this method
+     * should only be used for a Fragment lifecycle.
      *
      * @param lifecycle the lifecycle sequence of an Activity
      * @param source    the source sequence
@@ -80,14 +80,33 @@ public class LifecycleObservable {
      * STOP, etc). If used in the destructive phase, the notifications will cease at the next event;
      * for example, if used in PAUSE, it will unsubscribe in STOP.
      * <p/>
-     * Due to the differences between the Activity and Fragment lifecycles, this method should only
-     * be used for a Fragment lifecycle.
+     * Due to the differences between the Activity, Fragment and Service lifecycles, this method
+     * should only be used for a Fragment lifecycle.
      *
      * @param lifecycle the lifecycle sequence of a Fragment
      * @param source    the source sequence
      */
     public static <T> Observable<T> bindFragmentLifecycle(Observable<LifecycleEvent> lifecycle, Observable<T> source) {
         return bindLifecycle(lifecycle, source, FRAGMENT_LIFECYCLE);
+    }
+
+    /**
+     * Binds the given source to a Service lifecycle.
+     * <p/>
+     * This helper automatically determines (based on the lifecycle sequence itself) when the source
+     * should stop emitting items. In the case that the lifecycle sequence is in the
+     * creation phase (CREATE, or BIND) it will choose the equivalent destructive phase (DESTROY or
+     * UNBIND). If used in the destructive phase, the notifications will cease at the next event;
+     * for example, if used in UNBIND, it will unsubscribe in DESTROY.
+     * <p/>
+     * Due to the differences between the Activity, Fragment and Service lifecycles, this method
+     * should only be used for a Fragment lifecycle.
+     *
+     * @param lifecycle the lifecycle sequence of a Fragment
+     * @param source    the source sequence
+     */
+    public static <T> Observable<T> bindServiceLifecycle(Observable<LifecycleEvent> lifecycle, Observable<T> source) {
+        return bindLifecycle(lifecycle, source, SERVICE_LIFECYCLE);
     }
 
     private static <T> Observable<T> bindLifecycle(Observable<LifecycleEvent> lifecycle,
@@ -146,6 +165,8 @@ public class LifecycleObservable {
                             throw new IllegalStateException("Cannot bind to Activity lifecycle when outside of it.");
                         case ATTACH:
                         case CREATE_VIEW:
+                        case BIND:
+                        case UNBIND:
                         case DESTROY_VIEW:
                         case DETACH:
                             throw new IllegalStateException("Cannot bind to " + lastEvent + " for an Activity.");
@@ -186,6 +207,43 @@ public class LifecycleObservable {
                             return LifecycleEvent.DETACH;
                         case DETACH:
                             throw new IllegalStateException("Cannot bind to Fragment lifecycle when outside of it.");
+                        case BIND:
+                        case UNBIND:
+                            throw new IllegalStateException("Cannot bind to " + lastEvent + " for a Fragment.");
+                        default:
+                            throw new UnsupportedOperationException("Binding to LifecycleEvent " + lastEvent
+                                    + " not yet implemented");
+                    }
+                }
+            };
+
+    // Figures out which corresponding next lifecycle event in which to unsubscribe, for Services
+    private static final Func1<LifecycleEvent, LifecycleEvent> SERVICE_LIFECYCLE =
+            new Func1<LifecycleEvent, LifecycleEvent>() {
+                @Override
+                public LifecycleEvent call(LifecycleEvent lastEvent) {
+                    if (lastEvent == null) {
+                        throw new NullPointerException("Cannot bind to null LifecycleEvent.");
+                    }
+
+                    switch (lastEvent) {
+                        case CREATE:
+                            return LifecycleEvent.DESTROY;
+                        case BIND:
+                            return LifecycleEvent.UNBIND;
+                        case UNBIND:
+                            return LifecycleEvent.DESTROY;
+                        case DESTROY:
+                            throw new IllegalStateException("Cannot bind to Service lifecycle when outside of it.");
+                        case ATTACH:
+                        case CREATE_VIEW:
+                        case START:
+                        case RESUME:
+                        case PAUSE:
+                        case STOP:
+                        case DESTROY_VIEW:
+                        case DETACH:
+                            throw new IllegalStateException("Cannot bind to " + lastEvent + " for a Service.");
                         default:
                             throw new UnsupportedOperationException("Binding to LifecycleEvent " + lastEvent
                                     + " not yet implemented");

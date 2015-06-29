@@ -170,15 +170,36 @@ public class LifecycleObservableTest {
         assertTrue(destroySub.isUnsubscribed());
     }
 
+    @Test
+    public void testBindServiceLifecycle() {
+        lifecycle.onNext(LifecycleEvent.CREATE);
+        Subscription createSub = LifecycleObservable.bindServiceLifecycle(lifecycle, observable).subscribe();
+
+        lifecycle.onNext(LifecycleEvent.BIND);
+        assertFalse(createSub.isUnsubscribed());
+        Subscription bindSub = LifecycleObservable.bindServiceLifecycle(lifecycle, observable).subscribe();
+
+        lifecycle.onNext(LifecycleEvent.UNBIND);
+        assertFalse(createSub.isUnsubscribed());
+        assertTrue(bindSub.isUnsubscribed());
+        Subscription unbindSub = LifecycleObservable.bindServiceLifecycle(lifecycle, observable).subscribe();
+
+        lifecycle.onNext(LifecycleEvent.DESTROY);
+        assertTrue(createSub.isUnsubscribed());
+        assertTrue(unbindSub.isUnsubscribed());
+    }
+
     @Test(expected = RuntimeException.class)
     public void testThrowsExceptionOutsideFragmentLifecycle() {
         lifecycle.onNext(LifecycleEvent.ATTACH);
         lifecycle.onNext(LifecycleEvent.CREATE);
         lifecycle.onNext(LifecycleEvent.CREATE_VIEW);
+        lifecycle.onNext(LifecycleEvent.BIND);
         lifecycle.onNext(LifecycleEvent.START);
         lifecycle.onNext(LifecycleEvent.RESUME);
         lifecycle.onNext(LifecycleEvent.PAUSE);
         lifecycle.onNext(LifecycleEvent.STOP);
+        lifecycle.onNext(LifecycleEvent.UNBIND);
         lifecycle.onNext(LifecycleEvent.DESTROY_VIEW);
         lifecycle.onNext(LifecycleEvent.DESTROY);
         lifecycle.onNext(LifecycleEvent.DETACH);

@@ -22,10 +22,12 @@ public enum LifecycleEvent {
     ATTACH,
     CREATE,
     CREATE_VIEW,
+    BIND,
     START,
     RESUME,
     PAUSE,
     STOP,
+    UNBIND,
     DESTROY_VIEW,
     DESTROY,
     DETACH
