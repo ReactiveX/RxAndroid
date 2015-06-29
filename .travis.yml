@@ -2,20 +2,31 @@ language: android
 
 jdk:
   - oraclejdk7
-  - oraclejdk8
 
 android:
   components:
     - android-22
     - build-tools-22.0.1
 
-script: ./gradlew build
+# as per http://blog.travis-ci.com/2014-12-17-faster-builds-with-container-based-infrastructure/
+sudo: false
+
+# script for build and release via Travis to Bintray
+script: gradle/buildViaTravis.sh
 
 notifications:
   email: false
 
-sudo: false
-
+# cache between builds
 cache:
   directories:
-    - $HOME/.gradle
+  - $HOME/.m2
+  - $HOME/.gradle
+  
+# credential for release  
+env:
+  global:
+  - secure: mQwFIdOIooeZ1KkDhkhXdSORA3Tn713C7SYYaF/ZWhhhINHvwMjPAOT+R7zSyGGqjhpqklRbKmZXDJHGPdus1q5CvZLYvldeQXsEfzvav95aukHjNbOIa3y/5h1rZWXwTLR13aMv/o87SrTT2xiyE6XgxFxN3eSsu/zavrQGQkM=
+  - secure: hKrGR9YZ2At9vktZRhmkwPK82u8wDHgHPWoxbIE629/oY7WbbRvsmVnXp5ontLd4RJJwnN1ujf2hlr/H7ZioUoIbln0qqX3e399IWLg5OhUdTJVpeAVCenVoNa53p/YCMeo/aE9JWK1oM4AXvIBt8vgZUpCPTfVgsbzF2BACfoY=
+  - secure: GJc0t6x9GdPO2EfMTCQP+UU1P9nvxsGkbrtvaNWocHP5BU/X3pcC1CEN6iiXsaYUrhYngOw7jMi3uPgKA8c+FRbnyqhkNubWY0WkChK4vrymjIkTPDMbLELVJoYLsJFZXY8+8wJLJa3D11ShcHAC3K68KGVBVlRqBBv2UidtFjY=
+  - secure: lC5Z9+kBmU3MWhmdjIJqQ8vS5QnTm7vepzDRAJH0K3apwaAUx/iZwrLa8XveA05XBim4jga+VHMHAVILilacvxK8T1L01JkYhhMC8ii3ye/HP5Pwy66dPdvl8VaS0vnC3DkB1i7JGv5h0Vx8RcWyJ77qpLjUFsW6db7/3x8pKpo=
