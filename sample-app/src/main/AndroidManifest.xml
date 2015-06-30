@@ -3,7 +3,6 @@
     package="rx.android.samples" >
 
     <application
-        android:name=".SamplesApplication"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:theme="@style/AppTheme"
