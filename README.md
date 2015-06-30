@@ -6,9 +6,6 @@ This module adds a number of classes to RxJava that make writing reactive compon
 Android applications easy and hassle free. More specifically, it
 
 - provides a `Scheduler` that schedules an `Observable` on a given Android `Handler` thread, particularly the main UI thread
-- provides base `Observer` implementations that make guarantees w.r.t. to reliable and thread-safe use throughout 
-      `Fragment` and `Activity` life-cycle callbacks (coming soon)
-- provides reusable, self-contained reactive components for common Android use cases and UI concerns (coming soon)
 
 ## Communication
 

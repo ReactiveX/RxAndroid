@@ -24,12 +24,7 @@ import rx.subscriptions.CompositeSubscription;
 import rx.subscriptions.Subscriptions;
 import android.os.Handler;
 
-/**
- * @deprecated Use {@link AndroidSchedulers#handlerThread}. This type will not be part of the
- * public API in a future release.
- */
-@Deprecated
-public class HandlerThreadScheduler extends Scheduler {
+class HandlerThreadScheduler extends Scheduler {
 
     private final Handler handler;
 
