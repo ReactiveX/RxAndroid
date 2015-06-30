@@ -42,11 +42,12 @@ build/
 
 # IntelliJ specific files/directories
 out
-.idea
+.idea/*
 *.ipr
 *.iws
 *.iml
 atlassian-ide-plugin.xml
+!.idea/codeStyleSettings.xml
 
 # AndroidStudio specific files/directories
 local.properties
