@@ -17,6 +17,7 @@ package rx.android.app;
 import android.os.Bundle;
 import rx.Observable;
 import rx.android.lifecycle.LifecycleEvent;
+import rx.android.lifecycle.LifecycleObservable;
 import rx.subjects.BehaviorSubject;
 
 /**
@@ -28,6 +29,10 @@ public class RxActivity extends android.app.Activity {
 
     public Observable<LifecycleEvent> lifecycle() {
         return lifecycleSubject.asObservable();
+    }
+
+    public <T> Observable<T> bindLifecycle(Observable<T> source) {
+        return LifecycleObservable.bindActivityLifecycle(lifecycle(), source);
     }
 
     @Override

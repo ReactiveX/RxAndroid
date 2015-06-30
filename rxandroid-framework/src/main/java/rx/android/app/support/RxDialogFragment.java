@@ -18,6 +18,7 @@ import android.os.Bundle;
 import android.view.View;
 import rx.Observable;
 import rx.android.lifecycle.LifecycleEvent;
+import rx.android.lifecycle.LifecycleObservable;
 import rx.subjects.BehaviorSubject;
 
 /**
@@ -29,6 +30,10 @@ public class RxDialogFragment extends android.support.v4.app.DialogFragment {
 
     public Observable<LifecycleEvent> lifecycle() {
         return lifecycleSubject.asObservable();
+    }
+
+    public <T> Observable<T> bindLifecycle(Observable<T> source) {
+        return LifecycleObservable.bindFragmentLifecycle(lifecycle(), source);
     }
 
     @Override
