@@ -17,36 +17,39 @@ import android.database.Cursor;
 
 import rx.Observable;
 import rx.Subscriber;
+import rx.functions.Func0;
 
 /**
  * Emits a {@link android.database.Cursor} for every available position.
  */
 final class OnSubscribeCursor implements Observable.OnSubscribe<Cursor> {
 
-    private final Cursor cursor;
+    private Func0<Cursor> cursorQuery;
 
-    OnSubscribeCursor(final Cursor cursor) {
-        this.cursor = cursor;
+    OnSubscribeCursor(Func0<Cursor> cursorQuery) {
+        this.cursorQuery = cursorQuery;
     }
 
     @Override
     public void call(final Subscriber<? super Cursor> subscriber) {
         try {
-            while (!subscriber.isUnsubscribed() && cursor.moveToNext()) {
-                subscriber.onNext(cursor);
-            }
-            if (!subscriber.isUnsubscribed()) {
-                subscriber.onCompleted();
+            Cursor cursor = cursorQuery.call();
+            try {
+                while (!subscriber.isUnsubscribed() && cursor.moveToNext()) {
+                    subscriber.onNext(cursor);
+                }
+                if (!subscriber.isUnsubscribed()) {
+                    subscriber.onCompleted();
+                }
+            } finally {
+                if (!cursor.isClosed()) {
+                    cursor.close();
+                }
             }
         } catch (Throwable e) {
             if (!subscriber.isUnsubscribed()) {
                 subscriber.onError(e);
             }
-        } finally {
-            if (!cursor.isClosed()) {
-                cursor.close();
-            }
         }
     }
-
 }

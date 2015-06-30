@@ -21,6 +21,7 @@ import android.database.Cursor;
 import android.os.Handler;
 
 import rx.Observable;
+import rx.functions.Func0;
 
 public final class ContentObservable {
     private ContentObservable() {
@@ -75,6 +76,20 @@ public final class ContentObservable {
      * Observable completes or an error occurs.
      */
     public static Observable<Cursor> fromCursor(final Cursor cursor) {
-        return Observable.create(new OnSubscribeCursor(cursor));
+        return Observable.create(new OnSubscribeCursor(new Func0<Cursor>() {
+            @Override
+            public Cursor call() {
+                return cursor;
+            }
+        }));
+    }
+
+    /**
+     * Create Observable that emits the returned {@link android.database.Cursor} from query for each available position
+     * of the cursor moving to the next position before each call and closing the cursor whether the
+     * Observable completes or an error occurs.
+     */
+    public static Observable<Cursor> fromCursor(Func0<Cursor> cursorQuery) {
+        return Observable.create(new OnSubscribeCursor(cursorQuery));
     }
 }
