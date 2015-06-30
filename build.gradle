@@ -4,6 +4,7 @@ buildscript {
   }
   dependencies {
     classpath 'com.android.tools.build:gradle:1.2.3'
+    classpath 'com.netflix.nebula:nebula-release-plugin:2.2.5'
   }
 }
 
