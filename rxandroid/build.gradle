@@ -1,4 +1,5 @@
 apply plugin: 'com.android.library'
+apply plugin: 'nebula.nebula-release'
 
 android {
   compileSdkVersion rootProject.ext.compileSdkVersion
