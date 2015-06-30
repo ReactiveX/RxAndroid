@@ -24,30 +24,32 @@ import rx.subscriptions.CompositeSubscription;
 import rx.subscriptions.Subscriptions;
 import android.os.Handler;
 
-class HandlerThreadScheduler extends Scheduler {
+/** A {@link Scheduler} backed by a {@link Handler}. */
+public final class HandlerScheduler extends Scheduler {
+    /** Create a {@link Scheduler} which uses {@code handler} to execute actions. */
+    public static HandlerScheduler from(Handler handler) {
+        if (handler == null) throw new NullPointerException("handler == null");
+        return new HandlerScheduler(handler);
+    }
 
     private final Handler handler;
 
-    /**
-     * @deprecated Use {@link AndroidSchedulers#handlerThread}.
-     */
-    @Deprecated
-    public HandlerThreadScheduler(Handler handler) {
+    HandlerScheduler(Handler handler) {
         this.handler = handler;
     }
 
     @Override
     public Worker createWorker() {
-        return new InnerHandlerThreadScheduler(handler);
+        return new HandlerWorker(handler);
     }
 
-    private static class InnerHandlerThreadScheduler extends Worker {
+    static class HandlerWorker extends Worker {
 
         private final Handler handler;
 
         private final CompositeSubscription compositeSubscription = new CompositeSubscription();
 
-        public InnerHandlerThreadScheduler(Handler handler) {
+        HandlerWorker(Handler handler) {
             this.handler = handler;
         }
 
@@ -84,6 +86,5 @@ class HandlerThreadScheduler extends Scheduler {
         public Subscription schedule(final Action0 action) {
             return schedule(action, 0, TimeUnit.MILLISECONDS);
         }
-
     }
 }

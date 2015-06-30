@@ -10,16 +10,16 @@ import java.util.concurrent.TimeUnit;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.android.schedulers.HandlerScheduler;
 import rx.exceptions.OnErrorThrowable;
 import rx.functions.Func0;
 
 import static android.os.Process.THREAD_PRIORITY_BACKGROUND;
-import static rx.android.schedulers.AndroidSchedulers.handlerThread;
-import static rx.android.schedulers.AndroidSchedulers.mainThread;
 
 public class MainActivity extends Activity {
     private static final String TAG = "RxAndroidSamples";
-    Handler backgroundThreadHandler;
+
+    private Handler backgroundHandler;
 
     @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,7 +28,7 @@ public class MainActivity extends Activity {
 
         BackgroundThread backgroundThread = new BackgroundThread();
         backgroundThread.start();
-        backgroundThreadHandler = new Handler(backgroundThread.getLooper());
+        backgroundHandler = new Handler(backgroundThread.getLooper());
 
         findViewById(R.id.scheduler_example).setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {
@@ -39,8 +39,10 @@ public class MainActivity extends Activity {
 
     void onRunSchedulerExampleButtonClicked() {
         sampleObservable()
-                .subscribeOn(handlerThread(backgroundThreadHandler)) // Run on a background thread
-                .observeOn(mainThread()) // Be notified on the main thread
+                // Run on a background thread
+                .subscribeOn(HandlerScheduler.from(backgroundHandler))
+                // Be notified on the main thread
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<String>() {
                     @Override public void onCompleted() {
                         Log.d(TAG, "onCompleted()");
