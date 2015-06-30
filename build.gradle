@@ -1,40 +1,17 @@
 buildscript {
-  repositories { jcenter() }
+  repositories {
+    mavenCentral()
+  }
   dependencies {
-    classpath 'com.netflix.nebula:gradle-rxjava-project-plugin:2.+'
-    classpath 'com.netflix.nebula:gradle-extra-configurations-plugin:2.+'
+    classpath 'com.android.tools.build:gradle:1.2.3'
   }
 }
 
-apply plugin: 'rxjava-project'
-bintrayUpload.enabled = false
-
-def libraryModules = subprojects.findAll { it.name != 'sample-app' }
-configure(libraryModules) {
-  apply plugin: 'rxjava-project'
-  apply plugin: 'java'
-  apply plugin: 'provided-base'
-
-  dependencies {
-    compile "io.reactivex:rxjava:$rxJavaVersion"
-    provided 'com.google.android:android:4.0.1.2'
-    provided 'com.google.android:support-v4:r7'
-
-    // testing
-    testCompile 'junit:junit:4.12'
-    testCompile 'org.mockito:mockito-core:1.10.19'
-    testCompile('org.robolectric:robolectric:2.4') {
-      exclude group: 'com.android.support'
-    }
-  }
+ext {
+  minSdkVersion = 15
+  compileSdkVersion = 22
+  targetSdkVersion = compileSdkVersion
+  buildToolsVersion = '22.0.1'
 }
 
-// support for snapshot/final releases with the various branches RxJava uses
-nebulaRelease {
-    addReleaseBranchPattern(/\d+\.\d+\.\d+/)
-    addReleaseBranchPattern('HEAD')
-}
-
-if (project.hasProperty('release.useLastTag')) {
-    tasks.prepare.enabled = false
-}
+apply plugin: 'android-reporting'

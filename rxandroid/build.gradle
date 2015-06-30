@@ -1,10 +1,23 @@
-// Multi-module modules aren't really supported
-version = rootProject.version
+apply plugin: 'com.android.library'
 
-test {
-    testLogging {
-        exceptionFormat "full"
-        events "started"
-        displayGranularity 2
-    }
+android {
+  compileSdkVersion rootProject.ext.compileSdkVersion
+  buildToolsVersion rootProject.ext.buildToolsVersion
+
+  defaultConfig {
+    minSdkVersion rootProject.ext.minSdkVersion
+    targetSdkVersion rootProject.ext.targetSdkVersion
+  }
+}
+
+repositories {
+  mavenCentral()
+}
+
+dependencies {
+  compile 'io.reactivex:rxjava:1.0.12'
+
+  testCompile 'junit:junit:4.12'
+  testCompile 'org.mockito:mockito-core:1.10.19'
+  testCompile 'org.robolectric:robolectric:2.4'
 }

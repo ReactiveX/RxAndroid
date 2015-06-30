@@ -1,28 +1,21 @@
-buildscript {
-    repositories { jcenter() }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:1.2.3'
-    }
-}
-
-repositories {
-    jcenter()
-}
-
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 22
-    buildToolsVersion "22.0.1"
+  compileSdkVersion rootProject.ext.compileSdkVersion
+  buildToolsVersion rootProject.ext.buildToolsVersion
 
-    defaultConfig {
-        minSdkVersion 14
-        targetSdkVersion 22
-        versionCode 1
-        versionName "1.0"
-    }
+  defaultConfig {
+    minSdkVersion rootProject.ext.minSdkVersion
+    targetSdkVersion rootProject.ext.targetSdkVersion
+    versionCode 1
+    versionName '1.0'
+  }
+}
+
+repositories {
+  mavenCentral()
 }
 
 dependencies {
-    compile project(':rxandroid')
+  compile project(':rxandroid')
 }
