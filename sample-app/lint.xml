@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lint>
+    <!--
+        Since this is just a sample app, there are a number of minor
+        lint checks that really don't matter.
+    -->
+
+    <issue id="IconMissingDensityFolder" severity="ignore" />
+    <issue id="HardcodedText" severity="ignore" />
+</lint>
