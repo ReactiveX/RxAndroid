@@ -12,6 +12,7 @@ ext {
   compileSdkVersion = 22
   targetSdkVersion = compileSdkVersion
   buildToolsVersion = '22.0.1'
+  sourceCompatibility = JavaVersion.VERSION_1_7
 }
 
 apply plugin: 'android-reporting'

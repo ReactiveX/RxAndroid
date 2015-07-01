@@ -12,7 +12,12 @@ android {
   }
 
   lintOptions {
-    lintConfig file('lint.xml')
+      lintConfig file('lint.xml')
+  }
+
+  compileOptions {
+    sourceCompatibility rootProject.ext.sourceCompatibility
+    targetCompatibility rootProject.ext.sourceCompatibility
   }
 }
 
