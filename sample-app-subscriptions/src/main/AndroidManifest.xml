@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="rx.android.samples.subscriptions" >
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:theme="@style/AppTheme"
+        android:label="@string/app_name">
+
+        <activity android:name="rx.android.samples.AutoUnsubscribeActivity"
+                  android:label="Rx Sample">
+
+            <intent-filter>
+                <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <action android:name="android.intent.action.MAIN"/>
+            </intent-filter>
+        </activity>
+
+    </application>
+
+</manifest>
