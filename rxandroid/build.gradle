@@ -5,12 +5,14 @@ buildscript {
     dependencies {
         classpath 'com.github.dcendents:android-maven-gradle-plugin:1.3'
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.2'
+        classpath "org.jfrog.buildinfo:build-info-extractor-gradle:3.1.1"
     }
 }
 
 apply plugin: 'com.android.library'
 apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
+apply plugin: 'com.jfrog.artifactory-upload'
 
 group = GROUP
 version = VERSION_NAME
@@ -83,7 +85,29 @@ install {
     }
 }
 
-// Configure gradle-bintray-plugin
+// Configure artifactory (for publishing snapshots)
+//
+// Based on NebulaOJOPublishingPlugin (from nebula-bintray-plugin)
+artifactory {
+    contextUrl = 'https://oss.jfrog.org'
+
+    publish {
+        repository {
+            repoKey = 'oss-snapshot-local'
+
+            if (project.hasProperty('bintrayUser')) {
+                username = project.property('bintrayUser')
+                password = project.property('bintrayKey')
+            }
+        }
+
+        defaults {
+            publishConfigs('archives')
+        }
+    }
+}
+
+// Configure gradle-bintray-plugin (for publishing releases)
 bintray {
     configurations = ['archives']
 
