@@ -15,7 +15,18 @@ apply plugin: 'com.jfrog.bintray'
 apply plugin: 'com.jfrog.artifactory-upload'
 
 group = GROUP
-version = VERSION_NAME
+
+// Both the artifactory and bintray plugins depend on this singular
+// global `version` variable. As such, we need to configure it based
+// on which task we're running.
+//
+// The solution here is brittle; it just checks whether 'bintrayUpload'
+// was called for execution, otherwise it assumes SNAPSHOT. If we
+// were to wait until the task graph was built, we'd be too late 
+// (the plugins would already have used `version`).
+boolean isReleaseBuild = gradle.startParameter.taskNames.contains('bintrayUpload')
+version = isReleaseBuild ? VERSION_NAME : "$VERSION_NAME-SNAPSHOT"
+logger.info("RxAndroid using version=$project.version")
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
