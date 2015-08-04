@@ -1,4 +1,4 @@
 rootProject.name='rxandroid-root'
 
-include ':rxandroid'
-include ':sample-app'
+include ':rxandroid', ':rxandroid-subscriptions'
+include ':sample-app', ':sample-app-subscriptions'
