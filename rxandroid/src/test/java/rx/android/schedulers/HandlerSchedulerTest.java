@@ -51,7 +51,7 @@ public class HandlerSchedulerTest {
 
     @Before @After
     public void setUpAndTearDown() {
-        RxAndroidPluginsTest.resetPlugins();
+        RxAndroidPlugins.getInstance().reset();
     }
 
     @Test

@@ -23,14 +23,9 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 public final class RxAndroidPluginsTest {
-    /** Reset plugins. Used by other tests which need to register hooks. */
-    public static void resetPlugins() {
-        RxAndroidPlugins.getInstance().reset();
-    }
-
     @Before @After
     public void setUpAndTearDown() {
-        resetPlugins();
+        RxAndroidPlugins.getInstance().reset();
     }
 
     @Test
@@ -39,17 +34,6 @@ public final class RxAndroidPluginsTest {
         RxAndroidSchedulersHook hook = new RxAndroidSchedulersHook();
         plugins.registerSchedulersHook(hook);
         assertSame(hook, plugins.getSchedulersHook());
-    }
-
-    @Test
-    public void registerSchedulersHookViaSystemProperty() {
-        System.setProperty("rxandroid.plugin.RxAndroidSchedulersHook.implementation",
-                "rx.android.plugins.RxAndroidPluginsTest$CustomHook");
-        assertEquals(CustomHook.class,
-                RxAndroidPlugins.getInstance().getSchedulersHook().getClass());
-    }
-
-    static class CustomHook extends RxAndroidSchedulersHook {
     }
 
     @Test

@@ -33,7 +33,7 @@ public class AndroidSchedulersTest {
 
     @Before @After
     public void setUpAndTearDown() {
-        RxAndroidPluginsTest.resetPlugins();
+        RxAndroidPlugins.getInstance().reset();
     }
 
     @Test
