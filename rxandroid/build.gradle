@@ -122,6 +122,8 @@ artifactory {
 bintray {
     configurations = ['archives']
 
+    publish = true
+
     pkg {
         repo = 'RxJava'
         name = 'RxAndroid'
