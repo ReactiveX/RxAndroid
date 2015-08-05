@@ -13,7 +13,7 @@ Since RxAndroid is part of the RxJava family the communication channels are simi
 
 - Google Group: [RxJava][list]
 - Twitter: [@RxJava][twitter]
-- StackOverflow: [rxandroid][so]
+- StackOverflow: [rx-android][so]
 - [GitHub Issues][issues]
 
 
