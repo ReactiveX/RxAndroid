@@ -8,9 +8,8 @@ buildscript {
 }
 
 ext {
-    minSdkVersion = 15
+    minSdkVersion = 9
     compileSdkVersion = 22
-    targetSdkVersion = compileSdkVersion
     buildToolsVersion = '22.0.1'
     sourceCompatibility = JavaVersion.VERSION_1_7
 }
