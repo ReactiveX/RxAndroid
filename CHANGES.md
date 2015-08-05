@@ -1,4 +1,35 @@
-# RxJava Releases #
+# RxAndroid Releases #
+
+### Version 1.0.0 - August 5th 2015 ####
+
+Initial stable release!
+
+In order to provide a library that no project using RxJava would hesitate to depend on, the decision
+was made to remove the APIs which were not absolutely fundamental to all apps. That is what's
+contained in this release.
+
+Functionality which was previously part of this library is being explored in separate, modular
+libraries:
+
+ * `LifecycleObservable`: https://github.com/trello/RxLifecycle
+ * `ViewObservable` and `WidgetObservable`: https://github.com/JakeWharton/RxBinding
+
+This allows for a simpler process of design, development, and experimentation for the
+best ways to provide features like hooks into the lifecycle, binding to UI components, and
+simplifying interaction with all of Android's API. Not only can these projects now have their own
+release schedule, but it allows developers to pick and choose which ones are appropriate for your
+application.
+
+Applications using the various APIs which were previously in this library do not need to update
+immediately. Due to the number of APIs removed, switching to 1.0 and the use of these third-party
+libraries should be done gradually.
+
+Breaking changes:
+
+ * `AndroidSchedulers.handlerThread()` is now `HandlerScheduler.from()`.
+ * **All other APIs have been removed** aside from `AndroidSchedulers.mainThread()`,
+   `RxAndroidPlugins`, and `RxAndroidSchedulersHook`.
+
 
 ### Version 0.25 - June 27th 2015 ###
 
@@ -28,6 +59,7 @@ This release adds a number of new operators:
 * [Pull 25](https://github.com/ReactiveX/RxAndroid/pull/25) Add operator to monitor SharedPreference changes
 * [Pull 22](https://github.com/ReactiveX/RxAndroid/pull/22) Add view state event types to streamline ViewObservable
 * [Pull 20](https://github.com/ReactiveX/RxAndroid/pull/20) Add OperatorAdapterViewOnItemClick to observe OnItemClick events in AdapterViews
+
 
 ### Version 0.21 – October 1st 2014 ###
 
