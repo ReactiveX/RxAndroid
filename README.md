@@ -3,8 +3,8 @@
 Android specific bindings for [RxJava](http://github.com/ReactiveX/RxJava).
 
 This module adds the minimum classes to RxJava that make writing reactive components in Android
-applications easy and hassle-free. More specifically, it provides a `Scheduler` that schedules an
-on the main UI thread or any given `Handler`.
+applications easy and hassle-free. More specifically, it provides a `Scheduler` that schedules on
+the main UI thread or any given `Handler`.
 
 
 ## Communication
