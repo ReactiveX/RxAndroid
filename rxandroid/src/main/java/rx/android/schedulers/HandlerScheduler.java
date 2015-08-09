@@ -72,16 +72,17 @@ public final class HandlerScheduler extends Scheduler {
             action = RxAndroidPlugins.getInstance().getSchedulersHook().onSchedule(action);
 
             final ScheduledAction scheduledAction = new ScheduledAction(action);
+            scheduledAction.addParent(compositeSubscription);
+            compositeSubscription.add(scheduledAction);
+
+            handler.postDelayed(scheduledAction, unit.toMillis(delayTime));
+
             scheduledAction.add(Subscriptions.create(new Action0() {
                 @Override
                 public void call() {
                     handler.removeCallbacks(scheduledAction);
                 }
             }));
-            scheduledAction.addParent(compositeSubscription);
-            compositeSubscription.add(scheduledAction);
-
-            handler.postDelayed(scheduledAction, unit.toMillis(delayTime));
 
             return scheduledAction;
         }

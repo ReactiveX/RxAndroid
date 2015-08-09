@@ -31,6 +31,7 @@ import rx.android.plugins.RxAndroidPlugins;
 import rx.android.plugins.RxAndroidSchedulersHook;
 import rx.functions.Action0;
 
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -190,6 +191,33 @@ public class HandlerSchedulerTest {
                 neverCalled.set(false);
             }
         });
+        assertTrue(neverCalled.get());
+    }
+
+    @Test
+    public void shouldNotScheduleAfterUnsubscribeRaceCondition() {
+        Scheduler scheduler = HandlerScheduler.from(new Handler());
+        final Scheduler.Worker inner = scheduler.createWorker();
+
+        RxAndroidPlugins.getInstance().registerSchedulersHook(new RxAndroidSchedulersHook() {
+            @Override public Action0 onSchedule(Action0 action) {
+                // Purposefully unsubscribe in an asinine point,
+                // after the normal isUnsubscribed() check
+                inner.unsubscribe();
+                return super.onSchedule(action);
+            }
+        });
+
+        final AtomicBoolean neverCalled = new AtomicBoolean(true);
+        inner.schedule(new Action0() {
+            @Override
+            public void call() {
+                neverCalled.set(false);
+            }
+        }, 1, TimeUnit.MILLISECONDS);
+
+        Robolectric.runUiThreadTasksIncludingDelayedTasks();
+
         assertTrue(neverCalled.get());
     }
 }
