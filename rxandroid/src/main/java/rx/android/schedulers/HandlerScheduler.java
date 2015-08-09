@@ -65,6 +65,10 @@ public final class HandlerScheduler extends Scheduler {
 
         @Override
         public Subscription schedule(Action0 action, long delayTime, TimeUnit unit) {
+            if (compositeSubscription.isUnsubscribed()) {
+                return Subscriptions.unsubscribed();
+            }
+
             action = RxAndroidPlugins.getInstance().getSchedulersHook().onSchedule(action);
 
             final ScheduledAction scheduledAction = new ScheduledAction(action);

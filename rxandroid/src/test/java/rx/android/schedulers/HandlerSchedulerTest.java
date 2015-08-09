@@ -14,7 +14,6 @@
 package rx.android.schedulers;
 
 import android.os.Handler;
-import java.util.concurrent.atomic.AtomicReference;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,14 +28,17 @@ import rx.Scheduler.Worker;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.plugins.RxAndroidPlugins;
-import rx.android.plugins.RxAndroidPluginsTest;
 import rx.android.plugins.RxAndroidSchedulersHook;
 import rx.functions.Action0;
+
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static java.util.concurrent.TimeUnit.MINUTES;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
@@ -172,5 +174,22 @@ public class HandlerSchedulerTest {
         // Verify that the given handler delegates to our action.
         runnable.getValue().run();
         verify(action).call();
+    }
+
+    @Test
+    public void shouldNotScheduleAfterUnsubscribe() {
+        Scheduler scheduler = HandlerScheduler.from(new Handler());
+        Worker inner = scheduler.createWorker();
+        inner.unsubscribe();
+
+        // Assert that work scheduled after unsubscribe() is never called
+        final AtomicBoolean neverCalled = new AtomicBoolean(true);
+        inner.schedule(new Action0() {
+            @Override
+            public void call() {
+                neverCalled.set(false);
+            }
+        });
+        assertTrue(neverCalled.get());
     }
 }
