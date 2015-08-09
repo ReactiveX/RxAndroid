@@ -20,7 +20,7 @@ Since RxAndroid is part of the RxJava family the communication channels are simi
 # Binaries
 
 ```groovy
-compile 'io.reactivex:rxandroid:1.0.0'
+compile 'io.reactivex:rxandroid:1.0.1'
 ```
 
 <a href='http://search.maven.org/#search%7Cga%7C1%7Crxandroid'><img src='http://img.shields.io/maven-central/v/io.reactivex/rxandroid.svg'></a>

@@ -1,5 +1,13 @@
 # RxAndroid Releases #
 
+### Version 1.0.1 - August 9th 2015 ####
+
+ * Fix: Correctly check `isUnsubscribed()` state in `HandlerScheduler`'s worker before scheduling
+   more work.
+ * Fix: Eliminate a potential race condition in `HandlerScheduler` to ensure any posted work will
+   be canceled on unsubscription.
+
+
 ### Version 1.0.0 - August 5th 2015 ####
 
 Initial stable release!
