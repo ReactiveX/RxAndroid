@@ -5,8 +5,8 @@ jdk:
 
 android:
   components:
-    - android-22
-    - build-tools-22.0.1
+    - android-23
+    - build-tools-23.0.1
 
 # as per http://blog.travis-ci.com/2014-12-17-faster-builds-with-container-based-infrastructure/
 sudo: false
@@ -22,8 +22,8 @@ cache:
   directories:
   - $HOME/.m2
   - $HOME/.gradle
-  
-# credential for release  
+
+# credential for release
 env:
   global:
   - secure: mQwFIdOIooeZ1KkDhkhXdSORA3Tn713C7SYYaF/ZWhhhINHvwMjPAOT+R7zSyGGqjhpqklRbKmZXDJHGPdus1q5CvZLYvldeQXsEfzvav95aukHjNbOIa3y/5h1rZWXwTLR13aMv/o87SrTT2xiyE6XgxFxN3eSsu/zavrQGQkM=
