@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         minSdkVersion 15
-        targetSdkVersion 22
+        targetSdkVersion 23
         versionCode 1
         versionName '1.0'
     }
@@ -14,7 +14,7 @@ android {
     lintOptions {
         lintConfig file('lint.xml')
     }
-    
+
     compileOptions {
         sourceCompatibility rootProject.ext.sourceCompatibility
         targetCompatibility rootProject.ext.sourceCompatibility
