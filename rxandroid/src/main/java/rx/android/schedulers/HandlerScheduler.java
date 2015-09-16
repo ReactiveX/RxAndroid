@@ -23,6 +23,7 @@ import rx.internal.schedulers.ScheduledAction;
 import rx.subscriptions.CompositeSubscription;
 import rx.subscriptions.Subscriptions;
 import android.os.Handler;
+import android.os.Looper;
 
 /** A {@link Scheduler} backed by a {@link Handler}. */
 public final class HandlerScheduler extends Scheduler {
@@ -70,6 +71,12 @@ public final class HandlerScheduler extends Scheduler {
             }
 
             action = RxAndroidPlugins.getInstance().getSchedulersHook().onSchedule(action);
+
+            // Fast path if action is immediate and we are already on the correct thread
+            if (delayTime == 0 && Looper.myLooper() == handler.getLooper()) {
+                action.call();
+                return Subscriptions.unsubscribed();
+            }
 
             final ScheduledAction scheduledAction = new ScheduledAction(action);
             scheduledAction.addParent(compositeSubscription);
