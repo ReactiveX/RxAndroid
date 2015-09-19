@@ -112,8 +112,6 @@ public class HandlerSchedulerTest {
     @Test
     public void shouldRemoveCallbacksFromHandlerWhenUnsubscribedSubscription() {
         Handler handler = spy(new Handler());
-        // Avoid fast path: Trick handler looper into being different than Looper.myLooper()
-        when(handler.getLooper()).thenReturn(null);
         Observable.OnSubscribe<Integer> onSubscribe = mock(Observable.OnSubscribe.class);
         Subscription subscription = Observable.create(onSubscribe)
                 .subscribeOn(HandlerScheduler.from(handler))
@@ -236,7 +234,7 @@ public class HandlerSchedulerTest {
         Observable.OnSubscribe<Integer> onSubscribe = mock(Observable.OnSubscribe.class);
 
         Subscription subscription = Observable.create(onSubscribe)
-                .subscribeOn(HandlerScheduler.from(handler))
+                .subscribeOn(FastPathHandlerScheduler.from(handler))
                 .subscribe();
 
         // Verify onSubscribe is called
@@ -258,7 +256,7 @@ public class HandlerSchedulerTest {
         @SuppressWarnings("unchecked")
         Action0 action = mock(Action0.class);
 
-        Scheduler scheduler = HandlerScheduler.from(handler);
+        Scheduler scheduler = FastPathHandlerScheduler.from(handler);
         Worker inner = scheduler.createWorker();
         inner.schedule(action, 1, SECONDS);
 
