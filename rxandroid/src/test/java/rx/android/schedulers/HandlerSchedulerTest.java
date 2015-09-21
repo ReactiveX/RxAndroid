@@ -19,9 +19,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
-import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
+import org.robolectric.shadows.ShadowLooper;
+
 import rx.Observable;
 import rx.Scheduler;
 import rx.Scheduler.Worker;
@@ -141,7 +142,7 @@ public class HandlerSchedulerTest {
 
         subscription.unsubscribe();
 
-        Robolectric.runUiThreadTasksIncludingDelayedTasks();
+        ShadowLooper.runUiThreadTasksIncludingDelayedTasks();
 
         verify(onSubscribe, never()).call(any(Subscriber.class));
         verify(handler).removeCallbacks(any(Runnable.class));
@@ -216,7 +217,7 @@ public class HandlerSchedulerTest {
             }
         }, 1, TimeUnit.MILLISECONDS);
 
-        Robolectric.runUiThreadTasksIncludingDelayedTasks();
+        ShadowLooper.runUiThreadTasksIncludingDelayedTasks();
 
         assertTrue(neverCalled.get());
     }
