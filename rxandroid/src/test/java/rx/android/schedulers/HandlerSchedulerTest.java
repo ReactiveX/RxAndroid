@@ -14,6 +14,7 @@
 package rx.android.schedulers;
 
 import android.os.Handler;
+import android.os.Looper;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -39,15 +40,18 @@ import java.util.concurrent.atomic.AtomicReference;
 import static java.util.concurrent.TimeUnit.MINUTES;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(manifest=Config.NONE)
@@ -220,5 +224,49 @@ public class HandlerSchedulerTest {
         ShadowLooper.runUiThreadTasksIncludingDelayedTasks();
 
         assertTrue(neverCalled.get());
+    }
+
+    @Test
+    public void shouldPerformFastPathForImmediateActionIsAlreadyOnTargetThread() {
+        // Explicitly create handler with same looper as current thread
+        Looper myLooper = Looper.myLooper();
+        assertNotNull(myLooper);
+        Handler handler = spy(new Handler(myLooper));
+        Observable.OnSubscribe<Integer> onSubscribe = mock(Observable.OnSubscribe.class);
+
+        Subscription subscription = Observable.create(onSubscribe)
+                .subscribeOn(FastPathHandlerScheduler.from(handler))
+                .subscribe();
+
+        // Verify onSubscribe is called
+        verify(onSubscribe).call(any(Subscriber.class));
+
+        subscription.unsubscribe();
+
+        // Verify action was called directly, and not through handler
+        verify(handler, never()).postDelayed(any(Runnable.class), anyLong());
+        verify(handler, never()).removeCallbacks(any(Runnable.class));
+    }
+
+    @Test
+    public void shouldNotPerformFastPathForDelayedAction() {
+        // Explicitly create handler with same looper as current thread
+        Looper myLooper = Looper.myLooper();
+        assertNotNull(myLooper);
+        Handler handler = spy(new Handler(myLooper));
+        @SuppressWarnings("unchecked")
+        Action0 action = mock(Action0.class);
+
+        Scheduler scheduler = FastPathHandlerScheduler.from(handler);
+        Worker inner = scheduler.createWorker();
+        inner.schedule(action, 1, SECONDS);
+
+        // verify that we post to the given Handler
+        ArgumentCaptor<Runnable> runnable = ArgumentCaptor.forClass(Runnable.class);
+        verify(handler).postDelayed(runnable.capture(), eq(1000L));
+
+        // verify that the given handler delegates to our action
+        runnable.getValue().run();
+        verify(action).call();
     }
 }
