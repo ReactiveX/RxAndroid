@@ -16,19 +16,14 @@ package rx.android.schedulers;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.robolectric.RobolectricTestRunner;
-import org.robolectric.annotation.Config;
+
 import rx.Scheduler;
 import rx.android.plugins.RxAndroidPlugins;
-import rx.android.plugins.RxAndroidPluginsTest;
 import rx.android.plugins.RxAndroidSchedulersHook;
-import rx.schedulers.Schedulers;
 
 import static org.junit.Assert.assertSame;
+import static org.mockito.Mockito.mock;
 
-@RunWith(RobolectricTestRunner.class)
-@Config(manifest=Config.NONE)
 public class AndroidSchedulersTest {
 
     @Before @After
@@ -38,13 +33,12 @@ public class AndroidSchedulersTest {
 
     @Test
     public void mainThreadCallsThroughToHook() {
-        final Scheduler scheduler = Schedulers.immediate();
-        RxAndroidSchedulersHook hook = new RxAndroidSchedulersHook() {
+        final Scheduler scheduler = mock(Scheduler.class);
+        RxAndroidPlugins.getInstance().registerSchedulersHook(new RxAndroidSchedulersHook() {
             @Override public Scheduler getMainThreadScheduler() {
                 return scheduler;
             }
-        };
-        RxAndroidPlugins.getInstance().registerSchedulersHook(hook);
+        });
 
         Scheduler mainThread = AndroidSchedulers.mainThread();
         assertSame(scheduler, mainThread);
