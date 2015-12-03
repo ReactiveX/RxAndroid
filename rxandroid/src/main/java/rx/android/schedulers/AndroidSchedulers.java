@@ -38,4 +38,10 @@ public final class AndroidSchedulers {
                 RxAndroidPlugins.getInstance().getSchedulersHook().getMainThreadScheduler();
         return scheduler != null ? scheduler : MainThreadSchedulerHolder.MAIN_THREAD_SCHEDULER;
     }
+
+    public static Scheduler currentThread() {
+        Scheduler scheduler =
+                RxAndroidPlugins.getInstance().getSchedulersHook().getCurrentThreadScheduler();
+        return scheduler != null ? scheduler : new HandlerScheduler(new Handler(Looper.myLooper()));
+    }
 }
