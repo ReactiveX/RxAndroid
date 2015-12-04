@@ -35,6 +35,14 @@ public class RxAndroidSchedulersHook {
     }
 
     /**
+     * Scheduler to return from {@link AndroidSchedulers#currentThread()} or {@code null} if
+     * default should be used.
+     */
+    public Scheduler getCurrentThreadScheduler() {
+        return null;
+    }
+
+    /**
      * Invoked before the Action is handed over to the scheduler.  Can be used for
      * wrapping/decorating/logging. The default is just a passthrough.
      *

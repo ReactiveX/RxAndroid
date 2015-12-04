@@ -18,6 +18,7 @@ import android.os.Looper;
 
 import rx.Scheduler;
 import rx.android.plugins.RxAndroidPlugins;
+import rx.schedulers.Schedulers;
 
 /** Android-specific Schedulers. */
 public final class AndroidSchedulers {
@@ -37,5 +38,29 @@ public final class AndroidSchedulers {
         Scheduler scheduler =
                 RxAndroidPlugins.getInstance().getSchedulersHook().getMainThreadScheduler();
         return scheduler != null ? scheduler : MainThreadSchedulerHolder.MAIN_THREAD_SCHEDULER;
+    }
+
+    /**
+     * A {@link Scheduler} which executes actions on the current thread
+     */
+    public static Scheduler currentThread() {
+        Scheduler scheduler =
+                RxAndroidPlugins.getInstance().getSchedulersHook().getCurrentThreadScheduler();
+        return scheduler != null ? scheduler : getCurrentThreadScheduler();
+    }
+
+    /**
+     * {@link HandlerScheduler} if looper is initialized for current thread,
+     * {@link Schedulers#trampoline()} otherwise
+     */
+    private static Scheduler getCurrentThreadScheduler() {
+        Looper myLooper = Looper.myLooper();
+        if(myLooper == null) {
+            return Schedulers.trampoline();
+        } else if(myLooper == Looper.getMainLooper()) {
+            return MainThreadSchedulerHolder.MAIN_THREAD_SCHEDULER;
+        } else {
+            return new HandlerScheduler(new Handler(myLooper));
+        }
     }
 }

@@ -43,4 +43,18 @@ public class AndroidSchedulersTest {
         Scheduler mainThread = AndroidSchedulers.mainThread();
         assertSame(scheduler, mainThread);
     }
+
+    @Test
+    public void currentThreadCallsThroughToHook() {
+        final Scheduler scheduler = mock(Scheduler.class);
+        RxAndroidPlugins.getInstance().registerSchedulersHook(new RxAndroidSchedulersHook() {
+            @Override
+            public Scheduler getCurrentThreadScheduler() {
+                return scheduler;
+            }
+        });
+
+        Scheduler currentThread = AndroidSchedulers.currentThread();
+        assertSame(scheduler, currentThread);
+    }
 }
