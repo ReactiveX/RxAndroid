@@ -30,7 +30,7 @@ public class MainActivity extends Activity {
         backgroundThread.start();
         backgroundHandler = new Handler(backgroundThread.getLooper());
 
-        findViewById(R.id.scheduler_example).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.button_run_scheduler).setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {
                 onRunSchedulerExampleButtonClicked();
             }
