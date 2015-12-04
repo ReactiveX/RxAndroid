@@ -19,7 +19,7 @@ import static android.os.Process.THREAD_PRIORITY_BACKGROUND;
 public class MainActivity extends Activity {
     private static final String TAG = "RxAndroidSamples";
 
-    private Handler backgroundHandler;
+    private Handler mBackgroundHandler;
 
     @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,9 +28,9 @@ public class MainActivity extends Activity {
 
         BackgroundThread backgroundThread = new BackgroundThread();
         backgroundThread.start();
-        backgroundHandler = new Handler(backgroundThread.getLooper());
+        mBackgroundHandler = new Handler(backgroundThread.getLooper());
 
-        findViewById(R.id.scheduler_example).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.button_run_scheduler).setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {
                 onRunSchedulerExampleButtonClicked();
             }
@@ -40,7 +40,7 @@ public class MainActivity extends Activity {
     void onRunSchedulerExampleButtonClicked() {
         sampleObservable()
                 // Run on a background thread
-                .subscribeOn(HandlerScheduler.from(backgroundHandler))
+                .subscribeOn(HandlerScheduler.from(mBackgroundHandler))
                 // Be notified on the main thread
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<String>() {

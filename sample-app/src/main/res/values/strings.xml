@@ -2,5 +2,6 @@
 <resources>
 
     <string name="app_name">RxJava Android Samples</string>
+    <string name="button_run_scheduler">Run Schedulers Example</string>
 
 </resources>
