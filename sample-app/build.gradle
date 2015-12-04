@@ -11,18 +11,10 @@ android {
         versionName '1.0'
     }
 
-    lintOptions {
-        lintConfig file('lint.xml')
-    }
-
     compileOptions {
         sourceCompatibility rootProject.ext.sourceCompatibility
         targetCompatibility rootProject.ext.sourceCompatibility
     }
-}
-
-repositories {
-    mavenCentral()
 }
 
 dependencies {
