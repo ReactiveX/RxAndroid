@@ -32,7 +32,11 @@ public final class AndroidSchedulers {
                 new HandlerScheduler(new Handler(Looper.getMainLooper()));
     }
 
-    /** A {@link Scheduler} which executes actions on the Android UI thread. */
+    /**
+     * A {@link Scheduler} which executes actions on the Android UI thread.
+     *
+     * @return A main thread {@link Scheduler}
+     */
     public static Scheduler mainThread() {
         Scheduler scheduler =
                 RxAndroidPlugins.getInstance().getSchedulersHook().getMainThreadScheduler();

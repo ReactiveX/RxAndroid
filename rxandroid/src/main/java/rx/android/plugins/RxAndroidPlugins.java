@@ -54,6 +54,8 @@ public final class RxAndroidPlugins {
      * Override the default by calling {@link #registerSchedulersHook(RxAndroidSchedulersHook)} or by
      * setting the property {@code rxandroid.plugin.RxAndroidSchedulersHook.implementation} with the
      * full classname to load.
+     *
+     * @return The {@link RxAndroidSchedulersHook} instance
      */
     public RxAndroidSchedulersHook getSchedulersHook() {
         if (schedulersHook.get() == null) {
@@ -68,6 +70,7 @@ public final class RxAndroidPlugins {
      * Registers an {@link RxAndroidSchedulersHook} implementation as a global override of any
      * injected or default implementations.
      *
+     * @param impl The {@link RxAndroidSchedulersHook} implementation
      * @throws IllegalStateException if called more than once or after the default was initialized
      * (if usage occurs before trying to register)
      */

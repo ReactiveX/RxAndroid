@@ -29,6 +29,8 @@ public class RxAndroidSchedulersHook {
      * should be used.
      * <p>
      * This instance should be or behave like a stateless singleton.
+     *
+     * @return The main thread {@link Scheduler}
      */
     public Scheduler getMainThreadScheduler() {
         return null;
