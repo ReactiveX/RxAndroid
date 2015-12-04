@@ -101,7 +101,7 @@ shall suffice to illustrate the idea.)
 
 ## Bugs and Feedback
 
-For bugs, feature requests, and discussion please use [Github Issues][issues].
+For bugs, feature requests, and discussion please use [GitHub Issues][issues].
 For general usage questions please use the [mailing list][list] or [StackOverflow][so].
 
 

@@ -47,7 +47,7 @@ if (project.plugins.hasPlugin('com.android.library')) {
         }
 
         if (variant.name == 'release') {
-            // There's a lot of "magic" around the archives configuration; easier 
+            // There's a lot of "magic" around the archives configuration; easier
             // just to embrace it rather than try to configure around it
             artifacts {
                 archives javadocJarTask, sourcesJarTask
