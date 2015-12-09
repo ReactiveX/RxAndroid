@@ -36,7 +36,7 @@ import rx.functions.Action0;
  *
  *   // TODO set up behavior
  *
- *   subscriber.add(new MainThreadSubscriber() {
+ *   subscriber.add(new MainThreadSubscription() {
  *     &#064;Override public void onUnsubscribe() {
  *       // TODO undo behavior
  *     }
