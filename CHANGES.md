@@ -5,6 +5,8 @@
  * New: `MainThreadSubscription` utility class runs its `onUnsubscribe` action on the Android main
    thread. This aids in adding tear-down actions which must be executed on the main thread without
    having to deal with posting to the main thread yourself.
+ * Fix: Lazily initialize `mainThread()` scheduler so that no Android code is run when overridden.
+   This allows unit tests overriding the implementation to work correctly.
  * RxJava dependency now points at v1.1.0.
 
 
