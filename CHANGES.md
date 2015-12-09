@@ -1,6 +1,14 @@
 # RxAndroid Releases #
 
-### Version 1.0.1 - August 9th 2015 ####
+### Version 1.1.0 - December 9th 2015 ###
+
+ * New: `MainThreadSubscription` utility class runs its `onUnsubscribe` action on the Android main
+   thread. This aids in adding tear-down actions which must be executed on the main thread without
+   having to deal with posting to the main thread yourself.
+ * RxJava dependency now points at v1.1.0.
+
+
+### Version 1.0.1 - August 9th 2015 ###
 
  * Fix: Correctly check `isUnsubscribed()` state in `HandlerScheduler`'s worker before scheduling
    more work.
@@ -8,7 +16,7 @@
    be canceled on unsubscription.
 
 
-### Version 1.0.0 - August 5th 2015 ####
+### Version 1.0.0 - August 5th 2015 ###
 
 Initial stable release!
 
