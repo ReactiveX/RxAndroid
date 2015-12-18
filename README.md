@@ -83,6 +83,7 @@ scheduler:
 new Thread(new Runnable() {
     @Override
     public void run() {
+        Looper.prepare();
         final Handler handler = new Handler(); // bound to this thread
         Observable.just("one", "two", "three", "four", "five")
                 .subscribeOn(Schedulers.newThread())
@@ -90,6 +91,7 @@ new Thread(new Runnable() {
                 .subscribe(/* an Observer */)
 
         // perform work, ...
+        Looper.loop();
     }
 }, "custom-thread-1").start();
 ```
