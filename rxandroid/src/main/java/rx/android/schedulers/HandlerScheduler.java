@@ -45,7 +45,7 @@ public final class HandlerScheduler extends Scheduler {
 
     static class HandlerWorker extends Worker {
 
-        private final Handler handler;
+        final Handler handler;
 
         private final CompositeSubscription compositeSubscription = new CompositeSubscription();
 
