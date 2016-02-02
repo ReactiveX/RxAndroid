@@ -1,4 +1,4 @@
-# RxAndroid: Reactive Extensions for Android
+# RxAndroid: Reactive Extensions for Android 
 
 Android specific bindings for [RxJava](http://github.com/ReactiveX/RxJava).
 
