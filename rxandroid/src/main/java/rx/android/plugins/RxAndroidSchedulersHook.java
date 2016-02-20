@@ -35,6 +35,16 @@ public class RxAndroidSchedulersHook {
     }
 
     /**
+     * Scheduler to return from {@link AndroidSchedulers#backgroundThread()} ()} or {@code null} if default
+     * should be used.
+     * <p>
+     * This instance should be or behave like a stateless singleton.
+     */
+    public Scheduler getBackgroundThreadScheduler() {
+        return null;
+    }
+
+    /**
      * Invoked before the Action is handed over to the scheduler.  Can be used for
      * wrapping/decorating/logging. The default is just a passthrough.
      *
