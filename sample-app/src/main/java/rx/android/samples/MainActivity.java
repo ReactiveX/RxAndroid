@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.android.schedulers.HandlerScheduler;
+import rx.android.schedulers.handler.HandlerScheduler;
 import rx.exceptions.OnErrorThrowable;
 import rx.functions.Func0;
 

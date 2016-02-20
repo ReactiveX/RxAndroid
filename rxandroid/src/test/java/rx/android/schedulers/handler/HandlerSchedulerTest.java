@@ -11,7 +11,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package rx.android.schedulers;
+package rx.android.schedulers.handler;
 
 import android.os.Handler;
 import org.junit.After;
@@ -30,6 +30,7 @@ import rx.Subscriber;
 import rx.Subscription;
 import rx.android.plugins.RxAndroidPlugins;
 import rx.android.plugins.RxAndroidSchedulersHook;
+import rx.android.schedulers.handler.HandlerScheduler;
 import rx.functions.Action0;
 
 import java.util.concurrent.TimeUnit;

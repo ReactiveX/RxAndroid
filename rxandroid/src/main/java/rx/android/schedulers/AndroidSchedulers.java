@@ -18,8 +18,12 @@ import android.os.Looper;
 
 import rx.Scheduler;
 import rx.android.plugins.RxAndroidPlugins;
+import rx.android.schedulers.background.BackgroundThreadScheduler;
+import rx.android.schedulers.handler.HandlerScheduler;
 
-/** Android-specific Schedulers. */
+/**
+ * Android-specific Schedulers.
+ */
 public final class AndroidSchedulers {
     private AndroidSchedulers() {
         throw new AssertionError("No instances");
@@ -29,13 +33,36 @@ public final class AndroidSchedulers {
     // https://en.wikipedia.org/wiki/Initialization-on-demand_holder_idiom
     private static class MainThreadSchedulerHolder {
         static final Scheduler MAIN_THREAD_SCHEDULER =
-                new HandlerScheduler(new Handler(Looper.getMainLooper()));
+                HandlerScheduler.from(new Handler(Looper.getMainLooper()));
     }
 
-    /** A {@link Scheduler} which executes actions on the Android UI thread. */
+    private static class BackgroundThreadSchedulerHolder {
+        static final Scheduler BACKGROUND_THREAD_SCHEDULER =
+                BackgroundThreadScheduler.newInstance();
+    }
+
+    /**
+     * A {@link Scheduler} which executes actions on the Android UI thread.
+     */
     public static Scheduler mainThread() {
         Scheduler scheduler =
                 RxAndroidPlugins.getInstance().getSchedulersHook().getMainThreadScheduler();
         return scheduler != null ? scheduler : MainThreadSchedulerHolder.MAIN_THREAD_SCHEDULER;
+    }
+
+    /**
+     * Creates and returns a {@link Scheduler} that creates a new {@link Thread} for each unit of work.
+     * <p>
+     * Each thread created by this scheduler will have fixed priority ({@link Thread#NORM_PRIORITY} - 1)
+     * which is lower than Android main thread priority.
+     * <p>
+     * Unhandled errors will be delivered to the scheduler Thread's {@link java.lang.Thread.UncaughtExceptionHandler}.
+     *
+     * @return a {@link BackgroundThreadScheduler} instance
+     */
+    public static Scheduler backgroundThread() {
+        Scheduler scheduler =
+                RxAndroidPlugins.getInstance().getSchedulersHook().getBackgroundThreadScheduler();
+        return scheduler != null ? scheduler : BackgroundThreadSchedulerHolder.BACKGROUND_THREAD_SCHEDULER;
     }
 }
