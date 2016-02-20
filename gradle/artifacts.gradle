@@ -24,6 +24,10 @@ if (project.plugins.hasPlugin('com.android.library')) {
 
             // Output to a unique javadoc folder per variant
             destinationDir = new File(project.docsDir, "javadoc-$variant.name")
+
+            if (JavaVersion.current().isJava8Compatible()) {
+                options.addStringOption('Xdoclint:none', '-quiet')
+            }
         }
 
         // For official releasese, don't prefix the name so the artifact is published correctly
