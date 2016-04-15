@@ -20,10 +20,10 @@ Since RxAndroid is part of the RxJava family the communication channels are simi
 # Binaries
 
 ```groovy
-compile 'io.reactivex:rxandroid:1.0.1'
+compile 'io.reactivex:rxandroid:1.1.0'
 // Because RxAndroid releases are few and far between, it is recommended you also
 // explicitly depend on RxJava's latest version for bug fixes and new features.
-compile 'io.reactivex:rxjava:1.0.16'
+compile 'io.reactivex:rxjava:1.1.0'
 ```
 
 * RxAndroid: <a href='http://search.maven.org/#search%7Cga%7C1%7Crxandroid'><img src='http://img.shields.io/maven-central/v/io.reactivex/rxandroid.svg'></a>
@@ -83,6 +83,7 @@ scheduler:
 new Thread(new Runnable() {
     @Override
     public void run() {
+        Looper.prepare();
         final Handler handler = new Handler(); // bound to this thread
         Observable.just("one", "two", "three", "four", "five")
                 .subscribeOn(Schedulers.newThread())
@@ -90,6 +91,7 @@ new Thread(new Runnable() {
                 .subscribe(/* an Observer */)
 
         // perform work, ...
+        Looper.loop();
     }
 }, "custom-thread-1").start();
 ```
@@ -101,7 +103,7 @@ shall suffice to illustrate the idea.)
 
 ## Bugs and Feedback
 
-For bugs, feature requests, and discussion please use [Github Issues][issues].
+For bugs, feature requests, and discussion please use [GitHub Issues][issues].
 For general usage questions please use the [mailing list][list] or [StackOverflow][so].
 
 
