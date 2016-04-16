@@ -26,7 +26,12 @@ import android.os.Handler;
 
 /** A {@link Scheduler} backed by a {@link Handler}. */
 public final class HandlerScheduler extends Scheduler {
-    /** Create a {@link Scheduler} which uses {@code handler} to execute actions. */
+    /**
+     * Create a {@link Scheduler} which uses {@code handler} to execute actions.
+     *
+     * @param handler The {@link Handler} to execute actions
+     * @return A new {@link HandlerScheduler}
+     */
     public static HandlerScheduler from(Handler handler) {
         if (handler == null) throw new NullPointerException("handler == null");
         return new HandlerScheduler(handler);
