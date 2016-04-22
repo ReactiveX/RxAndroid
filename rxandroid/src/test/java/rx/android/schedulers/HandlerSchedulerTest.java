@@ -14,6 +14,7 @@
 package rx.android.schedulers;
 
 import android.os.Handler;
+import android.os.Message;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,6 +31,7 @@ import rx.Subscriber;
 import rx.Subscription;
 import rx.android.plugins.RxAndroidPlugins;
 import rx.android.plugins.RxAndroidSchedulersHook;
+import rx.android.schedulers.HandlerScheduler.HandlerWorker;
 import rx.functions.Action0;
 
 import java.util.concurrent.TimeUnit;
@@ -71,7 +73,6 @@ public class HandlerSchedulerTest {
     @Test
     public void shouldScheduleImmediateActionOnHandlerThread() {
         Handler handler = mock(Handler.class);
-        @SuppressWarnings("unchecked")
         Action0 action = mock(Action0.class);
 
         Scheduler scheduler = HandlerScheduler.from(handler);
@@ -79,18 +80,17 @@ public class HandlerSchedulerTest {
         inner.schedule(action);
 
         // verify that we post to the given Handler
-        ArgumentCaptor<Runnable> runnable = ArgumentCaptor.forClass(Runnable.class);
-        verify(handler).postDelayed(runnable.capture(), eq(0L));
+        ArgumentCaptor<Message> message = ArgumentCaptor.forClass(Message.class);
+        verify(handler).sendMessageDelayed(message.capture(), eq(0L));
 
         // verify that the given handler delegates to our action
-        runnable.getValue().run();
+        message.getValue().getCallback().run();
         verify(action).call();
     }
 
     @Test
     public void shouldScheduleDelayedActionOnHandlerThread() {
         Handler handler = mock(Handler.class);
-        @SuppressWarnings("unchecked")
         Action0 action = mock(Action0.class);
 
         Scheduler scheduler = HandlerScheduler.from(handler);
@@ -98,11 +98,11 @@ public class HandlerSchedulerTest {
         inner.schedule(action, 1, SECONDS);
 
         // verify that we post to the given Handler
-        ArgumentCaptor<Runnable> runnable = ArgumentCaptor.forClass(Runnable.class);
-        verify(handler).postDelayed(runnable.capture(), eq(1000L));
+        ArgumentCaptor<Message> message = ArgumentCaptor.forClass(Message.class);
+        verify(handler).sendMessageDelayed(message.capture(), eq(1000L));
 
         // verify that the given handler delegates to our action
-        runnable.getValue().run();
+        message.getValue().getCallback().run();
         verify(action).call();
     }
 
@@ -118,7 +118,7 @@ public class HandlerSchedulerTest {
 
         subscription.unsubscribe();
 
-        verify(handler).removeCallbacks(any(Runnable.class));
+        verify(handler).removeCallbacksAndMessages(any(HandlerWorker.class));
     }
 
     @Test
@@ -126,7 +126,7 @@ public class HandlerSchedulerTest {
         Observable.OnSubscribe<Integer> onSubscribe = mock(Observable.OnSubscribe.class);
         Handler handler = spy(new Handler());
 
-        final Worker worker = spy(new HandlerScheduler.HandlerWorker(handler));
+        final Worker worker = spy(new HandlerWorker(handler));
         Scheduler scheduler = new Scheduler() {
             @Override public Worker createWorker() {
                 return worker;
@@ -138,14 +138,14 @@ public class HandlerSchedulerTest {
                 .subscribe();
 
         verify(worker).schedule(any(Action0.class), eq(1L), eq(MINUTES));
-        verify(handler).postDelayed(any(Runnable.class), eq(MINUTES.toMillis(1)));
+        verify(handler).sendMessageDelayed(any(Message.class), eq(MINUTES.toMillis(1)));
 
         subscription.unsubscribe();
 
         ShadowLooper.runUiThreadTasksIncludingDelayedTasks();
 
         verify(onSubscribe, never()).call(any(Subscriber.class));
-        verify(handler).removeCallbacks(any(Runnable.class));
+        verify(handler).removeCallbacksAndMessages(worker);
     }
 
     @Test
@@ -159,7 +159,6 @@ public class HandlerSchedulerTest {
         });
 
         Handler handler = mock(Handler.class);
-        @SuppressWarnings("unchecked")
         Action0 action = mock(Action0.class);
 
         Scheduler scheduler = HandlerScheduler.from(handler);
@@ -170,11 +169,11 @@ public class HandlerSchedulerTest {
         assertSame(action, actionRef.get());
 
         // Verify that we post to the given Handler.
-        ArgumentCaptor<Runnable> runnable = ArgumentCaptor.forClass(Runnable.class);
-        verify(handler).postDelayed(runnable.capture(), eq(0L));
+        ArgumentCaptor<Message> message = ArgumentCaptor.forClass(Message.class);
+        verify(handler).sendMessageDelayed(message.capture(), eq(0L));
 
         // Verify that the given handler delegates to our action.
-        runnable.getValue().run();
+        message.getValue().getCallback().run();
         verify(action).call();
     }
 
@@ -220,5 +219,25 @@ public class HandlerSchedulerTest {
         ShadowLooper.runUiThreadTasksIncludingDelayedTasks();
 
         assertTrue(neverCalled.get());
+    }
+
+    @Test
+    public void schedulerWorkerCancellationDoesNotAffectOtherWorkers() {
+        Scheduler scheduler = HandlerScheduler.from(new Handler());
+
+        Scheduler.Worker worker1 = scheduler.createWorker();
+        Action0 action1 = mock(Action0.class);
+        worker1.schedule(action1, 1, MINUTES);
+
+        Scheduler.Worker worker2 = scheduler.createWorker();
+        Action0 action2 = mock(Action0.class);
+        worker2.schedule(action2, 1, MINUTES);
+
+        worker1.unsubscribe();
+
+        ShadowLooper.runUiThreadTasksIncludingDelayedTasks();
+
+        verify(action1, never()).call();
+        verify(action2).call();
     }
 }

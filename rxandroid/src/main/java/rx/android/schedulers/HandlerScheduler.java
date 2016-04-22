@@ -18,11 +18,12 @@ import java.util.concurrent.TimeUnit;
 import rx.Scheduler;
 import rx.Subscription;
 import rx.android.plugins.RxAndroidPlugins;
+import rx.exceptions.OnErrorNotImplementedException;
 import rx.functions.Action0;
-import rx.internal.schedulers.ScheduledAction;
-import rx.subscriptions.CompositeSubscription;
+import rx.plugins.RxJavaPlugins;
 import rx.subscriptions.Subscriptions;
 import android.os.Handler;
+import android.os.Message;
 
 /** A {@link Scheduler} backed by a {@link Handler}. */
 public final class HandlerScheduler extends Scheduler {
@@ -44,10 +45,8 @@ public final class HandlerScheduler extends Scheduler {
     }
 
     static class HandlerWorker extends Worker {
-
-        final Handler handler;
-
-        private final CompositeSubscription compositeSubscription = new CompositeSubscription();
+        private final Handler handler;
+        private volatile boolean unsubscribed;
 
         HandlerWorker(Handler handler) {
             this.handler = handler;
@@ -55,34 +54,34 @@ public final class HandlerScheduler extends Scheduler {
 
         @Override
         public void unsubscribe() {
-            compositeSubscription.unsubscribe();
+            unsubscribed = true;
+            handler.removeCallbacksAndMessages(this /* token */);
         }
 
         @Override
         public boolean isUnsubscribed() {
-            return compositeSubscription.isUnsubscribed();
+            return unsubscribed;
         }
 
         @Override
         public Subscription schedule(Action0 action, long delayTime, TimeUnit unit) {
-            if (compositeSubscription.isUnsubscribed()) {
+            if (unsubscribed) {
                 return Subscriptions.unsubscribed();
             }
 
             action = RxAndroidPlugins.getInstance().getSchedulersHook().onSchedule(action);
 
-            final ScheduledAction scheduledAction = new ScheduledAction(action);
-            scheduledAction.addParent(compositeSubscription);
-            compositeSubscription.add(scheduledAction);
+            ScheduledAction scheduledAction = new ScheduledAction(action, handler);
 
-            handler.postDelayed(scheduledAction, unit.toMillis(delayTime));
+            Message message = Message.obtain(handler, scheduledAction);
+            message.obj = this; // Used as token for unsubscription operation.
 
-            scheduledAction.add(Subscriptions.create(new Action0() {
-                @Override
-                public void call() {
-                    handler.removeCallbacks(scheduledAction);
-                }
-            }));
+            handler.sendMessageDelayed(message, unit.toMillis(delayTime));
+
+            if (unsubscribed) {
+                handler.removeCallbacks(scheduledAction);
+                return Subscriptions.unsubscribed();
+            }
 
             return scheduledAction;
         }
@@ -90,6 +89,43 @@ public final class HandlerScheduler extends Scheduler {
         @Override
         public Subscription schedule(final Action0 action) {
             return schedule(action, 0, TimeUnit.MILLISECONDS);
+        }
+    }
+
+    static final class ScheduledAction implements Runnable, Subscription {
+        private final Action0 action;
+        private final Handler handler;
+        private volatile boolean unsubscribed;
+
+        ScheduledAction(Action0 action, Handler handler) {
+            this.action = action;
+            this.handler = handler;
+        }
+
+        @Override public void run() {
+            try {
+                action.call();
+            } catch (Throwable e) {
+                // nothing to do but print a System error as this is fatal and there is nowhere else to throw this
+                IllegalStateException ie;
+                if (e instanceof OnErrorNotImplementedException) {
+                    ie = new IllegalStateException("Exception thrown on Scheduler.Worker thread. Add `onError` handling.", e);
+                } else {
+                    ie = new IllegalStateException("Fatal Exception thrown on Scheduler.Worker thread.", e);
+                }
+                RxJavaPlugins.getInstance().getErrorHandler().handleError(ie);
+                Thread thread = Thread.currentThread();
+                thread.getUncaughtExceptionHandler().uncaughtException(thread, ie);
+            }
+        }
+
+        @Override public void unsubscribe() {
+            unsubscribed = true;
+            handler.removeCallbacks(this);
+        }
+
+        @Override public boolean isUnsubscribed() {
+            return unsubscribed;
         }
     }
 }
