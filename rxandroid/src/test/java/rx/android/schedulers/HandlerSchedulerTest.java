@@ -14,50 +14,279 @@
 package rx.android.schedulers;
 
 import android.os.Handler;
-import android.os.Message;
+import android.os.Looper;
+import java.lang.Thread.UncaughtExceptionHandler;
+import java.util.concurrent.atomic.AtomicReference;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
-import org.robolectric.shadows.ShadowLooper;
-
-import rx.Observable;
 import rx.Scheduler;
 import rx.Scheduler.Worker;
-import rx.Subscriber;
 import rx.Subscription;
 import rx.android.plugins.RxAndroidPlugins;
 import rx.android.plugins.RxAndroidSchedulersHook;
-import rx.android.schedulers.HandlerScheduler.HandlerWorker;
+import rx.exceptions.OnErrorNotImplementedException;
 import rx.functions.Action0;
 
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
-
 import static java.util.concurrent.TimeUnit.MINUTES;
-import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
+import static org.robolectric.shadows.ShadowLooper.idleMainLooper;
+import static org.robolectric.shadows.ShadowLooper.pauseMainLooper;
+import static org.robolectric.shadows.ShadowLooper.runUiThreadTasks;
+import static org.robolectric.shadows.ShadowLooper.runUiThreadTasksIncludingDelayedTasks;
+import static org.robolectric.shadows.ShadowLooper.unPauseMainLooper;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(manifest=Config.NONE)
 public class HandlerSchedulerTest {
 
-    @Before @After
-    public void setUpAndTearDown() {
+    @Before
+    public void setUp() {
         RxAndroidPlugins.getInstance().reset();
+        pauseMainLooper(); // Take manual control of looper task queue.
+    }
+
+    @After
+    public void tearDown() {
+        RxAndroidPlugins.getInstance().reset();
+        unPauseMainLooper();
+    }
+
+    private Scheduler scheduler = HandlerScheduler.from(new Handler(Looper.getMainLooper()));
+
+    @Test
+    public void schedulePostsActionImmediately() {
+        Worker worker = scheduler.createWorker();
+
+        Action0 action = mock(Action0.class);
+        worker.schedule(action);
+
+        runUiThreadTasks();
+        verify(action).call();
+    }
+
+    @Test
+    public void scheduleWithDelayPostsActionWithDelay() {
+        Worker worker = scheduler.createWorker();
+
+        Action0 action = mock(Action0.class);
+        worker.schedule(action, 1, MINUTES);
+
+        runUiThreadTasks();
+        verify(action, never()).call();
+
+        idleMainLooper(MINUTES.toMillis(1));
+        runUiThreadTasks();
+        verify(action).call();
+    }
+
+    @Test
+    public void unsubscribeCancelsScheduledAction() {
+        Worker worker = scheduler.createWorker();
+
+        Action0 action = mock(Action0.class);
+        Subscription subscription = worker.schedule(action);
+        subscription.unsubscribe();
+
+        runUiThreadTasks();
+        verify(action, never()).call();
+    }
+
+    @Test
+    public void unsubscribeCancelsScheduledActionWithDelay() {
+        Worker worker = scheduler.createWorker();
+
+        Action0 action = mock(Action0.class);
+        Subscription subscription = worker.schedule(action, 1, MINUTES);
+        subscription.unsubscribe();
+
+        runUiThreadTasksIncludingDelayedTasks();
+        verify(action, never()).call();
+    }
+
+    @Test
+    public void unsubscribeState() {
+        Worker worker = scheduler.createWorker();
+
+        Action0 action = mock(Action0.class);
+        Subscription subscription = worker.schedule(action);
+        assertFalse(subscription.isUnsubscribed());
+
+        subscription.unsubscribe();
+        assertTrue(subscription.isUnsubscribed());
+    }
+
+    @Test
+    public void schedulerHookIsUsed() {
+        final Action0 newAction = mock(Action0.class);
+        final AtomicReference<Action0> actionRef = new AtomicReference<>();
+        RxAndroidPlugins.getInstance().registerSchedulersHook(new RxAndroidSchedulersHook() {
+            @Override public Action0 onSchedule(Action0 action) {
+                actionRef.set(action); // Capture the original action.
+                return newAction; // Return a different one.
+            }
+        });
+
+        Worker worker = scheduler.createWorker();
+
+        Action0 action = mock(Action0.class);
+        worker.schedule(action);
+
+        // Verify our action was passed to the schedulers hook.
+        assertSame(action, actionRef.get());
+
+        // Verify the scheduled action was the one returned from the hook.
+        runUiThreadTasks();
+        verify(newAction).call();
+        verify(action, never()).call();
+    }
+
+    @Test
+    public void workerUnsubscriptionPreventsScheduling() {
+        Worker worker = scheduler.createWorker();
+        worker.unsubscribe();
+
+        Action0 action = mock(Action0.class);
+        worker.schedule(action);
+
+        runUiThreadTasks();
+        verify(action, never()).call();
+    }
+
+    @Test
+    public void workerUnsubscriptionDuringSchedulingCancelsScheduledAction() {
+        final Scheduler.Worker worker = scheduler.createWorker();
+
+        RxAndroidPlugins.getInstance().registerSchedulersHook(new RxAndroidSchedulersHook() {
+            @Override public Action0 onSchedule(Action0 action) {
+                // Purposefully unsubscribe in an asinine point after the normal unsubscribed check.
+                worker.unsubscribe();
+                return super.onSchedule(action);
+            }
+        });
+
+        Action0 action = mock(Action0.class);
+        worker.schedule(action);
+
+        runUiThreadTasks();
+        verify(action, never()).call();
+    }
+
+    @Test
+    public void workerUnsubscriptionCancelsScheduled() {
+        Worker worker = scheduler.createWorker();
+
+        Action0 action = mock(Action0.class);
+        worker.schedule(action, 1, MINUTES);
+
+        worker.unsubscribe();
+
+        runUiThreadTasks();
+        verify(action, never()).call();
+    }
+
+    @Test
+    public void workerUnsubscriptionDoesNotAffectOtherWorkers() {
+        Scheduler.Worker workerA = scheduler.createWorker();
+        Action0 actionA = mock(Action0.class);
+        workerA.schedule(actionA, 1, MINUTES);
+
+        Scheduler.Worker workerB = scheduler.createWorker();
+        Action0 actionB = mock(Action0.class);
+        workerB.schedule(actionB, 1, MINUTES);
+
+        workerA.unsubscribe();
+
+        runUiThreadTasksIncludingDelayedTasks();
+        verify(actionA, never()).call();
+        verify(actionB).call();
+    }
+
+    @Test
+    public void workerUnsubscribeState() {
+        Worker worker = scheduler.createWorker();
+        assertFalse(worker.isUnsubscribed());
+
+        worker.unsubscribe();
+        assertTrue(worker.isUnsubscribed());
+    }
+
+    @Test public void throwingActionRoutedToHookAndThreadHandler() {
+        // TODO Test hook as well. Requires https://github.com/ReactiveX/RxJava/pull/3820.
+        
+        Thread thread = Thread.currentThread();
+        UncaughtExceptionHandler originalHandler = thread.getUncaughtExceptionHandler();
+
+        final AtomicReference<Throwable> throwableRef = new AtomicReference<>();
+        thread.setUncaughtExceptionHandler(new UncaughtExceptionHandler() {
+            @Override public void uncaughtException(Thread thread, Throwable ex) {
+                throwableRef.set(ex);
+            }
+        });
+
+        Worker worker = scheduler.createWorker();
+
+        final NullPointerException npe = new NullPointerException();
+        Action0 action = new Action0() {
+            @Override public void call() {
+                throw npe;
+            }
+        };
+        worker.schedule(action);
+
+        runUiThreadTasks();
+        Throwable throwable = throwableRef.get();
+        assertTrue(throwable instanceof IllegalStateException);
+        assertEquals("Fatal Exception thrown on Scheduler.Worker thread.", throwable.getMessage());
+        assertSame(npe, throwable.getCause());
+
+        // Restore the original uncaught exception handler.
+        thread.setUncaughtExceptionHandler(originalHandler);
+    }
+
+    @Test public void actionMissingErrorHandlerRoutedToHookAndThreadHandler() {
+        // TODO Test hook as well. Requires https://github.com/ReactiveX/RxJava/pull/3820.
+
+        Thread thread = Thread.currentThread();
+        UncaughtExceptionHandler originalHandler = thread.getUncaughtExceptionHandler();
+
+        final AtomicReference<Throwable> throwableRef = new AtomicReference<>();
+        thread.setUncaughtExceptionHandler(new UncaughtExceptionHandler() {
+            @Override public void uncaughtException(Thread thread, Throwable ex) {
+                throwableRef.set(ex);
+            }
+        });
+
+        Worker worker = scheduler.createWorker();
+
+        final OnErrorNotImplementedException oenie =
+            new OnErrorNotImplementedException(new NullPointerException());
+        Action0 action = new Action0() {
+            @Override public void call() {
+                throw oenie;
+            }
+        };
+        worker.schedule(action);
+
+        runUiThreadTasks();
+        Throwable throwable = throwableRef.get();
+        assertTrue(throwable instanceof IllegalStateException);
+        assertEquals("Exception thrown on Scheduler.Worker thread. Add `onError` handling.",
+            throwable.getMessage());
+        assertSame(oenie, throwable.getCause());
+
+        // Restore the original uncaught exception handler.
+        thread.setUncaughtExceptionHandler(originalHandler);
     }
 
     @Test
@@ -68,176 +297,5 @@ public class HandlerSchedulerTest {
         } catch (NullPointerException e) {
             assertEquals("handler == null", e.getMessage());
         }
-    }
-
-    @Test
-    public void shouldScheduleImmediateActionOnHandlerThread() {
-        Handler handler = mock(Handler.class);
-        Action0 action = mock(Action0.class);
-
-        Scheduler scheduler = HandlerScheduler.from(handler);
-        Worker inner = scheduler.createWorker();
-        inner.schedule(action);
-
-        // verify that we post to the given Handler
-        ArgumentCaptor<Message> message = ArgumentCaptor.forClass(Message.class);
-        verify(handler).sendMessageDelayed(message.capture(), eq(0L));
-
-        // verify that the given handler delegates to our action
-        message.getValue().getCallback().run();
-        verify(action).call();
-    }
-
-    @Test
-    public void shouldScheduleDelayedActionOnHandlerThread() {
-        Handler handler = mock(Handler.class);
-        Action0 action = mock(Action0.class);
-
-        Scheduler scheduler = HandlerScheduler.from(handler);
-        Worker inner = scheduler.createWorker();
-        inner.schedule(action, 1, SECONDS);
-
-        // verify that we post to the given Handler
-        ArgumentCaptor<Message> message = ArgumentCaptor.forClass(Message.class);
-        verify(handler).sendMessageDelayed(message.capture(), eq(1000L));
-
-        // verify that the given handler delegates to our action
-        message.getValue().getCallback().run();
-        verify(action).call();
-    }
-
-    @Test
-    public void shouldRemoveCallbacksFromHandlerWhenUnsubscribedSubscription() {
-        Handler handler = spy(new Handler());
-        Observable.OnSubscribe<Integer> onSubscribe = mock(Observable.OnSubscribe.class);
-        Subscription subscription = Observable.create(onSubscribe)
-                .subscribeOn(HandlerScheduler.from(handler))
-                .subscribe();
-
-        verify(onSubscribe).call(any(Subscriber.class));
-
-        subscription.unsubscribe();
-
-        verify(handler).removeCallbacksAndMessages(any(HandlerWorker.class));
-    }
-
-    @Test
-    public void shouldNotCallOnSubscribeWhenSubscriptionUnsubscribedBeforeDelay() {
-        Observable.OnSubscribe<Integer> onSubscribe = mock(Observable.OnSubscribe.class);
-        Handler handler = spy(new Handler());
-
-        final Worker worker = spy(new HandlerWorker(handler));
-        Scheduler scheduler = new Scheduler() {
-            @Override public Worker createWorker() {
-                return worker;
-            }
-        };
-
-        Subscription subscription = Observable.create(onSubscribe)
-                .delaySubscription(1, MINUTES, scheduler)
-                .subscribe();
-
-        verify(worker).schedule(any(Action0.class), eq(1L), eq(MINUTES));
-        verify(handler).sendMessageDelayed(any(Message.class), eq(MINUTES.toMillis(1)));
-
-        subscription.unsubscribe();
-
-        ShadowLooper.runUiThreadTasksIncludingDelayedTasks();
-
-        verify(onSubscribe, never()).call(any(Subscriber.class));
-        verify(handler).removeCallbacksAndMessages(worker);
-    }
-
-    @Test
-    public void handlerSchedulerCallsThroughToHook() {
-        final AtomicReference<Action0> actionRef = new AtomicReference<Action0>();
-        RxAndroidPlugins.getInstance().registerSchedulersHook(new RxAndroidSchedulersHook() {
-            @Override public Action0 onSchedule(Action0 action) {
-                actionRef.set(action);
-                return super.onSchedule(action);
-            }
-        });
-
-        Handler handler = mock(Handler.class);
-        Action0 action = mock(Action0.class);
-
-        Scheduler scheduler = HandlerScheduler.from(handler);
-        Worker inner = scheduler.createWorker();
-        inner.schedule(action);
-
-        // Verify the action was passed through the schedulers hook.
-        assertSame(action, actionRef.get());
-
-        // Verify that we post to the given Handler.
-        ArgumentCaptor<Message> message = ArgumentCaptor.forClass(Message.class);
-        verify(handler).sendMessageDelayed(message.capture(), eq(0L));
-
-        // Verify that the given handler delegates to our action.
-        message.getValue().getCallback().run();
-        verify(action).call();
-    }
-
-    @Test
-    public void shouldNotScheduleAfterUnsubscribe() {
-        Scheduler scheduler = HandlerScheduler.from(new Handler());
-        Worker inner = scheduler.createWorker();
-        inner.unsubscribe();
-
-        // Assert that work scheduled after unsubscribe() is never called
-        final AtomicBoolean neverCalled = new AtomicBoolean(true);
-        inner.schedule(new Action0() {
-            @Override
-            public void call() {
-                neverCalled.set(false);
-            }
-        });
-        assertTrue(neverCalled.get());
-    }
-
-    @Test
-    public void shouldNotScheduleAfterUnsubscribeRaceCondition() {
-        Scheduler scheduler = HandlerScheduler.from(new Handler());
-        final Scheduler.Worker inner = scheduler.createWorker();
-
-        RxAndroidPlugins.getInstance().registerSchedulersHook(new RxAndroidSchedulersHook() {
-            @Override public Action0 onSchedule(Action0 action) {
-                // Purposefully unsubscribe in an asinine point,
-                // after the normal isUnsubscribed() check
-                inner.unsubscribe();
-                return super.onSchedule(action);
-            }
-        });
-
-        final AtomicBoolean neverCalled = new AtomicBoolean(true);
-        inner.schedule(new Action0() {
-            @Override
-            public void call() {
-                neverCalled.set(false);
-            }
-        }, 1, TimeUnit.MILLISECONDS);
-
-        ShadowLooper.runUiThreadTasksIncludingDelayedTasks();
-
-        assertTrue(neverCalled.get());
-    }
-
-    @Test
-    public void schedulerWorkerCancellationDoesNotAffectOtherWorkers() {
-        Scheduler scheduler = HandlerScheduler.from(new Handler());
-
-        Scheduler.Worker worker1 = scheduler.createWorker();
-        Action0 action1 = mock(Action0.class);
-        worker1.schedule(action1, 1, MINUTES);
-
-        Scheduler.Worker worker2 = scheduler.createWorker();
-        Action0 action2 = mock(Action0.class);
-        worker2.schedule(action2, 1, MINUTES);
-
-        worker1.unsubscribe();
-
-        ShadowLooper.runUiThreadTasksIncludingDelayedTasks();
-
-        verify(action1, never()).call();
-        verify(action2).call();
     }
 }
