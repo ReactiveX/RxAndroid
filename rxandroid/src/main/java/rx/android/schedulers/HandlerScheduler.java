@@ -18,6 +18,7 @@ import java.util.concurrent.TimeUnit;
 import rx.Scheduler;
 import rx.Subscription;
 import rx.android.plugins.RxAndroidPlugins;
+import rx.android.plugins.RxAndroidSchedulersHook;
 import rx.exceptions.OnErrorNotImplementedException;
 import rx.functions.Action0;
 import rx.plugins.RxJavaPlugins;
@@ -46,10 +47,12 @@ public final class HandlerScheduler extends Scheduler {
 
     static class HandlerWorker extends Worker {
         private final Handler handler;
+        private final RxAndroidSchedulersHook hook;
         private volatile boolean unsubscribed;
 
         HandlerWorker(Handler handler) {
             this.handler = handler;
+            this.hook = RxAndroidPlugins.getInstance().getSchedulersHook();
         }
 
         @Override
@@ -69,7 +72,7 @@ public final class HandlerScheduler extends Scheduler {
                 return Subscriptions.unsubscribed();
             }
 
-            action = RxAndroidPlugins.getInstance().getSchedulersHook().onSchedule(action);
+            action = hook.onSchedule(action);
 
             ScheduledAction scheduledAction = new ScheduledAction(action, handler);
 

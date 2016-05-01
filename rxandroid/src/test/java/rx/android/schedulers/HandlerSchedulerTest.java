@@ -165,15 +165,17 @@ public class HandlerSchedulerTest {
 
     @Test
     public void workerUnsubscriptionDuringSchedulingCancelsScheduledAction() {
-        final Scheduler.Worker worker = scheduler.createWorker();
-
+        final AtomicReference<Scheduler.Worker> workerRef = new AtomicReference<>();
         RxAndroidPlugins.getInstance().registerSchedulersHook(new RxAndroidSchedulersHook() {
             @Override public Action0 onSchedule(Action0 action) {
                 // Purposefully unsubscribe in an asinine point after the normal unsubscribed check.
-                worker.unsubscribe();
+                workerRef.get().unsubscribe();
                 return super.onSchedule(action);
             }
         });
+
+        Scheduler.Worker worker = scheduler.createWorker();
+        workerRef.set(worker);
 
         Action0 action = mock(Action0.class);
         worker.schedule(action);
@@ -223,7 +225,7 @@ public class HandlerSchedulerTest {
 
     @Test public void throwingActionRoutedToHookAndThreadHandler() {
         // TODO Test hook as well. Requires https://github.com/ReactiveX/RxJava/pull/3820.
-        
+
         Thread thread = Thread.currentThread();
         UncaughtExceptionHandler originalHandler = thread.getUncaughtExceptionHandler();
 
