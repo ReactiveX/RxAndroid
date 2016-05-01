@@ -4,7 +4,7 @@ Android specific bindings for [RxJava](http://github.com/ReactiveX/RxJava).
 
 This module adds the minimum classes to RxJava that make writing reactive components in Android
 applications easy and hassle-free. More specifically, it provides a `Scheduler` that schedules on
-the main UI thread or any given `Handler`.
+the main thread or any given `Looper`.
 
 
 ## Communication
@@ -52,53 +52,36 @@ Futher details on building can be found on the RxJava [Getting Started][start] p
 A sample project which provides runnable code examples that demonstrate uses of the classes in this
 project is available in the `sample-app/` folder.
 
-## Observing on the UI thread
+## Observing on the main thread
 
 One of the most common operations when dealing with asynchronous tasks on Android is to observe the task's
-result or outcome on the main UI thread. Using vanilla Android, this would
-typically be accomplished with an `AsyncTask`. With RxJava instead you would declare your `Observable`
-to be observed on the main thread:
+result or outcome on the main thread. Using vanilla Android, this would typically be accomplished with an
+`AsyncTask`. With RxJava instead you would declare your `Observable` to be observed on the main thread:
 
 ```java
-public class ReactiveFragment extends Fragment {
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        Observable.just("one", "two", "three", "four", "five")
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(/* an Observer */);
-    }
+Observable.just("one", "two", "three", "four", "five")
+        .subscribeOn(Schedulers.newThread())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(/* an Observer */);
 ```
 
-This will execute the Observable on a new thread, and emit results through `onNext` on the main UI thread.
+This will execute the `Observable` on a new thread, and emit results through `onNext` on the main thread.
 
-## Observing on arbitrary threads
-The previous sample is merely a specialization of a more general concept, namely binding asynchronous
-communication to an Android message loop using the `Handler` class. In order to observe an `Observable`
-on an arbitrary thread, create a `Handler` bound to that thread and use the `HandlerScheduler.from`
-scheduler:
+## Observing on arbitrary loopers
+
+The previous sample is merely a specialization of a more general concept: binding asynchronous
+communication to an Android message loop, or `Looper`. In order to observe an `Observable` on an arbitrary
+`Looper`, create an associated `Scheduler` by calling `AndroidSchedulers.from`:
 
 ```java
-new Thread(new Runnable() {
-    @Override
-    public void run() {
-        Looper.prepare();
-        final Handler handler = new Handler(); // bound to this thread
-        Observable.just("one", "two", "three", "four", "five")
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(HandlerScheduler.from(handler))
-                .subscribe(/* an Observer */)
-
-        // perform work, ...
-        Looper.loop();
-    }
-}, "custom-thread-1").start();
+Looper backgroundLooper = // ...
+Observable.just("one", "two", "three", "four", "five")
+        .observeOn(AndroidSchedulers.from(backgroundLooper))
+        .subscribe(/* an Observer */)
 ```
 
-This will execute the Observable on a new thread and emit results through `onNext` on "custom-thread-1".
-(This example is contrived since you could as well call `observeOn(Schedulers.currentThread())` but it
-shall suffice to illustrate the idea.)
+This will execute the Observable on a new thread and emit results through `onNext` on whatever thread is
+running `backgroundLooper`.
 
 
 ## Bugs and Feedback
