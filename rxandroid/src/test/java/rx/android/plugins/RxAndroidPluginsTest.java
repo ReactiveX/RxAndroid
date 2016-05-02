@@ -13,21 +13,13 @@
  */
 package rx.android.plugins;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 public final class RxAndroidPluginsTest {
-    @Before @After
-    public void setUpAndTearDown() {
-        RxAndroidPlugins.getInstance().reset();
-    }
-
     @Test
     public void registeredSchedulersHookIsUsed() {
         RxAndroidPlugins plugins = new RxAndroidPlugins();
