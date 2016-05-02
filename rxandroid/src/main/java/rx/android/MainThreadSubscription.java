@@ -30,7 +30,7 @@ import rx.functions.Action0;
  * A {@link #verifyMainThread() convenience method} is also provided for validating whether code
  * is being called on the main thread. Calls to this method along with instances of this class are
  * commonly used when creating custom observables using the following pattern:
- * <pre>{@code
+ * <pre><code>
  * &#064;Override public void call(Subscriber<? extends T> subscriber) {
  *   MainThreadSubscription.verifyMainThread();
  *
@@ -42,7 +42,7 @@ import rx.functions.Action0;
  *     }
  *   });
  * }
- * }</pre>
+ * </code></pre>
  */
 public abstract class MainThreadSubscription implements Subscription {
   /**
