@@ -16,24 +16,28 @@ package rx.android.schedulers;
 import android.os.Looper;
 import rx.Scheduler;
 import rx.android.plugins.RxAndroidPlugins;
+import rx.android.plugins.RxAndroidSchedulersHook;
 
 /** Android-specific Schedulers. */
 public final class AndroidSchedulers {
-    private AndroidSchedulers() {
-        throw new AssertionError("No instances");
-    }
+    private static final AndroidSchedulers INSTANCE = new AndroidSchedulers();
 
-    // See https://github.com/ReactiveX/RxAndroid/issues/238
-    // https://en.wikipedia.org/wiki/Initialization-on-demand_holder_idiom
-    private static class MainThreadSchedulerHolder {
-        static final Scheduler MAIN_THREAD_SCHEDULER = new LooperScheduler(Looper.getMainLooper());
+    private final Scheduler mainThreadScheduler;
+
+    private AndroidSchedulers() {
+        RxAndroidSchedulersHook hook = RxAndroidPlugins.getInstance().getSchedulersHook();
+
+        Scheduler main = hook.getMainThreadScheduler();
+        if (main != null) {
+            mainThreadScheduler = main;
+        } else {
+            mainThreadScheduler = new LooperScheduler(Looper.getMainLooper());
+        }
     }
 
     /** A {@link Scheduler} which executes actions on the Android UI thread. */
     public static Scheduler mainThread() {
-        Scheduler scheduler =
-                RxAndroidPlugins.getInstance().getSchedulersHook().getMainThreadScheduler();
-        return scheduler != null ? scheduler : MainThreadSchedulerHolder.MAIN_THREAD_SCHEDULER;
+        return INSTANCE.mainThreadScheduler;
     }
 
     /** A {@link Scheduler} which executes actions on {@code looper}. */
