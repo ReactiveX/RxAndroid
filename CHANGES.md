@@ -5,7 +5,7 @@
  * Rewrite the Android-specific schedulers (main thread or custom) to greatly reduce allocation and
    performance overhead of scheduling work.
  * `HandlerScheduler.create` has been deprecated in favor of `AndroidSchedulers.from(Looper)` as
-   a `Looper` is the actual mechanism of scheduling on Android, not `Handler.
+   a `Looper` is the actual mechanism of scheduling on Android, not `Handler`.
  * Fix: Correct the behavior of `AndroidSchedulers.mainThread()` to only invoke the registered
    `RxAndroidSchedulersHook` for creating the main thread scheduler and to cache the result instead
    of invoking it every time. This behvior change eliminates a performance overhead and brings
