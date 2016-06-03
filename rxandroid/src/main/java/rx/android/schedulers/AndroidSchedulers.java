@@ -14,15 +14,25 @@
 package rx.android.schedulers;
 
 import android.os.Looper;
+
 import rx.Scheduler;
 import rx.android.plugins.RxAndroidPlugins;
 import rx.android.plugins.RxAndroidSchedulersHook;
+import rx.annotations.Experimental;
+import rx.schedulers.Schedulers;
 
 /** Android-specific Schedulers. */
 public final class AndroidSchedulers {
-    private static final AndroidSchedulers INSTANCE = new AndroidSchedulers();
+    private static AndroidSchedulers INSTANCE = new AndroidSchedulers();
 
     private final Scheduler mainThreadScheduler;
+
+    private static synchronized AndroidSchedulers getInstance() {
+        if (INSTANCE == null) {
+            INSTANCE = new AndroidSchedulers();
+        }
+        return INSTANCE;
+    }
 
     private AndroidSchedulers() {
         RxAndroidSchedulersHook hook = RxAndroidPlugins.getInstance().getSchedulersHook();
@@ -37,12 +47,25 @@ public final class AndroidSchedulers {
 
     /** A {@link Scheduler} which executes actions on the Android UI thread. */
     public static Scheduler mainThread() {
-        return INSTANCE.mainThreadScheduler;
+        return getInstance().mainThreadScheduler;
     }
 
     /** A {@link Scheduler} which executes actions on {@code looper}. */
     public static Scheduler from(Looper looper) {
         if (looper == null) throw new NullPointerException("looper == null");
         return new LooperScheduler(looper);
+    }
+
+    /**
+     * Resets the current {@link Schedulers} instance.
+     * <p>
+     * This API is experimental. Resetting the schedulers is dangerous
+     * during application runtime and also bad code could invoke it in
+     * the middle of an application life-cycle and really break applications
+     * if not used cautiously.
+     */
+    @Experimental
+    public static void reset() {
+        INSTANCE = null;
     }
 }
