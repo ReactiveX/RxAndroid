@@ -15,6 +15,8 @@ package rx.android.schedulers;
 
 import android.os.Looper;
 
+import java.util.concurrent.atomic.AtomicReference;
+
 import rx.Scheduler;
 import rx.android.plugins.RxAndroidPlugins;
 import rx.android.plugins.RxAndroidSchedulersHook;
@@ -23,15 +25,21 @@ import rx.schedulers.Schedulers;
 
 /** Android-specific Schedulers. */
 public final class AndroidSchedulers {
-    private static AndroidSchedulers INSTANCE = new AndroidSchedulers();
+    private static final AtomicReference<AndroidSchedulers> INSTANCE = new AtomicReference<>();
 
     private final Scheduler mainThreadScheduler;
 
-    private static synchronized AndroidSchedulers getInstance() {
-        if (INSTANCE == null) {
-            INSTANCE = new AndroidSchedulers();
+    private static AndroidSchedulers getInstance() {
+        for (;;) {
+            AndroidSchedulers current = INSTANCE.get();
+            if (current != null) {
+                return current;
+            }
+            current = new AndroidSchedulers();
+            if (INSTANCE.compareAndSet(null, current)) {
+                return current;
+            }
         }
-        return INSTANCE;
     }
 
     private AndroidSchedulers() {
@@ -66,6 +74,6 @@ public final class AndroidSchedulers {
      */
     @Experimental
     public static void reset() {
-        INSTANCE = null;
+        INSTANCE.set(null);
     }
 }
