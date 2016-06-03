@@ -21,7 +21,6 @@ import rx.Scheduler;
 import rx.android.plugins.RxAndroidPlugins;
 import rx.android.plugins.RxAndroidSchedulersHook;
 import rx.annotations.Experimental;
-import rx.schedulers.Schedulers;
 
 /** Android-specific Schedulers. */
 public final class AndroidSchedulers {
@@ -65,12 +64,9 @@ public final class AndroidSchedulers {
     }
 
     /**
-     * Resets the current {@link Schedulers} instance.
+     * Reset any cached schedulers.
      * <p>
-     * This API is experimental. Resetting the schedulers is dangerous
-     * during application runtime and also bad code could invoke it in
-     * the middle of an application life-cycle and really break applications
-     * if not used cautiously.
+     * Note: This should only be used for testing purposes.
      */
     @Experimental
     public static void reset() {
