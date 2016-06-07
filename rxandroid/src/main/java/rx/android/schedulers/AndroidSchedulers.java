@@ -14,15 +14,32 @@
 package rx.android.schedulers;
 
 import android.os.Looper;
+
+import java.util.concurrent.atomic.AtomicReference;
+
 import rx.Scheduler;
 import rx.android.plugins.RxAndroidPlugins;
 import rx.android.plugins.RxAndroidSchedulersHook;
+import rx.annotations.Experimental;
 
 /** Android-specific Schedulers. */
 public final class AndroidSchedulers {
-    private static final AndroidSchedulers INSTANCE = new AndroidSchedulers();
+    private static final AtomicReference<AndroidSchedulers> INSTANCE = new AtomicReference<>();
 
     private final Scheduler mainThreadScheduler;
+
+    private static AndroidSchedulers getInstance() {
+        for (;;) {
+            AndroidSchedulers current = INSTANCE.get();
+            if (current != null) {
+                return current;
+            }
+            current = new AndroidSchedulers();
+            if (INSTANCE.compareAndSet(null, current)) {
+                return current;
+            }
+        }
+    }
 
     private AndroidSchedulers() {
         RxAndroidSchedulersHook hook = RxAndroidPlugins.getInstance().getSchedulersHook();
@@ -37,12 +54,22 @@ public final class AndroidSchedulers {
 
     /** A {@link Scheduler} which executes actions on the Android UI thread. */
     public static Scheduler mainThread() {
-        return INSTANCE.mainThreadScheduler;
+        return getInstance().mainThreadScheduler;
     }
 
     /** A {@link Scheduler} which executes actions on {@code looper}. */
     public static Scheduler from(Looper looper) {
         if (looper == null) throw new NullPointerException("looper == null");
         return new LooperScheduler(looper);
+    }
+
+    /**
+     * Resets the current {@link AndroidSchedulers} instance.
+     * This will re-init the cached schedulers on the next usage,
+     * which can be useful in testing.
+     */
+    @Experimental
+    public static void reset() {
+        INSTANCE.set(null);
     }
 }
