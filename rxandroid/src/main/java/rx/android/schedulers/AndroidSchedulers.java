@@ -64,9 +64,9 @@ public final class AndroidSchedulers {
     }
 
     /**
-     * Reset any cached schedulers.
-     * <p>
-     * Note: This should only be used for testing purposes.
+     * Resets the current {@link AndroidSchedulers} instance.
+     * This will re-init the cached schedulers on the next usage,
+     * which can be useful in testing.
      */
     @Experimental
     public static void reset() {
