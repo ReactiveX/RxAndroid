@@ -1,5 +1,13 @@
 # RxAndroid Releases #
 
+### Version 1.2.1 - June 16th 2016 ###
+
+ * New: `AndroidSchedulers.reset()` allows clearing the scheduler cache such that the next call to
+   `AndroidSchedulers.mainThread()` will ask the `RxAndroidSchedulerHook` to re-create it. This API
+   is experimental to match `Schedulers.reset()` in RxJava.
+ * RxJava dependency now points at v1.1.6.
+
+
 ### Version 1.2.0 - May 4th 2016 ###
 
  * Rewrite the Android-specific schedulers (main thread or custom) to greatly reduce allocation and
