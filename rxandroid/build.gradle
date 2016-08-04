@@ -40,7 +40,7 @@ android {
 }
 
 dependencies {
-    compile 'io.reactivex:rxjava:1.1.8'
+    compile 'io.reactivex.rxjava2:rxjava:2.0.0-DP0-SNAPSHOT'
 
     testCompile 'junit:junit:4.12'
     testCompile 'org.robolectric:robolectric:3.1.2'

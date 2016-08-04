@@ -11,8 +11,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package rx.android;
+package io.reactivex.android;
 
+import io.reactivex.disposables.Disposable;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -30,9 +31,9 @@ import static org.junit.Assert.fail;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(manifest=Config.NONE)
-public final class MainThreadSubscriptionTest {
+public final class MainThreadDisposableTest {
   @Test public void verifyDoesNotThrowOnMainThread() throws InterruptedException {
-    MainThreadSubscription.verifyMainThread();
+    MainThreadDisposable.verifyMainThread();
     // Robolectric tests run on its main thread.
   }
 
@@ -41,7 +42,7 @@ public final class MainThreadSubscriptionTest {
     new Thread(new Runnable() {
       @Override public void run() {
         try {
-          MainThreadSubscription.verifyMainThread();
+          MainThreadDisposable.verifyMainThread();
           fail();
         } catch (IllegalStateException e) {
           assertTrue(e.getMessage().startsWith("Expected to be called on the main thread"));
@@ -57,11 +58,11 @@ public final class MainThreadSubscriptionTest {
     ShadowLooper.pauseMainLooper();
 
     final AtomicBoolean called = new AtomicBoolean();
-    new MainThreadSubscription() {
-      @Override protected void onUnsubscribe() {
+    new MainThreadDisposable() {
+      @Override protected void onDispose() {
         called.set(true);
       }
-    }.unsubscribe();
+    }.dispose();
 
     assertTrue(called.get());
   }
@@ -69,15 +70,15 @@ public final class MainThreadSubscriptionTest {
   @Test public void unsubscribeTwiceDoesNotRunTwice() {
     final AtomicInteger called = new AtomicInteger(0);
 
-    MainThreadSubscription subscription = new MainThreadSubscription() {
-      @Override protected void onUnsubscribe() {
+    Disposable disposable = new MainThreadDisposable() {
+      @Override protected void onDispose() {
         called.incrementAndGet();
       }
     };
 
-    subscription.unsubscribe();
-    subscription.unsubscribe();
-    subscription.unsubscribe();
+    disposable.dispose();
+    disposable.dispose();
+    disposable.dispose();
 
     assertEquals(1, called.get());
   }
@@ -89,11 +90,11 @@ public final class MainThreadSubscriptionTest {
     final AtomicBoolean called = new AtomicBoolean();
     new Thread(new Runnable() {
       @Override public void run() {
-        new MainThreadSubscription() {
-          @Override protected void onUnsubscribe() {
+        new MainThreadDisposable() {
+          @Override protected void onDispose() {
             called.set(true);
           }
-        }.unsubscribe();
+        }.dispose();
         latch.countDown();
       }
     }).start();
@@ -103,5 +104,16 @@ public final class MainThreadSubscriptionTest {
 
     ShadowLooper.runMainLooperOneTask();
     assertTrue(called.get());
+  }
+
+  @Test
+  public void disposedState() {
+    MainThreadDisposable disposable = new MainThreadDisposable() {
+      @Override protected void onDispose() {
+      }
+    };
+    assertFalse(disposable.isDisposed());
+    disposable.dispose();
+    assertTrue(disposable.isDisposed());
   }
 }
