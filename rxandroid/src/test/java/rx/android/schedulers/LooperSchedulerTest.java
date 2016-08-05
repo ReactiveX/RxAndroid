@@ -27,6 +27,7 @@ import rx.Scheduler.Worker;
 import rx.Subscription;
 import rx.android.plugins.RxAndroidPlugins;
 import rx.android.plugins.RxAndroidSchedulersHook;
+import rx.android.testutil.CountingAction;
 import rx.exceptions.OnErrorNotImplementedException;
 import rx.functions.Action0;
 
@@ -36,9 +37,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
 import static org.robolectric.shadows.ShadowLooper.idleMainLooper;
 import static org.robolectric.shadows.ShadowLooper.pauseMainLooper;
 import static org.robolectric.shadows.ShadowLooper.runUiThreadTasks;
@@ -67,57 +65,57 @@ public class LooperSchedulerTest {
     public void schedulePostsActionImmediately() {
         Worker worker = scheduler.createWorker();
 
-        Action0 action = mock(Action0.class);
+        CountingAction action = new CountingAction();
         worker.schedule(action);
 
         runUiThreadTasks();
-        verify(action).call();
+        assertEquals(1, action.get());
     }
 
     @Test
     public void scheduleWithDelayPostsActionWithDelay() {
         Worker worker = scheduler.createWorker();
 
-        Action0 action = mock(Action0.class);
+        CountingAction action = new CountingAction();
         worker.schedule(action, 1, MINUTES);
 
         runUiThreadTasks();
-        verify(action, never()).call();
+        assertEquals(0, action.get());
 
         idleMainLooper(MINUTES.toMillis(1));
         runUiThreadTasks();
-        verify(action).call();
+        assertEquals(1, action.get());
     }
 
     @Test
     public void unsubscribeCancelsScheduledAction() {
         Worker worker = scheduler.createWorker();
 
-        Action0 action = mock(Action0.class);
+        CountingAction action = new CountingAction();
         Subscription subscription = worker.schedule(action);
         subscription.unsubscribe();
 
         runUiThreadTasks();
-        verify(action, never()).call();
+        assertEquals(0, action.get());
     }
 
     @Test
     public void unsubscribeCancelsScheduledActionWithDelay() {
         Worker worker = scheduler.createWorker();
 
-        Action0 action = mock(Action0.class);
+        CountingAction action = new CountingAction();
         Subscription subscription = worker.schedule(action, 1, MINUTES);
         subscription.unsubscribe();
 
         runUiThreadTasksIncludingDelayedTasks();
-        verify(action, never()).call();
+        assertEquals(0, action.get());
     }
 
     @Test
     public void unsubscribeState() {
         Worker worker = scheduler.createWorker();
 
-        Action0 action = mock(Action0.class);
+        Action0 action = new CountingAction();
         Subscription subscription = worker.schedule(action);
         assertFalse(subscription.isUnsubscribed());
 
@@ -127,7 +125,7 @@ public class LooperSchedulerTest {
 
     @Test
     public void schedulerHookIsUsed() {
-        final Action0 newAction = mock(Action0.class);
+        final CountingAction newAction = new CountingAction();
         final AtomicReference<Action0> actionRef = new AtomicReference<>();
         RxAndroidPlugins.getInstance().registerSchedulersHook(new RxAndroidSchedulersHook() {
             @Override public Action0 onSchedule(Action0 action) {
@@ -138,7 +136,7 @@ public class LooperSchedulerTest {
 
         Worker worker = scheduler.createWorker();
 
-        Action0 action = mock(Action0.class);
+        CountingAction action = new CountingAction();
         worker.schedule(action);
 
         // Verify our action was passed to the schedulers hook.
@@ -146,8 +144,8 @@ public class LooperSchedulerTest {
 
         // Verify the scheduled action was the one returned from the hook.
         runUiThreadTasks();
-        verify(newAction).call();
-        verify(action, never()).call();
+        assertEquals(1, newAction.get());
+        assertEquals(0, action.get());
     }
 
     @Test
@@ -155,11 +153,11 @@ public class LooperSchedulerTest {
         Worker worker = scheduler.createWorker();
         worker.unsubscribe();
 
-        Action0 action = mock(Action0.class);
+        CountingAction action = new CountingAction();
         worker.schedule(action);
 
         runUiThreadTasks();
-        verify(action, never()).call();
+        assertEquals(0, action.get());
     }
 
     @Test
@@ -176,41 +174,41 @@ public class LooperSchedulerTest {
         Scheduler.Worker worker = scheduler.createWorker();
         workerRef.set(worker);
 
-        Action0 action = mock(Action0.class);
+        CountingAction action = new CountingAction();
         worker.schedule(action);
 
         runUiThreadTasks();
-        verify(action, never()).call();
+        assertEquals(0, action.get());
     }
 
     @Test
     public void workerUnsubscriptionCancelsScheduled() {
         Worker worker = scheduler.createWorker();
 
-        Action0 action = mock(Action0.class);
+        CountingAction action = new CountingAction();
         worker.schedule(action, 1, MINUTES);
 
         worker.unsubscribe();
 
         runUiThreadTasks();
-        verify(action, never()).call();
+        assertEquals(0, action.get());
     }
 
     @Test
     public void workerUnsubscriptionDoesNotAffectOtherWorkers() {
         Scheduler.Worker workerA = scheduler.createWorker();
-        Action0 actionA = mock(Action0.class);
+        CountingAction actionA = new CountingAction();
         workerA.schedule(actionA, 1, MINUTES);
 
         Scheduler.Worker workerB = scheduler.createWorker();
-        Action0 actionB = mock(Action0.class);
+        CountingAction actionB = new CountingAction();
         workerB.schedule(actionB, 1, MINUTES);
 
         workerA.unsubscribe();
 
         runUiThreadTasksIncludingDelayedTasks();
-        verify(actionA, never()).call();
-        verify(actionB).call();
+        assertEquals(0, actionA.get());
+        assertEquals(1, actionB.get());
     }
 
     @Test
