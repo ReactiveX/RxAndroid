@@ -11,14 +11,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package rx.android.testutil;
+package io.reactivex.android.testutil;
 
 import java.util.concurrent.atomic.AtomicInteger;
-import rx.functions.Action0;
 
-public final class CountingAction extends AtomicInteger implements Action0 {
+public class CountingRunnable extends AtomicInteger implements Runnable {
     @Override
-    public void call() {
+    public void run() {
         getAndIncrement();
     }
 }
