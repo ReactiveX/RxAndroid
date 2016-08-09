@@ -19,7 +19,7 @@ import android.os.SystemClock;
 import android.util.Log;
 import android.view.View;
 import io.reactivex.Observable;
-import io.reactivex.ObservableConsumable;
+import io.reactivex.ObservableSource;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.observers.AsyncObserver;
 import io.reactivex.schedulers.Schedulers;
@@ -60,8 +60,8 @@ public class MainActivity extends Activity {
     }
 
     static Observable<String> sampleObservable() {
-        return Observable.defer(new Callable<ObservableConsumable<? extends String>>() {
-          @Override public ObservableConsumable<? extends String> call() throws Exception {
+        return Observable.defer(new Callable<ObservableSource<? extends String>>() {
+          @Override public ObservableSource<? extends String> call() throws Exception {
                 // Do some long running operation
                 SystemClock.sleep(5000);
                 return Observable.just("one", "two", "three", "four", "five");

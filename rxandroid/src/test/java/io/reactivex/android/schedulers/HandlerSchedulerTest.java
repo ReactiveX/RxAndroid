@@ -19,7 +19,6 @@ import io.reactivex.Scheduler;
 import io.reactivex.Scheduler.Worker;
 import io.reactivex.android.testutil.CountingRunnable;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.exceptions.OnErrorNotImplementedException;
 import io.reactivex.functions.Function;
 import io.reactivex.plugins.RxJavaPlugins;
 import java.lang.Thread.UncaughtExceptionHandler;
@@ -647,41 +646,6 @@ public final class HandlerSchedulerTest {
         assertTrue(throwable instanceof IllegalStateException);
         assertEquals("Fatal Exception thrown on Scheduler.", throwable.getMessage());
         assertSame(npe, throwable.getCause());
-
-        // Restore the original uncaught exception handler.
-        thread.setUncaughtExceptionHandler(originalHandler);
-    }
-
-    @Test public void actionMissingErrorHandlerRoutedToHookAndThreadHandler() {
-        // TODO Test hook as well. Requires https://github.com/ReactiveX/RxJava/pull/3820.
-
-        Thread thread = Thread.currentThread();
-        UncaughtExceptionHandler originalHandler = thread.getUncaughtExceptionHandler();
-
-        final AtomicReference<Throwable> throwableRef = new AtomicReference<>();
-        thread.setUncaughtExceptionHandler(new UncaughtExceptionHandler() {
-            @Override public void uncaughtException(Thread thread, Throwable ex) {
-                throwableRef.set(ex);
-            }
-        });
-
-        Worker worker = scheduler.createWorker();
-
-        final OnErrorNotImplementedException oenie =
-            new OnErrorNotImplementedException(new NullPointerException());
-        Runnable action = new Runnable() {
-            @Override public void run() {
-                throw oenie;
-            }
-        };
-        worker.schedule(action);
-
-        runUiThreadTasks();
-        Throwable throwable = throwableRef.get();
-        assertTrue(throwable instanceof IllegalStateException);
-        assertEquals("Exception thrown on Scheduler. Add `onError` handling.",
-            throwable.getMessage());
-        assertSame(oenie, throwable.getCause());
 
         // Restore the original uncaught exception handler.
         thread.setUncaughtExceptionHandler(originalHandler);
