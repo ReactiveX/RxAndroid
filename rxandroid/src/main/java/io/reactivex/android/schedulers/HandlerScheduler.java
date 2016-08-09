@@ -18,7 +18,6 @@ import android.os.Message;
 import io.reactivex.Scheduler;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.disposables.Disposables;
-import io.reactivex.exceptions.OnErrorNotImplementedException;
 import io.reactivex.plugins.RxJavaPlugins;
 import java.util.concurrent.TimeUnit;
 
@@ -111,13 +110,8 @@ final class HandlerScheduler extends Scheduler {
             try {
                 delegate.run();
             } catch (Throwable t) {
-                IllegalStateException ie;
-                if (t instanceof OnErrorNotImplementedException) {
-                    ie = new IllegalStateException(
-                        "Exception thrown on Scheduler. Add `onError` handling.", t);
-                } else {
-                    ie = new IllegalStateException("Fatal Exception thrown on Scheduler.", t);
-                }
+                IllegalStateException ie =
+                    new IllegalStateException("Fatal Exception thrown on Scheduler.", t);
                 RxJavaPlugins.onError(ie);
                 Thread thread = Thread.currentThread();
                 thread.getUncaughtExceptionHandler().uncaughtException(thread, ie);
