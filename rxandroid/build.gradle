@@ -37,6 +37,12 @@ android {
         sourceCompatibility rootProject.ext.sourceCompatibility
         targetCompatibility rootProject.ext.sourceCompatibility
     }
+
+    buildTypes {
+        release {
+            consumerProguardFiles 'proguard-project.txt'
+        }
+    }
 }
 
 dependencies {

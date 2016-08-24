@@ -19,6 +19,22 @@ android {
         sourceCompatibility rootProject.ext.sourceCompatibility
         targetCompatibility rootProject.ext.sourceCompatibility
     }
+
+    signingConfigs {
+        release {
+            storeFile file("android.jks")
+            storePassword "android"
+            keyAlias "RxAndroidSample"
+            keyPassword "android"
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            signingConfig signingConfigs.release
+        }
+    }
 }
 
 dependencies {

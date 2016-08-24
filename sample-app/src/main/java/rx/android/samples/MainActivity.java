@@ -11,6 +11,7 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.exceptions.OnErrorThrowable;
+import rx.functions.Action0;
 import rx.functions.Func0;
 
 import static android.os.Process.THREAD_PRIORITY_BACKGROUND;
@@ -42,6 +43,11 @@ public class MainActivity extends Activity {
                 .subscribeOn(AndroidSchedulers.from(backgroundLooper))
                 // Be notified on the main thread
                 .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe(new Action0() {
+                    @Override public void call() {
+                        Log.d(TAG, "doOnSubscribe()");
+                    }
+                })
                 .subscribe(new Subscriber<String>() {
                     @Override public void onCompleted() {
                         Log.d(TAG, "onCompleted()");
