@@ -2,7 +2,7 @@
 
 Version 1.x can be found at https://github.com/ReactiveX/RxAndroid/blob/1.x/CHANGES.md
 
-### Version 2.0.0-RC! - August 25, 2016 ###
+### Version 2.0.0-RC1 - August 25, 2016 ###
 
 RxAndroid 2.0 has been rewritten from scratch to support RxJava 2.0.
 
