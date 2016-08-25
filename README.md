@@ -1,6 +1,6 @@
 # RxAndroid: Reactive Extensions for Android
 
-Android specific bindings for [RxJava](http://github.com/ReactiveX/RxJava).
+Android specific bindings for [RxJava 2](http://github.com/ReactiveX/RxJava).
 
 This module adds the minimum classes to RxJava that make writing reactive components in Android
 applications easy and hassle-free. More specifically, it provides a `Scheduler` that schedules on
@@ -20,16 +20,16 @@ Since RxAndroid is part of the RxJava family the communication channels are simi
 # Binaries
 
 ```groovy
-compile 'io.reactivex:rxandroid:1.2.1'
+compile 'io.reactivex.rxjava2:rxandroid:2.0.0-RC1'
 // Because RxAndroid releases are few and far between, it is recommended you also
 // explicitly depend on RxJava's latest version for bug fixes and new features.
-compile 'io.reactivex:rxjava:1.1.6'
+compile 'io.reactivex.rxjava2:rxjava:2.0.0-RC1'
 ```
 
-* RxAndroid: <a href='http://search.maven.org/#search%7Cga%7C1%7Crxandroid'><img src='http://img.shields.io/maven-central/v/io.reactivex/rxandroid.svg'></a>
-* RxJava: <a href='http://search.maven.org/#search%7Cga%7C1%7Crxjava'><img src='http://img.shields.io/maven-central/v/io.reactivex/rxjava.svg'></a>
+* RxAndroid: <a href='http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22io.reactivex.rxjava2%22%20a%3A%22rxjava%22'><img src='http://img.shields.io/maven-central/v/io.reactivex.rxjava2/rxandroid.svg'></a>
+* RxJava: <a href='http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22io.reactivex.rxjava2%22%20a%3A%22rxjava%22'><img src='http://img.shields.io/maven-central/v/io.reactivex.rxjava2/rxjava.svg'></a>
 
-Additional binaries and dependency information for can be found at [http://search.maven.org](http://search.maven.org/#search%7Cga%7C1%7Crxandroid).
+Additional binaries and dependency information for can be found at [http://search.maven.org](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22io.reactivex.rxjava2%22%20a%3A%22rxandroid%22).
 
 
 ## Build
@@ -39,12 +39,13 @@ To build:
 ```bash
 $ git clone git@github.com:ReactiveX/RxAndroid.git
 $ cd RxAndroid/
+$ git checkout 2.x
 $ ./gradlew build
 ```
 
 Futher details on building can be found on the RxJava [Getting Started][start] page of the wiki.
 
-<a href='https://travis-ci.org/ReactiveX/RxAndroid/builds'><img src='https://api.travis-ci.org/ReactiveX/RxAndroid.svg?branch=master'></a>
+<a href='https://travis-ci.org/ReactiveX/RxAndroid/builds'><img src='https://api.travis-ci.org/ReactiveX/RxAndroid.svg?branch=2.x'></a>
 
 # Sample usage
 
