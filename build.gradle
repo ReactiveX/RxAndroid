@@ -10,7 +10,6 @@ subprojects {
     }
 
     repositories {
-        maven { url 'https://oss.jfrog.org/libs-snapshot/' }
         mavenCentral()
     }
 }
