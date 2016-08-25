@@ -21,12 +21,15 @@ import android.view.View;
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.observers.AsyncObserver;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.observers.DisposableObserver;
 import io.reactivex.schedulers.Schedulers;
 import java.util.concurrent.Callable;
 
 public class MainActivity extends Activity {
     private static final String TAG = "RxAndroidSamples";
+
+    private final CompositeDisposable disposables = new CompositeDisposable();
 
     @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,13 +41,18 @@ public class MainActivity extends Activity {
         });
     }
 
+    @Override protected void onDestroy() {
+        super.onDestroy();
+        disposables.clear();
+    }
+
     void onRunSchedulerExampleButtonClicked() {
-      sampleObservable()
+        disposables.add(sampleObservable()
             // Run on a background thread
             .subscribeOn(Schedulers.io())
             // Be notified on the main thread
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(new AsyncObserver<String>() {
+            .subscribeWith(new DisposableObserver<String>() {
                 @Override public void onComplete() {
                     Log.d(TAG, "onComplete()");
                 }
@@ -56,7 +64,7 @@ public class MainActivity extends Activity {
                 @Override public void onNext(String string) {
                     Log.d(TAG, "onNext(" + string + ")");
                 }
-            });
+            }));
     }
 
     static Observable<String> sampleObservable() {
