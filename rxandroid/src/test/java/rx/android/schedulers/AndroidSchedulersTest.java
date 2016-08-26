@@ -17,6 +17,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import rx.Scheduler;
+import rx.android.plugins.RxAndroidHooks;
 import rx.android.plugins.RxAndroidPlugins;
 import rx.android.plugins.RxAndroidSchedulersHook;
 import rx.android.testutil.EmptyScheduler;

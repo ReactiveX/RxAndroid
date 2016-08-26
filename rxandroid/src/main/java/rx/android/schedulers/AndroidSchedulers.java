@@ -18,6 +18,7 @@ import android.os.Looper;
 import java.util.concurrent.atomic.AtomicReference;
 
 import rx.Scheduler;
+import rx.android.plugins.RxAndroidHooks;
 import rx.android.plugins.RxAndroidPlugins;
 import rx.android.plugins.RxAndroidSchedulersHook;
 import rx.annotations.Experimental;
@@ -42,6 +43,7 @@ public final class AndroidSchedulers {
     }
 
     private AndroidSchedulers() {
+        @SuppressWarnings("deprecation")
         RxAndroidSchedulersHook hook = RxAndroidPlugins.getInstance().getSchedulersHook();
 
         Scheduler main = hook.getMainThreadScheduler();
@@ -54,7 +56,7 @@ public final class AndroidSchedulers {
 
     /** A {@link Scheduler} which executes actions on the Android UI thread. */
     public static Scheduler mainThread() {
-        return getInstance().mainThreadScheduler;
+        return RxAndroidHooks.onMainScheduler(getInstance().mainThreadScheduler);
     }
 
     /** A {@link Scheduler} which executes actions on {@code looper}. */
