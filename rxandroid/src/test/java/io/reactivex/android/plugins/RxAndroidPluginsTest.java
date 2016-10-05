@@ -152,7 +152,6 @@ public final class RxAndroidPluginsTest {
 
     @Test
     public void overrideInitMainSchedulerThrowsWhenSchedulerCallableReturnsNull() {
-
         Callable<Scheduler> nullResultCallable = new Callable<Scheduler>() {
             @Override public Scheduler call() throws Exception {
                 return null;
@@ -168,7 +167,6 @@ public final class RxAndroidPluginsTest {
             assertEquals("Scheduler Callable result can't be null", npe.getMessage());
 
         }
-
     }
 
 }
