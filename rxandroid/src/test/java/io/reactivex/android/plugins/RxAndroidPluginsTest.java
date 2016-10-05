@@ -165,7 +165,6 @@ public final class RxAndroidPluginsTest {
 
         } catch (NullPointerException npe) {
             assertEquals("Scheduler Callable result can't be null", npe.getMessage());
-
         }
     }
 
