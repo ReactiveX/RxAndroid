@@ -13,31 +13,32 @@
  */
 package io.reactivex.android.plugins;
 
+import java.util.concurrent.Callable;
+
 import io.reactivex.Scheduler;
-import io.reactivex.exceptions.Exceptions;
 import io.reactivex.functions.Function;
+import io.reactivex.internal.functions.ObjectHelper;
+import io.reactivex.internal.util.ExceptionHelper;
 
 /**
  * Utility class to inject handlers to certain standard RxAndroid operations.
  */
 public final class RxAndroidPlugins {
-    private static volatile Function<Scheduler, Scheduler> onInitMainThreadHandler;
+
+    private static volatile Function<Callable<Scheduler>, Scheduler> onInitMainThreadHandler;
     private static volatile Function<Scheduler, Scheduler> onMainThreadHandler;
 
-    public static void setInitMainThreadSchedulerHandler(Function<Scheduler, Scheduler> handler) {
+    public static void setInitMainThreadSchedulerHandler(Function<Callable<Scheduler>, Scheduler> handler) {
         onInitMainThreadHandler = handler;
     }
 
-    public static Scheduler initMainThreadScheduler(Scheduler scheduler) {
-        Function<Scheduler, Scheduler> f = onInitMainThreadHandler;
+    public static Scheduler initMainThreadScheduler(Callable<Scheduler> scheduler) {
+        ObjectHelper.requireNonNull(scheduler, "Scheduler Callable can't be null");
+        Function<Callable<Scheduler>, Scheduler> f = onInitMainThreadHandler;
         if (f == null) {
-            return scheduler;
+            return callRequireNonNull(scheduler);
         }
-        try {
-            return f.apply(scheduler);
-        } catch (Exception e) {
-            throw Exceptions.propagate(e);
-        }
+        return applyRequireNonNull(f, scheduler);
     }
 
     public static void setMainThreadSchedulerHandler(Function<Scheduler, Scheduler> handler) {
@@ -45,15 +46,12 @@ public final class RxAndroidPlugins {
     }
 
     public static Scheduler onMainThreadScheduler(Scheduler scheduler) {
+        ObjectHelper.requireNonNull(scheduler, "Scheduler can't be null");
         Function<Scheduler, Scheduler> f = onMainThreadHandler;
         if (f == null) {
             return scheduler;
         }
-        try {
-            return f.apply(scheduler);
-        } catch (Exception e) {
-            throw Exceptions.propagate(e);
-        }
+        return apply(f, scheduler);
     }
 
     /**
@@ -62,6 +60,26 @@ public final class RxAndroidPlugins {
     public static void reset() {
         setInitMainThreadSchedulerHandler(null);
         setMainThreadSchedulerHandler(null);
+    }
+
+    static Scheduler callRequireNonNull(Callable<Scheduler> s) {
+        try {
+            return ObjectHelper.requireNonNull(s.call(), "Scheduler Callable result can't be null");
+        } catch (Throwable ex) {
+            throw ExceptionHelper.wrapOrThrow(ex);
+        }
+    }
+
+    static Scheduler applyRequireNonNull(Function<Callable<Scheduler>, Scheduler> f, Callable<Scheduler> s) {
+          return ObjectHelper.requireNonNull(apply(f, s), "Scheduler Callable result can't be null");
+    }
+
+    static <T, R> R apply(Function<T, R> f, T t) {
+        try {
+            return f.apply(t);
+        } catch (Throwable ex) {
+            throw ExceptionHelper.wrapOrThrow(ex);
+        }
     }
 
     private RxAndroidPlugins() {
