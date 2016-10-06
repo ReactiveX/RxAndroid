@@ -26,7 +26,6 @@ import java.util.concurrent.atomic.AtomicReference;
 import io.reactivex.Scheduler;
 import io.reactivex.android.testutil.EmptyScheduler;
 import io.reactivex.functions.Function;
-import io.reactivex.schedulers.Schedulers;
 
 import static junit.framework.TestCase.fail;
 import static org.junit.Assert.assertEquals;
@@ -119,7 +118,7 @@ public final class RxAndroidPluginsTest {
     public void defaultMainThreadSchedulerIsInitializedLazily() {
         final Function<Callable<Scheduler>, Scheduler> safeOverride = new Function<Callable<Scheduler>, Scheduler>() {
             @Override public Scheduler apply(Callable<Scheduler> __) {
-                return Schedulers.single();
+                return new EmptyScheduler();
             }
         };
         final Callable<Scheduler> unsafeDefault = new Callable<Scheduler>() {
