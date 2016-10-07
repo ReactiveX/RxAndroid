@@ -154,7 +154,6 @@ public final class RxAndroidPluginsTest {
         try {
             RxAndroidPlugins.initMainThreadScheduler(nullResultCallable);
             fail();
-
         } catch (NullPointerException e) {
             assertEquals("Scheduler Callable returned null", e.getMessage());
         }
