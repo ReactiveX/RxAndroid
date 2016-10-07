@@ -32,7 +32,7 @@ public final class RxAndroidPlugins {
     }
 
     public static Scheduler initMainThreadScheduler(Callable<Scheduler> scheduler) {
-        if(scheduler == null) {
+        if (scheduler == null) {
             throw new NullPointerException("scheduler == null");
         }
         Function<Callable<Scheduler>, Scheduler> f = onInitMainThreadHandler;
@@ -47,7 +47,7 @@ public final class RxAndroidPlugins {
     }
 
     public static Scheduler onMainThreadScheduler(Scheduler scheduler) {
-        if(scheduler == null) {
+        if (scheduler == null) {
             throw new NullPointerException("scheduler == null");
         }
         Function<Scheduler, Scheduler> f = onMainThreadHandler;
@@ -68,7 +68,7 @@ public final class RxAndroidPlugins {
     static Scheduler callRequireNonNull(Callable<Scheduler> s) {
         try {
             Scheduler scheduler = s.call();
-            if(scheduler == null) {
+            if (scheduler == null) {
                 throw new NullPointerException("Scheduler Callable returned null");
             }
             return scheduler;
@@ -79,7 +79,7 @@ public final class RxAndroidPlugins {
 
     static Scheduler applyRequireNonNull(Function<Callable<Scheduler>, Scheduler> f, Callable<Scheduler> s) {
         Scheduler scheduler = apply(f,s);
-        if(scheduler == null) {
+        if (scheduler == null) {
             throw new NullPointerException("Scheduler Callable returned null");
         }
         return scheduler;

@@ -97,7 +97,7 @@ public final class RxAndroidPluginsTest {
         RxAndroidPlugins
                 .setInitMainThreadSchedulerHandler(new Function<Callable<Scheduler>, Scheduler>() {
                     @Override public Scheduler apply(Callable<Scheduler> scheduler) {
-                        throw new RuntimeException();
+                        throw new AssertionError();
                     }
                 });
 
@@ -116,13 +116,13 @@ public final class RxAndroidPluginsTest {
 
     @Test
     public void defaultMainThreadSchedulerIsInitializedLazily() {
-        final Function<Callable<Scheduler>, Scheduler> safeOverride =
+        Function<Callable<Scheduler>, Scheduler> safeOverride =
                 new Function<Callable<Scheduler>, Scheduler>() {
             @Override public Scheduler apply(Callable<Scheduler> __) {
                 return new EmptyScheduler();
             }
         };
-        final Callable<Scheduler> unsafeDefault = new Callable<Scheduler>() {
+        Callable<Scheduler> unsafeDefault = new Callable<Scheduler>() {
             @Override public Scheduler call() throws Exception {
                 throw new AssertionError();
             }
