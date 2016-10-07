@@ -84,7 +84,7 @@ public final class RxAndroidPluginsTest {
 
         Callable<Scheduler> scheduler = new Callable<Scheduler>() {
             @Override public Scheduler call() throws Exception {
-                return new EmptyScheduler();
+                throw new AssertionError();
             }
         };
         Scheduler actual = RxAndroidPlugins.initMainThreadScheduler(scheduler);
@@ -116,36 +116,30 @@ public final class RxAndroidPluginsTest {
 
     @Test
     public void defaultMainThreadSchedulerIsInitializedLazily() {
-        final Function<Callable<Scheduler>, Scheduler> safeOverride = new Function<Callable<Scheduler>, Scheduler>() {
+        final Function<Callable<Scheduler>, Scheduler> safeOverride =
+                new Function<Callable<Scheduler>, Scheduler>() {
             @Override public Scheduler apply(Callable<Scheduler> __) {
                 return new EmptyScheduler();
             }
         };
         final Callable<Scheduler> unsafeDefault = new Callable<Scheduler>() {
             @Override public Scheduler call() throws Exception {
-                throw new AssertionError(
-                        "Default Scheduler instance should not have been evaluated");
+                throw new AssertionError();
             }
         };
 
-        // unsafe default Scheduler Callable should not be evaluated when overriding
-        try {
-            RxAndroidPlugins.setInitMainThreadSchedulerHandler(safeOverride);
-            RxAndroidPlugins.initMainThreadScheduler(unsafeDefault);
-        } finally {
-            RxAndroidPlugins.reset();
-        }
+       RxAndroidPlugins.setInitMainThreadSchedulerHandler(safeOverride);
+       RxAndroidPlugins.initMainThreadScheduler(unsafeDefault);
     }
 
     @Test
     public void overrideInitMainSchedulerThrowsWhenSchedulerCallableIsNull() {
-        // fail when Callable is null
         try {
             RxAndroidPlugins.initMainThreadScheduler(null);
-            fail("Should have thrown NullPointerException");
+            fail();
 
-        } catch (NullPointerException npe) {
-            assertEquals("Scheduler Callable can't be null", npe.getMessage());
+        } catch (NullPointerException e) {
+            assertEquals("scheduler == null", e.getMessage());
         }
     }
 
@@ -157,13 +151,12 @@ public final class RxAndroidPluginsTest {
             }
         };
 
-        // fail when Callable result is null
         try {
             RxAndroidPlugins.initMainThreadScheduler(nullResultCallable);
-            fail("Should have thrown NullPointerException");
+            fail();
 
-        } catch (NullPointerException npe) {
-            assertEquals("Scheduler Callable result can't be null", npe.getMessage());
+        } catch (NullPointerException e) {
+            assertEquals("Scheduler Callable returned null", e.getMessage());
         }
     }
 
