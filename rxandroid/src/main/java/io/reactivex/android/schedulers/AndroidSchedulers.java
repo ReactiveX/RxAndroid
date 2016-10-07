@@ -15,13 +15,26 @@ package io.reactivex.android.schedulers;
 
 import android.os.Handler;
 import android.os.Looper;
+
+import java.util.concurrent.Callable;
+
 import io.reactivex.Scheduler;
 import io.reactivex.android.plugins.RxAndroidPlugins;
 
 /** Android-specific Schedulers. */
 public final class AndroidSchedulers {
+
+    private static final class MainHolder {
+
+        static final Scheduler DEFAULT = new HandlerScheduler(new Handler(Looper.getMainLooper()));
+    }
+
     private static final Scheduler MAIN_THREAD = RxAndroidPlugins.initMainThreadScheduler(
-        new HandlerScheduler(new Handler(Looper.getMainLooper())));
+            new Callable<Scheduler>() {
+                @Override public Scheduler call() throws Exception {
+                    return MainHolder.DEFAULT;
+                }
+            });
 
     /** A {@link Scheduler} which executes actions on the Android main thread. */
     public static Scheduler mainThread() {
