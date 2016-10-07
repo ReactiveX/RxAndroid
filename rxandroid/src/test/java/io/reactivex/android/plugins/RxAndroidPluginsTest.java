@@ -118,7 +118,7 @@ public final class RxAndroidPluginsTest {
     public void defaultMainThreadSchedulerIsInitializedLazily() {
         Function<Callable<Scheduler>, Scheduler> safeOverride =
                 new Function<Callable<Scheduler>, Scheduler>() {
-            @Override public Scheduler apply(Callable<Scheduler> __) {
+            @Override public Scheduler apply(Callable<Scheduler> scheduler) {
                 return new EmptyScheduler();
             }
         };
