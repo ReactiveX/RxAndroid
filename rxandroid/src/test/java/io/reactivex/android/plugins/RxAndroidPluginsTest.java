@@ -60,7 +60,7 @@ public final class RxAndroidPluginsTest {
     public void resetClearsMainThreadHandler() {
         RxAndroidPlugins.setMainThreadSchedulerHandler(new Function<Scheduler, Scheduler>() {
             @Override public Scheduler apply(Scheduler scheduler) {
-                throw new RuntimeException();
+                throw new AssertionError();
             }
         });
         RxAndroidPlugins.reset();
