@@ -16,13 +16,12 @@ package rx.android.schedulers;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
 import rx.Scheduler;
 import rx.android.plugins.RxAndroidPlugins;
 import rx.android.plugins.RxAndroidSchedulersHook;
+import rx.android.testutil.EmptyScheduler;
 
 import static org.junit.Assert.assertSame;
-import static org.mockito.Mockito.mock;
 
 public class AndroidSchedulersTest {
 
@@ -33,7 +32,7 @@ public class AndroidSchedulersTest {
 
     @Test
     public void mainThreadCallsThroughToHook() {
-        final Scheduler scheduler = mock(Scheduler.class);
+        final Scheduler scheduler = new EmptyScheduler();
         RxAndroidPlugins.getInstance().registerSchedulersHook(new RxAndroidSchedulersHook() {
             @Override public Scheduler getMainThreadScheduler() {
                 return scheduler;
