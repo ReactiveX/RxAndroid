@@ -36,7 +36,7 @@ public class RxAndroidSchedulersHook {
 
     /**
      * Invoked before the Action is handed over to the scheduler.  Can be used for
-     * wrapping/decorating/logging. The default is just a passthrough.
+     * wrapping/decorating/logging. The default is just a pass-through.
      *
      * @param action action to schedule
      * @return wrapped action to schedule

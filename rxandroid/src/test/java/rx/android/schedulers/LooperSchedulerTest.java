@@ -30,6 +30,8 @@ import rx.android.plugins.RxAndroidSchedulersHook;
 import rx.android.testutil.CountingAction;
 import rx.exceptions.OnErrorNotImplementedException;
 import rx.functions.Action0;
+import rx.functions.Func1;
+import rx.plugins.RxJavaHooks;
 
 import static java.util.concurrent.TimeUnit.MINUTES;
 import static org.junit.Assert.assertEquals;
@@ -50,12 +52,14 @@ public class LooperSchedulerTest {
     @Before
     public void setUp() {
         RxAndroidPlugins.getInstance().reset();
+        RxJavaHooks.reset();
         pauseMainLooper(); // Take manual control of looper task queue.
     }
 
     @After
     public void tearDown() {
         RxAndroidPlugins.getInstance().reset();
+        RxJavaHooks.reset();
         unPauseMainLooper();
     }
 
@@ -127,9 +131,10 @@ public class LooperSchedulerTest {
     public void schedulerHookIsUsed() {
         final CountingAction newAction = new CountingAction();
         final AtomicReference<Action0> actionRef = new AtomicReference<>();
-        RxAndroidPlugins.getInstance().registerSchedulersHook(new RxAndroidSchedulersHook() {
-            @Override public Action0 onSchedule(Action0 action) {
-                actionRef.set(action); // Capture the original action.
+        RxJavaHooks.setOnScheduleAction(new Func1<Action0, Action0>() {
+            @Override
+            public Action0 call(Action0 action0) {
+                actionRef.set(action0); // Capture the original action.
                 return newAction; // Return a different one.
             }
         });
@@ -163,11 +168,12 @@ public class LooperSchedulerTest {
     @Test
     public void workerUnsubscriptionDuringSchedulingCancelsScheduledAction() {
         final AtomicReference<Scheduler.Worker> workerRef = new AtomicReference<>();
-        RxAndroidPlugins.getInstance().registerSchedulersHook(new RxAndroidSchedulersHook() {
-            @Override public Action0 onSchedule(Action0 action) {
+        RxJavaHooks.setOnScheduleAction(new Func1<Action0, Action0>() {
+            @Override
+            public Action0 call(Action0 action0) {
                 // Purposefully unsubscribe in an asinine point after the normal unsubscribed check.
                 workerRef.get().unsubscribe();
-                return super.onSchedule(action);
+                return action0;
             }
         });
 

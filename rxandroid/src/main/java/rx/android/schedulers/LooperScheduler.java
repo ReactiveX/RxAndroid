@@ -19,11 +19,9 @@ import android.os.Message;
 import java.util.concurrent.TimeUnit;
 import rx.Scheduler;
 import rx.Subscription;
-import rx.android.plugins.RxAndroidPlugins;
-import rx.android.plugins.RxAndroidSchedulersHook;
 import rx.exceptions.OnErrorNotImplementedException;
 import rx.functions.Action0;
-import rx.plugins.RxJavaPlugins;
+import rx.plugins.RxJavaHooks;
 import rx.subscriptions.Subscriptions;
 
 class LooperScheduler extends Scheduler {
@@ -44,12 +42,10 @@ class LooperScheduler extends Scheduler {
 
     static class HandlerWorker extends Worker {
         private final Handler handler;
-        private final RxAndroidSchedulersHook hook;
         private volatile boolean unsubscribed;
 
         HandlerWorker(Handler handler) {
             this.handler = handler;
-            this.hook = RxAndroidPlugins.getInstance().getSchedulersHook();
         }
 
         @Override
@@ -69,7 +65,7 @@ class LooperScheduler extends Scheduler {
                 return Subscriptions.unsubscribed();
             }
 
-            action = hook.onSchedule(action);
+            action = RxJavaHooks.onScheduledAction(action);
 
             ScheduledAction scheduledAction = new ScheduledAction(action, handler);
 
@@ -113,7 +109,7 @@ class LooperScheduler extends Scheduler {
                 } else {
                     ie = new IllegalStateException("Fatal Exception thrown on Scheduler.Worker thread.", e);
                 }
-                RxJavaPlugins.getInstance().getErrorHandler().handleError(ie);
+                RxJavaHooks.onError(ie);
                 Thread thread = Thread.currentThread();
                 thread.getUncaughtExceptionHandler().uncaughtException(thread, ie);
             }

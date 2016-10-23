@@ -27,6 +27,12 @@ import rx.annotations.Experimental;
 public final class RxAndroidPlugins {
     private static final RxAndroidPlugins INSTANCE = new RxAndroidPlugins();
 
+    /**
+     * Retrives the single {@code RxAndroidPlugins} instance.
+     *
+     * @deprecated use the static methods of {@link RxAndroidHooks}
+     */
+    @Deprecated
     public static RxAndroidPlugins getInstance() {
         return INSTANCE;
     }
