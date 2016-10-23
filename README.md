@@ -42,7 +42,7 @@ $ cd RxAndroid/
 $ ./gradlew build
 ```
 
-Futher details on building can be found on the RxJava [Getting Started][start] page of the wiki.
+Further details on building can be found on the RxJava [Getting Started][start] page of the wiki.
 
 <a href='https://travis-ci.org/ReactiveX/RxAndroid/builds'><img src='https://api.travis-ci.org/ReactiveX/RxAndroid.svg?branch=1.x'></a>
 
