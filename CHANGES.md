@@ -2,6 +2,17 @@
 
 Version 1.x can be found at https://github.com/ReactiveX/RxAndroid/blob/1.x/CHANGES.md
 
+### Version 2.0.0 - October 29, 2016 ###
+
+General availability of RxAndroid 2.0 for use with RxJava 2.0!
+
+The sections below contain the changes since 2.0.0-RC1.
+
+**API Enhancements**
+
+ * [Pull 338](https://github.com/ReactiveX/RxAndroid/pull/338) - Evaluate `Schedulers` initialization via `Callable`
+
+
 ### Version 2.0.0-RC1 - August 25, 2016 ###
 
 RxAndroid 2.0 has been rewritten from scratch to support RxJava 2.0.
