@@ -20,7 +20,7 @@ Since RxAndroid is part of the RxJava family the communication channels are simi
 # Binaries
 
 ```groovy
-compile 'io.reactivex.rxjava2:rxandroid:2.0.0-RC1'
+compile 'io.reactivex.rxjava2:rxandroid:2.0.0'
 // Because RxAndroid releases are few and far between, it is recommended you also
 // explicitly depend on RxJava's latest version for bug fixes and new features.
 compile 'io.reactivex.rxjava2:rxjava:2.0.0'
