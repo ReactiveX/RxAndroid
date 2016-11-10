@@ -31,12 +31,11 @@ final class HandlerScheduler extends Scheduler {
     @Override
     public Disposable scheduleDirect(Runnable run, long delay, TimeUnit unit) {
         if (run == null) throw new NullPointerException("run == null");
-        if (delay < 0) throw new IllegalArgumentException("delay < 0: " + delay);
         if (unit == null) throw new NullPointerException("unit == null");
 
         run = RxJavaPlugins.onSchedule(run);
         ScheduledRunnable scheduled = new ScheduledRunnable(handler, run);
-        handler.postDelayed(scheduled, unit.toMillis(delay));
+        handler.postDelayed(scheduled, Math.max(0L, unit.toMillis(delay)));
         return scheduled;
     }
 
@@ -57,7 +56,6 @@ final class HandlerScheduler extends Scheduler {
         @Override
         public Disposable schedule(Runnable run, long delay, TimeUnit unit) {
             if (run == null) throw new NullPointerException("run == null");
-            if (delay < 0) throw new IllegalArgumentException("delay < 0: " + delay);
             if (unit == null) throw new NullPointerException("unit == null");
 
             if (disposed) {
@@ -71,7 +69,7 @@ final class HandlerScheduler extends Scheduler {
             Message message = Message.obtain(handler, scheduled);
             message.obj = this; // Used as token for batch disposal of this worker's runnables.
 
-            handler.sendMessageDelayed(message, unit.toMillis(delay));
+            handler.sendMessageDelayed(message, Math.max(0L, unit.toMillis(delay)));
 
             // Re-check disposed state for removing in case we were racing a call to dispose().
             if (disposed) {

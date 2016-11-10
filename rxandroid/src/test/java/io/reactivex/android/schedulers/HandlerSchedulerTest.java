@@ -73,6 +73,15 @@ public final class HandlerSchedulerTest {
     }
 
     @Test
+    public void directScheduleOnceWithNegativeDelayPostsImmediately() {
+        CountingRunnable counter = new CountingRunnable();
+        scheduler.scheduleDirect(counter, -1, TimeUnit.MINUTES);
+
+        runUiThreadTasks();
+        assertEquals(1, counter.get());
+    }
+
+    @Test
     public void directScheduleOnceUsesHook() {
         final CountingRunnable newCounter = new CountingRunnable();
         final AtomicReference<Runnable> runnableRef = new AtomicReference<>();
@@ -295,6 +304,17 @@ public final class HandlerSchedulerTest {
 
         CountingRunnable counter = new CountingRunnable();
         worker.schedule(counter);
+
+        runUiThreadTasks();
+        assertEquals(1, counter.get());
+    }
+
+    @Test
+    public void workerScheduleOnceWithNegativeDelayPostsImmediately() {
+        Worker worker = scheduler.createWorker();
+
+        CountingRunnable counter = new CountingRunnable();
+        worker.schedule(counter, -1, TimeUnit.MINUTES);
 
         runUiThreadTasks();
         assertEquals(1, counter.get());
@@ -666,12 +686,6 @@ public final class HandlerSchedulerTest {
             assertEquals("run == null", e.getMessage());
         }
         try {
-            scheduler.scheduleDirect(new CountingRunnable(), -1, MINUTES);
-            fail();
-        } catch (IllegalArgumentException e) {
-            assertEquals("delay < 0: -1", e.getMessage());
-        }
-        try {
             scheduler.scheduleDirect(new CountingRunnable(), 1, null);
             fail();
         } catch (NullPointerException e) {
@@ -686,12 +700,6 @@ public final class HandlerSchedulerTest {
             fail();
         } catch (NullPointerException e) {
             assertEquals("run == null", e.getMessage());
-        }
-        try {
-            scheduler.schedulePeriodicallyDirect(new CountingRunnable(), -1, 1, MINUTES);
-            fail();
-        } catch (IllegalArgumentException e) {
-            assertEquals("delay < 0: -1", e.getMessage());
         }
         try {
             scheduler.schedulePeriodicallyDirect(new CountingRunnable(), 1, -1, MINUTES);
@@ -723,12 +731,6 @@ public final class HandlerSchedulerTest {
             assertEquals("run == null", e.getMessage());
         }
         try {
-            worker.schedule(new CountingRunnable(), -1, MINUTES);
-            fail();
-        } catch (IllegalArgumentException e) {
-            assertEquals("delay < 0: -1", e.getMessage());
-        }
-        try {
             worker.schedule(new CountingRunnable(), 1, null);
             fail();
         } catch (NullPointerException e) {
@@ -744,12 +746,6 @@ public final class HandlerSchedulerTest {
             fail();
         } catch (NullPointerException e) {
             assertEquals("run == null", e.getMessage());
-        }
-        try {
-            worker.schedulePeriodically(new CountingRunnable(), -1, 1, MINUTES);
-            fail();
-        } catch (IllegalArgumentException e) {
-            assertEquals("delay < 0: -1", e.getMessage());
         }
         try {
             worker.schedulePeriodically(new CountingRunnable(), 1, -1, MINUTES);
