@@ -2,6 +2,14 @@
 
 Version 1.x can be found at https://github.com/ReactiveX/RxAndroid/blob/1.x/CHANGES.md
 
+
+### Version 2.0.1 - November 12, 2016 ###
+
+**Bugfixes**
+
+ * [Pull 347](https://github.com/ReactiveX/RxAndroid/pull/347) - Schedule tasks with negative delays immediately
+
+
 ### Version 2.0.0 - October 29, 2016 ###
 
 General availability of RxAndroid 2.0 for use with RxJava 2.0!
