@@ -33,8 +33,7 @@ public final class RxAndroidPlugins {
 
     private final AtomicReference<RxAndroidSchedulersHook> schedulersHook = new AtomicReference<>();
 
-    RxAndroidPlugins() {
-    }
+    RxAndroidPlugins() {}
 
     /**
      * Reset any explicit or default-set hooks.
