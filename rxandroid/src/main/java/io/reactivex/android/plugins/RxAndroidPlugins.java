@@ -58,6 +58,22 @@ public final class RxAndroidPlugins {
     }
 
     /**
+     * Returns the current hook function.
+     * @return the hook function, may be null
+     */
+    public static Function<Callable<Scheduler>, Scheduler> getInitMainThreadSchedulerHandler() {
+        return onInitMainThreadHandler;
+    }
+
+    /**
+     * Returns the current hook function.
+     * @return the hook function, may be null
+     */
+    public static Function<Scheduler, Scheduler> getOnMainThreadSchedulerHandler() {
+        return onMainThreadHandler;
+    }
+
+    /**
      * Removes all handlers and resets the default behavior.
      */
     public static void reset() {

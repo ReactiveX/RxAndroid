@@ -26,9 +26,11 @@ import java.util.concurrent.atomic.AtomicReference;
 import io.reactivex.Scheduler;
 import io.reactivex.android.testutil.EmptyScheduler;
 import io.reactivex.functions.Function;
+import io.reactivex.schedulers.Schedulers;
 
 import static junit.framework.TestCase.fail;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 
 @RunWith(RobolectricTestRunner.class)
@@ -158,4 +160,37 @@ public final class RxAndroidPluginsTest {
         }
     }
 
+    @Test
+    public void getInitMainThreadSchedulerHandlerReturnsHandler() {
+        Function<Callable<Scheduler>, Scheduler> handler = new Function<Callable<Scheduler>, Scheduler>() {
+            @Override public Scheduler apply(Callable<Scheduler> schedulerCallable) throws Exception {
+                return Schedulers.trampoline();
+            }
+        };
+        RxAndroidPlugins.setInitMainThreadSchedulerHandler(handler);
+        assertSame(handler, RxAndroidPlugins.getInitMainThreadSchedulerHandler());
+    }
+
+    @Test
+    public void getMainThreadSchedulerHandlerReturnsHandler() {
+        Function<Scheduler, Scheduler> handler = new Function<Scheduler, Scheduler>() {
+            @Override public Scheduler apply(Scheduler scheduler) {
+                return Schedulers.trampoline();
+            }
+        };
+        RxAndroidPlugins.setMainThreadSchedulerHandler(handler);
+        assertSame(handler, RxAndroidPlugins.getOnMainThreadSchedulerHandler());
+    }
+
+    @Test
+    public void getInitMainThreadSchedulerHandlerReturnsNullIfNotSet() {
+        RxAndroidPlugins.reset();
+        assertNull(RxAndroidPlugins.getInitMainThreadSchedulerHandler());
+    }
+
+    @Test
+    public void getMainThreadSchedulerHandlerReturnsNullIfNotSet() {
+        RxAndroidPlugins.reset();
+        assertNull(RxAndroidPlugins.getOnMainThreadSchedulerHandler());
+    }
 }
