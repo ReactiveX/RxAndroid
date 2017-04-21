@@ -23,7 +23,7 @@ Since RxAndroid is part of the RxJava family the communication channels are simi
 compile 'io.reactivex.rxjava2:rxandroid:2.0.1'
 // Because RxAndroid releases are few and far between, it is recommended you also
 // explicitly depend on RxJava's latest version for bug fixes and new features.
-compile 'io.reactivex.rxjava2:rxjava:2.0.1'
+compile 'io.reactivex.rxjava2:rxjava:2.0.8'
 ```
 
 * RxAndroid: <a href='http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22io.reactivex.rxjava2%22%20a%3A%22rxjava%22'><img src='http://img.shields.io/maven-central/v/io.reactivex.rxjava2/rxandroid.svg'></a>
