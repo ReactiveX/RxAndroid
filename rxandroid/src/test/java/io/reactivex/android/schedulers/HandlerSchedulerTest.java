@@ -19,9 +19,9 @@ import io.reactivex.Scheduler;
 import io.reactivex.Scheduler.Worker;
 import io.reactivex.android.testutil.CountingRunnable;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.plugins.RxJavaPlugins;
-import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import org.junit.After;
@@ -638,37 +638,34 @@ public final class HandlerSchedulerTest {
         assertTrue(disposable.isDisposed());
     }
 
-    @Test public void throwingActionRoutedToHookAndThreadHandler() {
-        // TODO Test hook as well. Requires https://github.com/ReactiveX/RxJava/pull/3820.
+    @Test public void throwingActionRoutedToRxJavaPlugins() {
+        Consumer<Throwable> originalErrorHandler = RxJavaPlugins.getErrorHandler();
 
-        Thread thread = Thread.currentThread();
-        UncaughtExceptionHandler originalHandler = thread.getUncaughtExceptionHandler();
+        try {
+            final AtomicReference<Throwable> throwableRef = new AtomicReference<>();
+            RxJavaPlugins.setErrorHandler(new Consumer<Throwable>() {
+                @Override
+                public void accept(Throwable throwable) throws Exception {
+                    throwableRef.set(throwable);
+                }
+            });
 
-        final AtomicReference<Throwable> throwableRef = new AtomicReference<>();
-        thread.setUncaughtExceptionHandler(new UncaughtExceptionHandler() {
-            @Override public void uncaughtException(Thread thread, Throwable ex) {
-                throwableRef.set(ex);
-            }
-        });
+            Worker worker = scheduler.createWorker();
 
-        Worker worker = scheduler.createWorker();
+            final NullPointerException npe = new NullPointerException();
+            Runnable action = new Runnable() {
+                @Override
+                public void run() {
+                    throw npe;
+                }
+            };
+            worker.schedule(action);
 
-        final NullPointerException npe = new NullPointerException();
-        Runnable action = new Runnable() {
-            @Override public void run() {
-                throw npe;
-            }
-        };
-        worker.schedule(action);
-
-        runUiThreadTasks();
-        Throwable throwable = throwableRef.get();
-        assertTrue(throwable instanceof IllegalStateException);
-        assertEquals("Fatal Exception thrown on Scheduler.", throwable.getMessage());
-        assertSame(npe, throwable.getCause());
-
-        // Restore the original uncaught exception handler.
-        thread.setUncaughtExceptionHandler(originalHandler);
+            runUiThreadTasks();
+            assertSame(npe, throwableRef.get());
+        } finally {
+            RxJavaPlugins.setErrorHandler(originalErrorHandler);
+        }
     }
 
     @Test
