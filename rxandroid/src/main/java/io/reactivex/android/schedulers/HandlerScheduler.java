@@ -108,11 +108,7 @@ final class HandlerScheduler extends Scheduler {
             try {
                 delegate.run();
             } catch (Throwable t) {
-                IllegalStateException ie =
-                    new IllegalStateException("Fatal Exception thrown on Scheduler.", t);
-                RxJavaPlugins.onError(ie);
-                Thread thread = Thread.currentThread();
-                thread.getUncaughtExceptionHandler().uncaughtException(thread, ie);
+                RxJavaPlugins.onError(t);
             }
         }
 
