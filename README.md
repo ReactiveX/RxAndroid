@@ -39,7 +39,6 @@ To build:
 ```bash
 $ git clone git@github.com:ReactiveX/RxAndroid.git
 $ cd RxAndroid/
-$ git checkout 2.x
 $ ./gradlew build
 ```
 
