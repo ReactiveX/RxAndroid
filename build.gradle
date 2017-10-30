@@ -3,9 +3,13 @@ subprojects {
         repositories {
             mavenCentral()
             jcenter()
+            google()
         }
         dependencies {
-            classpath 'com.android.tools.build:gradle:2.3.3'
+            classpath 'com.android.tools.build:gradle:3.0.0'
+            classpath 'com.github.dcendents:android-maven-gradle-plugin:2.0'
+            classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.2'
+            classpath 'org.jfrog.buildinfo:build-info-extractor-gradle:3.1.1'
         }
     }
 
@@ -17,6 +21,6 @@ subprojects {
 ext {
     minSdkVersion = 9
     compileSdkVersion = 26
-    buildToolsVersion = '26.0.1'
+    buildToolsVersion = '26.0.2'
     sourceCompatibility = JavaVersion.VERSION_1_7
 }
