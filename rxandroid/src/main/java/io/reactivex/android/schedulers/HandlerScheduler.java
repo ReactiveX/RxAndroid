@@ -69,7 +69,7 @@ final class HandlerScheduler extends Scheduler {
             Message message = Message.obtain(handler, scheduled);
             message.obj = this; // Used as token for batch disposal of this worker's runnables.
 
-            handler.sendMessageDelayed(message, Math.max(0L, unit.toMillis(delay)));
+            handler.sendMessageDelayed(message, unit.toMillis(delay));
 
             // Re-check disposed state for removing in case we were racing a call to dispose().
             if (disposed) {
