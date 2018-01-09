@@ -1,7 +1,7 @@
 apply plugin: 'com.android.library'
 apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
-apply plugin: 'com.jfrog.artifactory-upload'
+apply plugin: 'com.jfrog.artifactory'
 
 group = GROUP
 
