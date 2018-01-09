@@ -638,8 +638,9 @@ public final class HandlerSchedulerTest {
         assertTrue(disposable.isDisposed());
     }
 
-    @Test public void throwingActionRoutedToRxJavaPlugins() {
-        Consumer<Throwable> originalErrorHandler = RxJavaPlugins.getErrorHandler();
+    @Test
+    public void throwingActionRoutedToRxJavaPlugins() {
+        Consumer<? super Throwable> originalErrorHandler = RxJavaPlugins.getErrorHandler();
 
         try {
             final AtomicReference<Throwable> throwableRef = new AtomicReference<>();
