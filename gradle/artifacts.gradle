@@ -30,7 +30,7 @@ if (project.plugins.hasPlugin('com.android.library')) {
             }
         }
 
-        // For official releasese, don't prefix the name so the artifact is published correctly
+        // For official releases, don't prefix the name so the artifact is published correctly
         // (Can't seem to modify it for publishing, for whatever reason...)
         String classifierPrefix = (variant.name == 'release') ? '' : "$variant.name-"
 
