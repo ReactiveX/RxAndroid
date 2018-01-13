@@ -35,7 +35,7 @@ final class HandlerScheduler extends Scheduler {
 
         run = RxJavaPlugins.onSchedule(run);
         ScheduledRunnable scheduled = new ScheduledRunnable(handler, run);
-        handler.postDelayed(scheduled, Math.max(0L, unit.toMillis(delay)));
+        handler.postDelayed(scheduled, unit.toMillis(delay));
         return scheduled;
     }
 
