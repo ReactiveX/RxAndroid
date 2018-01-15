@@ -114,7 +114,7 @@ bintray {
         userOrg = 'reactivex'
         licenses = ['Apache-2.0']
         labels = ['rxjava', 'reactivex']
-        websiteUrl = 'https://github.com/ReactiveX/RxAndroid'
+        websiteUrl = 'https://github.com/ReactiveX/RxAndroid/'
         issueTrackerUrl = 'https://github.com/ReactiveX/RxAndroid/issues'
         vcsUrl = 'https://github.com/ReactiveX/RxAndroid.git'
     }
