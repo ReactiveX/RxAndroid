@@ -84,7 +84,7 @@ install {
 //
 // Based on NebulaOJOPublishingPlugin (from nebula-bintray-plugin)
 artifactory {
-    contextUrl = 'https://oss.jfrog.org/'
+    contextUrl = 'https://oss.jfrog.org'
 
     publish {
         repository {
@@ -114,9 +114,9 @@ bintray {
         userOrg = 'reactivex'
         licenses = ['Apache-2.0']
         labels = ['rxjava', 'reactivex']
-        websiteUrl = 'https://github.com/ReactiveX/RxAndroid/'
-        issueTrackerUrl = 'https://github.com/ReactiveX/RxAndroid/issues/'
-        vcsUrl = 'https://github.com/ReactiveX/RxAndroid.git/'
+        websiteUrl = 'https://github.com/ReactiveX/RxAndroid'
+        issueTrackerUrl = 'https://github.com/ReactiveX/RxAndroid/issues'
+        vcsUrl = 'https://github.com/ReactiveX/RxAndroid.git'
     }
 }
 
