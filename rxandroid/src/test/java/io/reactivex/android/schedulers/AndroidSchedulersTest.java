@@ -13,7 +13,9 @@
  */
 package io.reactivex.android.schedulers;
 
+import android.os.Build;
 import android.os.Looper;
+import android.os.Message;
 import io.reactivex.Scheduler;
 import io.reactivex.android.plugins.RxAndroidPlugins;
 import io.reactivex.android.testutil.EmptyScheduler;
@@ -25,11 +27,16 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
+import org.robolectric.shadows.ShadowLooper;
+import org.robolectric.shadows.ShadowMessageQueue;
+import org.robolectric.util.ReflectionHelpers;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.fail;
+import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(manifest=Config.NONE)
@@ -69,7 +76,35 @@ public final class AndroidSchedulersTest {
     }
 
     @Test
+    public void fromNullThrowsTwoArg() {
+        try {
+            AndroidSchedulers.from(null, false);
+            fail();
+        } catch (NullPointerException e) {
+            assertEquals("looper == null", e.getMessage());
+        }
+    }
+
+    @Test
     public void fromReturnsUsableScheduler() {
         assertNotNull(AndroidSchedulers.from(Looper.getMainLooper()));
+    }
+
+    @Test
+    public void asyncIgnoredPre16() {
+        ReflectionHelpers.setStaticField(Build.VERSION.class, "SDK_INT", 14);
+
+        ShadowLooper mainLooper = ShadowLooper.getShadowMainLooper();
+        mainLooper.pause();
+        ShadowMessageQueue mainMessageQueue = shadowOf(Looper.getMainLooper().getQueue());
+
+        Scheduler main = AndroidSchedulers.from(Looper.getMainLooper(), true);
+        main.scheduleDirect(new Runnable() {
+            @Override public void run() {
+            }
+        });
+
+        Message message = mainMessageQueue.getHead();
+        assertFalse(message.isAsynchronous());
     }
 }
