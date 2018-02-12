@@ -2,6 +2,18 @@
 
 Version 1.x can be found at https://github.com/ReactiveX/RxAndroid/blob/1.x/CHANGES.md
 
+### Version 2.0.2 - January 12, 2018 ###
+
+**API Enhancements**
+
+ * [Pull 358](https://github.com/ReactiveX/RxAndroid/pull/358) - Add handler getters to RxAndroidPlugins
+
+**Bugfixes**
+
+ * [Pull 391](https://github.com/ReactiveX/RxAndroid/pull/391) - Update scheduler error handling to match RxJava
+ * [Pull 408](https://github.com/ReactiveX/RxAndroid/pull/408) - Remove superfluous negative checks
+ * [Pull 415](https://github.com/ReactiveX/RxAndroid/pull/415) - Disable useless `BuildConfig` class generation
+
 
 ### Version 2.0.1 - November 12, 2016 ###
 
