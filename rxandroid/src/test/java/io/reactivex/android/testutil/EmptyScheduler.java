@@ -11,22 +11,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package rx.android.schedulers;
+package io.reactivex.android.testutil;
 
-import org.junit.Test;
+import io.reactivex.Scheduler;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-
-@SuppressWarnings("deprecation")
-public class HandlerSchedulerTest {
-    @Test
-    public void fromNullThrows() {
-        try {
-            HandlerScheduler.from(null);
-            fail();
-        } catch (NullPointerException e) {
-            assertEquals("handler == null", e.getMessage());
-        }
+public final class EmptyScheduler extends Scheduler {
+    @Override
+    public Worker createWorker() {
+      throw new UnsupportedOperationException();
     }
 }

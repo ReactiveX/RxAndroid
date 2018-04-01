@@ -1,109 +1,46 @@
 # RxAndroid Releases #
 
-### Version 1.2.1 - June 16th 2016 ###
+Version 1.x can be found at https://github.com/ReactiveX/RxAndroid/blob/1.x/CHANGES.md
 
- * New: `AndroidSchedulers.reset()` allows clearing the scheduler cache such that the next call to
-   `AndroidSchedulers.mainThread()` will ask the `RxAndroidSchedulerHook` to re-create it. This API
-   is experimental to match `Schedulers.reset()` in RxJava.
- * RxJava dependency now points at v1.1.6.
+### Version 2.0.2 - January 12, 2018 ###
 
+**API Enhancements**
 
-### Version 1.2.0 - May 4th 2016 ###
+ * [Pull 358](https://github.com/ReactiveX/RxAndroid/pull/358) - Add handler getters to RxAndroidPlugins
 
- * Rewrite the Android-specific schedulers (main thread or custom) to greatly reduce allocation and
-   performance overhead of scheduling work.
- * `HandlerScheduler.create` has been deprecated in favor of `AndroidSchedulers.from(Looper)` as
-   a `Looper` is the actual mechanism of scheduling on Android, not `Handler`.
- * Fix: Correct the behavior of `AndroidSchedulers.mainThread()` to only invoke the registered
-   `RxAndroidSchedulersHook` for creating the main thread scheduler and to cache the result instead
-   of invoking it every time. This behvior change eliminates a performance overhead and brings
-   behavior in line with RxJava. If you were relying on the ability to change the main thread
-   scheduler over time (such as for tests), return a delegating scheduler from the hook which allows
-   changing the delegate instance at will.
- * RxJava dependency now points at v1.1.4.
- * `RxAndroidPlugins.reset()` is now marked as `@Experimental` to match the RxJava method of the
-   same name and behavior.
+**Bugfixes**
+
+ * [Pull 391](https://github.com/ReactiveX/RxAndroid/pull/391) - Update scheduler error handling to match RxJava
+ * [Pull 408](https://github.com/ReactiveX/RxAndroid/pull/408) - Remove superfluous negative checks
+ * [Pull 415](https://github.com/ReactiveX/RxAndroid/pull/415) - Disable useless `BuildConfig` class generation
 
 
-### Version 1.1.0 - December 9th 2015 ###
+### Version 2.0.1 - November 12, 2016 ###
 
- * New: `MainThreadSubscription` utility class runs its `onUnsubscribe` action on the Android main
-   thread. This aids in adding tear-down actions which must be executed on the main thread without
-   having to deal with posting to the main thread yourself.
- * Fix: Lazily initialize `mainThread()` scheduler so that no Android code is run when overridden.
-   This allows unit tests overriding the implementation to work correctly.
- * RxJava dependency now points at v1.1.0.
+**Bugfixes**
+
+ * [Pull 347](https://github.com/ReactiveX/RxAndroid/pull/347) - Schedule tasks with negative delays immediately
 
 
-### Version 1.0.1 - August 9th 2015 ###
+### Version 2.0.0 - October 29, 2016 ###
 
- * Fix: Correctly check `isUnsubscribed()` state in `HandlerScheduler`'s worker before scheduling
-   more work.
- * Fix: Eliminate a potential race condition in `HandlerScheduler` to ensure any posted work will
-   be canceled on unsubscription.
+General availability of RxAndroid 2.0 for use with RxJava 2.0!
 
+The sections below contain the changes since 2.0.0-RC1.
 
-### Version 1.0.0 - August 5th 2015 ###
+**API Enhancements**
 
-Initial stable release!
-
-In order to provide a library that no project using RxJava would hesitate to depend on, the decision
-was made to remove the APIs which were not absolutely fundamental to all apps. That is what's
-contained in this release.
-
-Functionality which was previously part of this library is being explored in separate, modular
-libraries:
-
- * `LifecycleObservable`: https://github.com/trello/RxLifecycle
- * `ViewObservable` and `WidgetObservable`: https://github.com/JakeWharton/RxBinding
-
-This allows for a simpler process of design, development, and experimentation for the
-best ways to provide features like hooks into the lifecycle, binding to UI components, and
-simplifying interaction with all of Android's API. Not only can these projects now have their own
-release schedule, but it allows developers to pick and choose which ones are appropriate for your
-application.
-
-Applications using the various APIs which were previously in this library do not need to update
-immediately. Due to the number of APIs removed, switching to 1.0 and the use of these third-party
-libraries should be done gradually.
-
-Breaking changes:
-
- * `AndroidSchedulers.handlerThread()` is now `HandlerScheduler.from()`.
- * **All other APIs have been removed** aside from `AndroidSchedulers.mainThread()`,
-   `RxAndroidPlugins`, and `RxAndroidSchedulersHook`.
+ * [Pull 338](https://github.com/ReactiveX/RxAndroid/pull/338) - Evaluate `Schedulers` initialization via `Callable`
 
 
-### Version 0.25 - June 27th 2015 ###
+### Version 2.0.0-RC1 - August 25, 2016 ###
 
-* New: `RxAndroidPlugins` and its `RxAndroidSchedulersHook` provides a mechanism similar to `RxJavaPlugins` (and its `RxJavaSchedulersHook`) for
-  changing the scheduler returned from `AndroidSchedulers.mainThread()` as well as a callback for each subscription on any `Handler`-based scheduler.
-* Fix: Ensure errors are properly propagated from `ContentObservable.fromCursor`.
-* Fix: `LifecycleObservable` now correctly unsubscribes from its sources.
+RxAndroid 2.0 has been rewritten from scratch to support RxJava 2.0.
 
-Breaking changes:
+The library still offers the same APIs: a scheduler and stream cancelation callback that know about
+the main thread, a means of creating a scheduler from any `Looper`, and plugin support for the
+main thread scheduler. They just reside in a new package, `io.reactivex.android`, and may have
+slightly different names.
 
-* Users of `AppObservable.bindFragment` with a support-v4 `Fragment` should now use `bindSupportFragment`.
-
-
-### Version 0.24 – January 3rd 2015 ###
-
-This release has some breaking changes:
-
-* `rx.android.observables.AndroidObservable` has changed to `rx.android.app.AppObservable`;
-* `ViewObservable` has moved from `rx.android.observables` to `rx.android.view`
-* (as part of RxJava's breaking changes) [`collect` has changed](https://github.com/ReactiveX/RxJava/blob/1a94d55fa8896931175896d09b86dca8d8d44f72/CHANGES.md#collect)
-
-
-### Version 0.22 – October 15th 2014 ###
-
-This release adds a number of new operators:
-
-* [Pull 25](https://github.com/ReactiveX/RxAndroid/pull/25) Add operator to monitor SharedPreference changes
-* [Pull 22](https://github.com/ReactiveX/RxAndroid/pull/22) Add view state event types to streamline ViewObservable
-* [Pull 20](https://github.com/ReactiveX/RxAndroid/pull/20) Add OperatorAdapterViewOnItemClick to observe OnItemClick events in AdapterViews
-
-
-### Version 0.21 – October 1st 2014 ###
-
-Initial release outside the RxJava core project, no changes.
+For more information about RxJava 2.0 see
+[its RC1 release notes](https://github.com/ReactiveX/RxJava/releases/tag/v2.0.0-RC1)

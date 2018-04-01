@@ -22,5 +22,5 @@ android {
 }
 
 dependencies {
-    compile project(':rxandroid')
+    implementation project(':rxandroid')
 }
