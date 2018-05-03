@@ -96,7 +96,7 @@ final class HandlerScheduler extends Scheduler {
         private final Handler handler;
         private final Runnable delegate;
 
-        private volatile boolean disposed;
+        private volatile boolean disposed; // Tracked solely for isDisposed().
 
         ScheduledRunnable(Handler handler, Runnable delegate) {
             this.handler = handler;
@@ -114,8 +114,8 @@ final class HandlerScheduler extends Scheduler {
 
         @Override
         public void dispose() {
-            disposed = true;
             handler.removeCallbacks(this);
+            disposed = true;
         }
 
         @Override
