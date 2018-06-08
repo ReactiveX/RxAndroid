@@ -20,6 +20,7 @@ import java.util.concurrent.Callable;
 
 import io.reactivex.Scheduler;
 import io.reactivex.android.plugins.RxAndroidPlugins;
+import io.reactivex.internal.functions.ObjectHelper;
 
 /** Android-specific Schedulers. */
 public final class AndroidSchedulers {
@@ -43,7 +44,7 @@ public final class AndroidSchedulers {
 
     /** A {@link Scheduler} which executes actions on {@code looper}. */
     public static Scheduler from(Looper looper) {
-        if (looper == null) throw new NullPointerException("looper == null");
+        ObjectHelper.requireNonNull(looper, "looper == null");
         return new HandlerScheduler(new Handler(looper));
     }
 

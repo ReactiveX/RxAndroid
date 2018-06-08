@@ -18,6 +18,7 @@ import android.os.Message;
 import io.reactivex.Scheduler;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.disposables.Disposables;
+import io.reactivex.internal.functions.ObjectHelper;
 import io.reactivex.plugins.RxJavaPlugins;
 import java.util.concurrent.TimeUnit;
 
@@ -30,8 +31,8 @@ final class HandlerScheduler extends Scheduler {
 
     @Override
     public Disposable scheduleDirect(Runnable run, long delay, TimeUnit unit) {
-        if (run == null) throw new NullPointerException("run == null");
-        if (unit == null) throw new NullPointerException("unit == null");
+        ObjectHelper.requireNonNull(run, "run == null");
+        ObjectHelper.requireNonNull(unit, "unit == null");
 
         run = RxJavaPlugins.onSchedule(run);
         ScheduledRunnable scheduled = new ScheduledRunnable(handler, run);
@@ -55,8 +56,8 @@ final class HandlerScheduler extends Scheduler {
 
         @Override
         public Disposable schedule(Runnable run, long delay, TimeUnit unit) {
-            if (run == null) throw new NullPointerException("run == null");
-            if (unit == null) throw new NullPointerException("unit == null");
+            ObjectHelper.requireNonNull(run, "run == null");
+            ObjectHelper.requireNonNull(unit, "unit == null");
 
             if (disposed) {
                 return Disposables.disposed();
