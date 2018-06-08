@@ -18,6 +18,7 @@ import java.util.concurrent.Callable;
 import io.reactivex.Scheduler;
 import io.reactivex.exceptions.Exceptions;
 import io.reactivex.functions.Function;
+import io.reactivex.internal.functions.ObjectHelper;
 
 /**
  * Utility class to inject handlers to certain standard RxAndroid operations.
@@ -32,9 +33,7 @@ public final class RxAndroidPlugins {
     }
 
     public static Scheduler initMainThreadScheduler(Callable<Scheduler> scheduler) {
-        if (scheduler == null) {
-            throw new NullPointerException("scheduler == null");
-        }
+        ObjectHelper.requireNonNull(scheduler, "scheduler == null");
         Function<Callable<Scheduler>, Scheduler> f = onInitMainThreadHandler;
         if (f == null) {
             return callRequireNonNull(scheduler);
@@ -47,9 +46,7 @@ public final class RxAndroidPlugins {
     }
 
     public static Scheduler onMainThreadScheduler(Scheduler scheduler) {
-        if (scheduler == null) {
-            throw new NullPointerException("scheduler == null");
-        }
+        ObjectHelper.requireNonNull(scheduler, "scheduler == null");
         Function<Scheduler, Scheduler> f = onMainThreadHandler;
         if (f == null) {
             return scheduler;
@@ -84,9 +81,7 @@ public final class RxAndroidPlugins {
     static Scheduler callRequireNonNull(Callable<Scheduler> s) {
         try {
             Scheduler scheduler = s.call();
-            if (scheduler == null) {
-                throw new NullPointerException("Scheduler Callable returned null");
-            }
+            ObjectHelper.requireNonNull(scheduler, "Scheduler Callable returned null");
             return scheduler;
         } catch (Throwable ex) {
             throw Exceptions.propagate(ex);
@@ -95,9 +90,7 @@ public final class RxAndroidPlugins {
 
     static Scheduler applyRequireNonNull(Function<Callable<Scheduler>, Scheduler> f, Callable<Scheduler> s) {
         Scheduler scheduler = apply(f,s);
-        if (scheduler == null) {
-            throw new NullPointerException("Scheduler Callable returned null");
-        }
+        ObjectHelper.requireNonNull(scheduler, "Scheduler Callable returned null");
         return scheduler;
     }
 
