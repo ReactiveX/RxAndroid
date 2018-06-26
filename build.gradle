@@ -1,4 +1,4 @@
-subprojects {
+allprojects {
     buildscript {
         repositories {
             mavenCentral()
