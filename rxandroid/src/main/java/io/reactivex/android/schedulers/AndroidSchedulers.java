@@ -13,20 +13,20 @@
  */
 package io.reactivex.android.schedulers;
 
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
-
-import java.util.concurrent.Callable;
-
 import io.reactivex.Scheduler;
 import io.reactivex.android.plugins.RxAndroidPlugins;
+import java.lang.reflect.InvocationTargetException;
+import java.util.concurrent.Callable;
 
 /** Android-specific Schedulers. */
 public final class AndroidSchedulers {
 
     private static final class MainHolder {
-
-        static final Scheduler DEFAULT = new HandlerScheduler(new Handler(Looper.getMainLooper()));
+        static final Scheduler DEFAULT
+            = new HandlerScheduler(createAsyncHandler(Looper.getMainLooper()));
     }
 
     private static final Scheduler MAIN_THREAD = RxAndroidPlugins.initMainThreadScheduler(
@@ -45,6 +45,27 @@ public final class AndroidSchedulers {
     public static Scheduler from(Looper looper) {
         if (looper == null) throw new NullPointerException("looper == null");
         return new HandlerScheduler(new Handler(looper));
+    }
+
+    private static Handler createAsyncHandler(Looper looper) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            return Handler.createAsync(looper);
+        } else {
+            try {
+                //noinspection JavaReflectionMemberAccess
+                return Handler.class
+                    .getConstructor(Looper.class, Handler.Callback.class, boolean.class)
+                    .newInstance(looper, null, true);
+            } catch (IllegalAccessException e) {
+                return new Handler(looper);
+            } catch (InstantiationException e) {
+                return new Handler(looper);
+            } catch (NoSuchMethodException e) {
+                return new Handler(looper);
+            } catch (InvocationTargetException e) {
+                return new Handler(looper);
+            }
+        }
     }
 
     private AndroidSchedulers() {
