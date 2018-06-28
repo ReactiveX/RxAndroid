@@ -58,15 +58,12 @@ public final class AndroidSchedulers {
                 return Handler.class
                     .getConstructor(Looper.class, Handler.Callback.class, boolean.class)
                     .newInstance(looper, null, true);
-            } catch (IllegalAccessException e) {
-                return new Handler(looper);
-            } catch (InstantiationException e) {
-                return new Handler(looper);
-            } catch (NoSuchMethodException e) {
-                return new Handler(looper);
-            } catch (InvocationTargetException e) {
-                return new Handler(looper);
+            } catch (IllegalAccessException ignored) {
+            } catch (InstantiationException ignored) {
+            } catch (NoSuchMethodException ignored) {
+            } catch (InvocationTargetException ignored) {
             }
+            return new Handler(looper);
         }
     }
 
