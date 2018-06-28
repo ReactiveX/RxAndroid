@@ -52,19 +52,18 @@ public final class AndroidSchedulers {
     private static Handler createAsyncHandler(Looper looper) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             return Handler.createAsync(looper);
-        } else {
-            try {
-                //noinspection JavaReflectionMemberAccess
-                return Handler.class
-                    .getConstructor(Looper.class, Handler.Callback.class, boolean.class)
-                    .newInstance(looper, null, true);
-            } catch (IllegalAccessException ignored) {
-            } catch (InstantiationException ignored) {
-            } catch (NoSuchMethodException ignored) {
-            } catch (InvocationTargetException ignored) {
-            }
-            return new Handler(looper);
         }
+        try {
+            //noinspection JavaReflectionMemberAccess
+            return Handler.class
+                .getConstructor(Looper.class, Handler.Callback.class, boolean.class)
+                .newInstance(looper, null, true);
+        } catch (IllegalAccessException ignored) {
+        } catch (InstantiationException ignored) {
+        } catch (NoSuchMethodException ignored) {
+        } catch (InvocationTargetException ignored) {
+        }
+        return new Handler(looper);
     }
 
     private AndroidSchedulers() {
