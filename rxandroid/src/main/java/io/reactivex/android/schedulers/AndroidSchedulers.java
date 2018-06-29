@@ -18,7 +18,6 @@ import android.os.Handler;
 import android.os.Looper;
 import io.reactivex.Scheduler;
 import io.reactivex.android.plugins.RxAndroidPlugins;
-import java.lang.reflect.InvocationTargetException;
 import java.util.concurrent.Callable;
 
 /** Android-specific Schedulers. */
@@ -26,7 +25,7 @@ public final class AndroidSchedulers {
 
     private static final class MainHolder {
         static final Scheduler DEFAULT
-            = new HandlerScheduler(createAsyncHandler(Looper.getMainLooper()));
+            = new HandlerScheduler(new Handler(Looper.getMainLooper()), false);
     }
 
     private static final Scheduler MAIN_THREAD = RxAndroidPlugins.initMainThreadScheduler(
@@ -43,25 +42,19 @@ public final class AndroidSchedulers {
 
     /** A {@link Scheduler} which executes actions on {@code looper}. */
     public static Scheduler from(Looper looper) {
-        if (looper == null) throw new NullPointerException("looper == null");
-        return new HandlerScheduler(new Handler(looper));
+        return from(looper, false);
     }
 
-    private static Handler createAsyncHandler(Looper looper) {
-        if (Build.VERSION.SDK_INT >= 28) {
-            return Handler.createAsync(looper);
-        }
-        try {
-            //noinspection JavaReflectionMemberAccess
-            return Handler.class
-                .getConstructor(Looper.class, Handler.Callback.class, boolean.class)
-                .newInstance(looper, null, true);
-        } catch (IllegalAccessException ignored) {
-        } catch (InstantiationException ignored) {
-        } catch (NoSuchMethodException ignored) {
-        } catch (InvocationTargetException ignored) {
-        }
-        return new Handler(looper);
+    /**
+     * A {@link Scheduler} which executes actions on {@code looper}.
+     *
+     * @param async if true, the scheduler will use async messaging on API >= 22 to avoid VSYNC
+     *              locking. On API < 22, this will no-op.
+     * @see android.os.Message#setAsynchronous(boolean)
+     */
+    public static Scheduler from(Looper looper, boolean async) {
+        if (looper == null) throw new NullPointerException("looper == null");
+        return new HandlerScheduler(new Handler(looper), async && Build.VERSION.SDK_INT >= 22);
     }
 
     private AndroidSchedulers() {
