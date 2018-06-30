@@ -22,6 +22,8 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.plugins.RxJavaPlugins;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import org.junit.After;
@@ -29,7 +31,7 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.RobolectricTestRunner;
+import org.robolectric.ParameterizedRobolectricTestRunner;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowLooper;
 
@@ -46,9 +48,24 @@ import static org.robolectric.shadows.ShadowLooper.runUiThreadTasks;
 import static org.robolectric.shadows.ShadowLooper.runUiThreadTasksIncludingDelayedTasks;
 import static org.robolectric.shadows.ShadowLooper.unPauseMainLooper;
 
-@RunWith(RobolectricTestRunner.class)
-@Config(manifest=Config.NONE)
+@RunWith(ParameterizedRobolectricTestRunner.class)
+@Config(manifest=Config.NONE, sdk = 22)
 public final class HandlerSchedulerTest {
+
+    @ParameterizedRobolectricTestRunner.Parameters(name = "async = {0}")
+    public static Collection<Object[]> data() {
+        return Arrays.asList(new Object[][]{
+            {true},
+            {false}
+        });
+    }
+
+    private Scheduler scheduler;
+
+    public HandlerSchedulerTest(boolean async) {
+        this.scheduler = new HandlerScheduler(new Handler(Looper.getMainLooper()), async);
+    }
+
     @Before
     public void setUp() {
         RxJavaPlugins.reset();
@@ -60,8 +77,6 @@ public final class HandlerSchedulerTest {
         RxJavaPlugins.reset();
         unPauseMainLooper();
     }
-
-    private Scheduler scheduler = new HandlerScheduler(new Handler(Looper.getMainLooper()));
 
     @Test
     public void directScheduleOncePostsImmediately() {
