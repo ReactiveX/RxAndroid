@@ -58,9 +58,9 @@ public final class AndroidSchedulers {
     public static Scheduler from(Looper looper, boolean async) {
         if (looper == null) throw new NullPointerException("looper == null");
         boolean useAsync = async && Build.VERSION.SDK_INT >= 16;
-        // Confirm the method is there
         Handler handler = new Handler(looper);
-        if (useAsync) {
+        if (useAsync && Build.VERSION.SDK_INT < 22) {
+            // Confirm the method is there
             Message message = Message.obtain(handler);
             try {
                 message.setAsynchronous(true);
