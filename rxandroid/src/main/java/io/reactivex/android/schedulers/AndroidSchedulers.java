@@ -66,6 +66,8 @@ public final class AndroidSchedulers {
                 message.setAsynchronous(true);
             } catch (NoSuchMethodError e) {
                 useAsync = false;
+            } finally {
+                message.recycle();
             }
         }
         return new HandlerScheduler(new Handler(looper), useAsync);
