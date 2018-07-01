@@ -70,7 +70,7 @@ public final class AndroidSchedulers {
                 message.recycle();
             }
         }
-        return new HandlerScheduler(new Handler(looper), useAsync);
+        return new HandlerScheduler(handler, useAsync);
     }
 
     private AndroidSchedulers() {
