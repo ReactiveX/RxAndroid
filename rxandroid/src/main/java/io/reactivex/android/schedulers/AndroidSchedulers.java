@@ -13,6 +13,7 @@
  */
 package io.reactivex.android.schedulers;
 
+import android.annotation.SuppressLint;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
@@ -53,6 +54,7 @@ public final class AndroidSchedulers {
      *              locking. On API < 16, this will no-op.
      * @see android.os.Message#setAsynchronous(boolean)
      */
+    @SuppressLint("NewApi")
     public static Scheduler from(Looper looper, boolean async) {
         if (looper == null) throw new NullPointerException("looper == null");
         boolean useAsync = async && Build.VERSION.SDK_INT >= 16;
