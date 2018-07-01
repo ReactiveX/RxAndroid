@@ -49,7 +49,7 @@ import static org.robolectric.shadows.ShadowLooper.runUiThreadTasksIncludingDela
 import static org.robolectric.shadows.ShadowLooper.unPauseMainLooper;
 
 @RunWith(ParameterizedRobolectricTestRunner.class)
-@Config(manifest=Config.NONE, sdk = 22)
+@Config(manifest=Config.NONE, sdk = 16)
 public final class HandlerSchedulerTest {
 
     @ParameterizedRobolectricTestRunner.Parameters(name = "async = {0}")

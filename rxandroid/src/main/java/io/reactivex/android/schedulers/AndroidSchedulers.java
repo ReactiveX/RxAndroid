@@ -16,6 +16,7 @@ package io.reactivex.android.schedulers;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.Message;
 import io.reactivex.Scheduler;
 import io.reactivex.android.plugins.RxAndroidPlugins;
 import java.util.concurrent.Callable;
@@ -48,13 +49,24 @@ public final class AndroidSchedulers {
     /**
      * A {@link Scheduler} which executes actions on {@code looper}.
      *
-     * @param async if true, the scheduler will use async messaging on API >= 22 to avoid VSYNC
-     *              locking. On API < 22, this will no-op.
+     * @param async if true, the scheduler will use async messaging on API >= 16 to avoid VSYNC
+     *              locking. On API < 16, this will no-op.
      * @see android.os.Message#setAsynchronous(boolean)
      */
     public static Scheduler from(Looper looper, boolean async) {
         if (looper == null) throw new NullPointerException("looper == null");
-        return new HandlerScheduler(new Handler(looper), async && Build.VERSION.SDK_INT >= 22);
+        boolean useAsync = async && Build.VERSION.SDK_INT >= 16;
+        // Confirm the method is there
+        Handler handler = new Handler(looper);
+        if (useAsync) {
+            Message message = Message.obtain(handler);
+            try {
+                message.setAsynchronous(true);
+            } catch (NoSuchMethodError e) {
+                useAsync = false;
+            }
+        }
+        return new HandlerScheduler(new Handler(looper), useAsync);
     }
 
     private AndroidSchedulers() {
