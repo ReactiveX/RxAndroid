@@ -19,7 +19,6 @@ logger.info("RxAndroid using version=$project.version")
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
         minSdkVersion rootProject.ext.minSdkVersion
@@ -37,10 +36,10 @@ android {
 }
 
 dependencies {
-    api 'io.reactivex.rxjava2:rxjava:2.1.9'
+    api 'io.reactivex.rxjava2:rxjava:2.1.16'
 
     testImplementation 'junit:junit:4.12'
-    testImplementation 'org.robolectric:robolectric:3.3.2'
+    testImplementation 'org.robolectric:robolectric:3.8'
 }
 
 // Create source/javadoc artifacts for publishing
