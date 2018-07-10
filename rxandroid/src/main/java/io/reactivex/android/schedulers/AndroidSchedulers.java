@@ -52,7 +52,7 @@ public final class AndroidSchedulers {
      *
      * @param async if true, the scheduler will use async messaging on API >= 16 to avoid VSYNC
      *              locking. On API < 16, this will no-op.
-     * @see android.os.Message#setAsynchronous(boolean)
+     * @see Message#setAsynchronous(boolean)
      */
     @SuppressLint("NewApi")
     public static Scheduler from(Looper looper, boolean async) {
