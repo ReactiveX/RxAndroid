@@ -13,6 +13,7 @@
  */
 package io.reactivex.android.schedulers;
 
+import android.annotation.SuppressLint;
 import android.os.Handler;
 import android.os.Message;
 import io.reactivex.Scheduler;
@@ -23,9 +24,11 @@ import java.util.concurrent.TimeUnit;
 
 final class HandlerScheduler extends Scheduler {
     private final Handler handler;
+    private final boolean async;
 
-    HandlerScheduler(Handler handler) {
+    HandlerScheduler(Handler handler, boolean async) {
         this.handler = handler;
+        this.async = async;
     }
 
     @Override
@@ -41,18 +44,21 @@ final class HandlerScheduler extends Scheduler {
 
     @Override
     public Worker createWorker() {
-        return new HandlerWorker(handler);
+        return new HandlerWorker(handler, async);
     }
 
     private static final class HandlerWorker extends Worker {
         private final Handler handler;
+        private final boolean async;
 
         private volatile boolean disposed;
 
-        HandlerWorker(Handler handler) {
+        HandlerWorker(Handler handler, boolean async) {
             this.handler = handler;
+            this.async = async;
         }
 
+        @SuppressLint("NewApi") // the async flag is version-checked in its factory
         @Override
         public Disposable schedule(Runnable run, long delay, TimeUnit unit) {
             if (run == null) throw new NullPointerException("run == null");
@@ -67,6 +73,9 @@ final class HandlerScheduler extends Scheduler {
             ScheduledRunnable scheduled = new ScheduledRunnable(handler, run);
 
             Message message = Message.obtain(handler, scheduled);
+            if (async) {
+                message.setAsynchronous(true);
+            }
             message.obj = this; // Used as token for batch disposal of this worker's runnables.
 
             handler.sendMessageDelayed(message, unit.toMillis(delay));
