@@ -1,6 +1,11 @@
 # RxAndroid Releases #
 
-Version 1.x can be found at https://github.com/ReactiveX/RxAndroid/blob/1.x/CHANGES.md
+### Version 2.1.0 - August 16, 2018 ###
+
+**API Enhancements**
+
+ * [Pull 416](https://github.com/ReactiveX/RxAndroid/pull/416) - Add an option to post async messages
+
 
 ### Version 2.0.2 - January 12, 2018 ###
 
@@ -44,3 +49,8 @@ slightly different names.
 
 For more information about RxJava 2.0 see
 [its RC1 release notes](https://github.com/ReactiveX/RxJava/releases/tag/v2.0.0-RC1)
+
+
+---
+
+Version 1.x can be found at https://github.com/ReactiveX/RxAndroid/blob/1.x/CHANGES.md
