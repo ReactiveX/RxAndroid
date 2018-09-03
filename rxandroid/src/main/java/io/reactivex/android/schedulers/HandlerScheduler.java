@@ -32,13 +32,18 @@ final class HandlerScheduler extends Scheduler {
     }
 
     @Override
+    @SuppressLint("NewApi") // Async will only be true when the API is available to call.
     public Disposable scheduleDirect(Runnable run, long delay, TimeUnit unit) {
         if (run == null) throw new NullPointerException("run == null");
         if (unit == null) throw new NullPointerException("unit == null");
 
         run = RxJavaPlugins.onSchedule(run);
         ScheduledRunnable scheduled = new ScheduledRunnable(handler, run);
-        handler.postDelayed(scheduled, unit.toMillis(delay));
+        Message message = Message.obtain(handler, scheduled);
+        if (async) {
+            message.setAsynchronous(true);
+        }
+        handler.sendMessageDelayed(message, unit.toMillis(delay));
         return scheduled;
     }
 
