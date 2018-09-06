@@ -806,6 +806,20 @@ public final class HandlerSchedulerTest {
         assertEquals(async, message.isAsynchronous());
     }
 
+    @Test
+    public void workerSchedulePeriodicallySetAsync() {
+        ShadowMessageQueue mainMessageQueue = shadowOf(Looper.getMainLooper().getQueue());
+
+        Worker worker = scheduler.createWorker();
+        worker.schedulePeriodically(new Runnable() {
+            @Override public void run() {
+            }
+        }, 1, 1, MINUTES);
+
+        Message message = mainMessageQueue.getHead();
+        assertEquals(async, message.isAsynchronous());
+    }
+
     private static void idleMainLooper(long amount, TimeUnit unit) {
         // TODO delete this when https://github.com/robolectric/robolectric/pull/2592 is released.
         ShadowLooper.idleMainLooper(unit.toMillis(amount));
