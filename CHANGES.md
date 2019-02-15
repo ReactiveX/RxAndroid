@@ -1,5 +1,12 @@
 # RxAndroid Releases #
 
+### Version 2.1.1 - February, 15 2019 ###
+
+**Bugfixes**
+
+ * [Pull 442](https://github.com/ReactiveX/RxAndroid/pull/442) - Use async messages for Scheduler.scheduleDirect
+
+
 ### Version 2.1.0 - August 16, 2018 ###
 
 **API Enhancements**
