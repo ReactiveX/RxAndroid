@@ -15,6 +15,7 @@ package io.reactivex.android.schedulers;
 
 import android.os.Handler;
 import android.os.Looper;
+import android.os.Message;
 import io.reactivex.Scheduler;
 import io.reactivex.Scheduler.Worker;
 import io.reactivex.android.testutil.CountingRunnable;
@@ -34,6 +35,7 @@ import org.junit.runner.RunWith;
 import org.robolectric.ParameterizedRobolectricTestRunner;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowLooper;
+import org.robolectric.shadows.ShadowMessageQueue;
 
 import static java.util.concurrent.TimeUnit.MINUTES;
 import static java.util.concurrent.TimeUnit.SECONDS;
@@ -43,6 +45,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.robolectric.Shadows.shadowOf;
 import static org.robolectric.shadows.ShadowLooper.pauseMainLooper;
 import static org.robolectric.shadows.ShadowLooper.runUiThreadTasks;
 import static org.robolectric.shadows.ShadowLooper.runUiThreadTasksIncludingDelayedTasks;
@@ -61,9 +64,11 @@ public final class HandlerSchedulerTest {
     }
 
     private Scheduler scheduler;
+    private boolean async;
 
     public HandlerSchedulerTest(boolean async) {
         this.scheduler = new HandlerScheduler(new Handler(Looper.getMainLooper()), async);
+        this.async = async;
     }
 
     @Before
@@ -772,6 +777,47 @@ public final class HandlerSchedulerTest {
         } catch (NullPointerException e) {
             assertEquals("unit == null", e.getMessage());
         }
+    }
+
+    @Test
+    public void directScheduleSetAsync() {
+        ShadowMessageQueue mainMessageQueue = shadowOf(Looper.getMainLooper().getQueue());
+
+        scheduler.scheduleDirect(new Runnable() {
+            @Override public void run() {
+            }
+        });
+
+        Message message = mainMessageQueue.getHead();
+        assertEquals(async, message.isAsynchronous());
+    }
+
+    @Test
+    public void workerScheduleSetAsync() {
+        ShadowMessageQueue mainMessageQueue = shadowOf(Looper.getMainLooper().getQueue());
+
+        Worker worker = scheduler.createWorker();
+        worker.schedule(new Runnable() {
+            @Override public void run() {
+            }
+        });
+
+        Message message = mainMessageQueue.getHead();
+        assertEquals(async, message.isAsynchronous());
+    }
+
+    @Test
+    public void workerSchedulePeriodicallySetAsync() {
+        ShadowMessageQueue mainMessageQueue = shadowOf(Looper.getMainLooper().getQueue());
+
+        Worker worker = scheduler.createWorker();
+        worker.schedulePeriodically(new Runnable() {
+            @Override public void run() {
+            }
+        }, 1, 1, MINUTES);
+
+        Message message = mainMessageQueue.getHead();
+        assertEquals(async, message.isAsynchronous());
     }
 
     private static void idleMainLooper(long amount, TimeUnit unit) {
