@@ -19,6 +19,7 @@ logger.info("RxAndroid using version=$project.version")
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
+    testOptions.unitTests.includeAndroidResources = true
 
     defaultConfig {
         minSdkVersion rootProject.ext.minSdkVersion
@@ -36,10 +37,10 @@ android {
 }
 
 dependencies {
-    api 'io.reactivex.rxjava2:rxjava:2.2.6'
+    api 'io.reactivex.rxjava2:rxjava:2.2.9'
 
     testImplementation 'junit:junit:4.12'
-    testImplementation 'org.robolectric:robolectric:3.8'
+    testImplementation 'org.robolectric:robolectric:4.3'
 }
 
 // Create source/javadoc artifacts for publishing
