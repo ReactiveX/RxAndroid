@@ -39,15 +39,13 @@ public final class MainThreadDisposableTest {
 
   @Test public void verifyThrowsOffMainThread() throws InterruptedException {
     final CountDownLatch latch = new CountDownLatch(1);
-    new Thread(new Runnable() {
-      @Override public void run() {
-        try {
-          MainThreadDisposable.verifyMainThread();
-          fail();
-        } catch (IllegalStateException e) {
-          assertTrue(e.getMessage().startsWith("Expected to be called on the main thread"));
-          latch.countDown();
-        }
+    new Thread(() -> {
+      try {
+        MainThreadDisposable.verifyMainThread();
+        fail();
+      } catch (IllegalStateException e) {
+        assertTrue(e.getMessage().startsWith("Expected to be called on the main thread"));
+        latch.countDown();
       }
     }).start();
 
@@ -88,15 +86,13 @@ public final class MainThreadDisposableTest {
 
     final CountDownLatch latch = new CountDownLatch(1);
     final AtomicBoolean called = new AtomicBoolean();
-    new Thread(new Runnable() {
-      @Override public void run() {
-        new MainThreadDisposable() {
-          @Override protected void onDispose() {
-            called.set(true);
-          }
-        }.dispose();
-        latch.countDown();
-      }
+    new Thread(() -> {
+      new MainThreadDisposable() {
+        @Override protected void onDispose() {
+          called.set(true);
+        }
+      }.dispose();
+      latch.countDown();
     }).start();
 
     assertTrue(latch.await(1, SECONDS));

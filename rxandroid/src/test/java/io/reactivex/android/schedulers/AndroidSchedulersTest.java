@@ -51,11 +51,9 @@ public final class AndroidSchedulersTest {
     public void mainThreadCallsThroughToHook() {
         final AtomicInteger called = new AtomicInteger();
         final Scheduler newScheduler = new EmptyScheduler();
-        RxAndroidPlugins.setMainThreadSchedulerHandler(new Function<Scheduler, Scheduler>() {
-            @Override public Scheduler apply(Scheduler scheduler) {
-                called.getAndIncrement();
-                return newScheduler;
-            }
+        RxAndroidPlugins.setMainThreadSchedulerHandler(scheduler -> {
+            called.getAndIncrement();
+            return newScheduler;
         });
 
         assertSame(newScheduler, AndroidSchedulers.mainThread());
@@ -94,15 +92,12 @@ public final class AndroidSchedulersTest {
     public void asyncIgnoredPre16() {
         ReflectionHelpers.setStaticField(Build.VERSION.class, "SDK_INT", 14);
 
-        ShadowLooper mainLooper = ShadowLooper.getShadowMainLooper();
+        ShadowLooper mainLooper = shadowOf(Looper.getMainLooper());
         mainLooper.pause();
         ShadowMessageQueue mainMessageQueue = shadowOf(Looper.getMainLooper().getQueue());
 
         Scheduler main = AndroidSchedulers.from(Looper.getMainLooper(), true);
-        main.scheduleDirect(new Runnable() {
-            @Override public void run() {
-            }
-        });
+        main.scheduleDirect(() -> {});
 
         Message message = mainMessageQueue.getHead();
         assertFalse(message.isAsynchronous());

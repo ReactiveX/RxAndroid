@@ -31,11 +31,7 @@ public final class AndroidSchedulers {
     }
 
     private static final Scheduler MAIN_THREAD = RxAndroidPlugins.initMainThreadScheduler(
-            new Callable<Scheduler>() {
-                @Override public Scheduler call() throws Exception {
-                    return MainHolder.DEFAULT;
-                }
-            });
+            () -> MainHolder.DEFAULT);
 
     /** A {@link Scheduler} which executes actions on the Android main thread. */
     public static Scheduler mainThread() {

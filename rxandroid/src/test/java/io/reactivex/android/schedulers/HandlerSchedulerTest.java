@@ -105,11 +105,9 @@ public final class HandlerSchedulerTest {
     public void directScheduleOnceUsesHook() {
         final CountingRunnable newCounter = new CountingRunnable();
         final AtomicReference<Runnable> runnableRef = new AtomicReference<>();
-        RxJavaPlugins.setScheduleHandler(new Function<Runnable, Runnable>() {
-            @Override public Runnable apply(Runnable runnable) {
-                runnableRef.set(runnable);
-                return newCounter;
-            }
+        RxJavaPlugins.setScheduleHandler(runnable -> {
+            runnableRef.set(runnable);
+            return newCounter;
         });
 
         CountingRunnable counter = new CountingRunnable();
@@ -151,11 +149,9 @@ public final class HandlerSchedulerTest {
     public void directScheduleOnceWithDelayUsesHook() {
         final CountingRunnable newCounter = new CountingRunnable();
         final AtomicReference<Runnable> runnableRef = new AtomicReference<>();
-        RxJavaPlugins.setScheduleHandler(new Function<Runnable, Runnable>() {
-            @Override public Runnable apply(Runnable runnable) {
-                runnableRef.set(runnable);
-                return newCounter;
-            }
+        RxJavaPlugins.setScheduleHandler(runnable -> {
+            runnableRef.set(runnable);
+            return newCounter;
         });
 
         CountingRunnable counter = new CountingRunnable();
@@ -209,11 +205,9 @@ public final class HandlerSchedulerTest {
     public void directSchedulePeriodicallyUsesHookOnce() {
         final CountingRunnable newCounter = new CountingRunnable();
         final AtomicReference<Runnable> runnableRef = new AtomicReference<>();
-        RxJavaPlugins.setScheduleHandler(new Function<Runnable, Runnable>() {
-            @Override public Runnable apply(Runnable runnable) {
-                runnableRef.set(runnable);
-                return newCounter;
-            }
+        RxJavaPlugins.setScheduleHandler(runnable -> {
+            runnableRef.set(runnable);
+            return newCounter;
         });
 
         CountingRunnable counter = new CountingRunnable();
@@ -344,11 +338,9 @@ public final class HandlerSchedulerTest {
     public void workerScheduleOnceUsesHook() {
         final CountingRunnable newCounter = new CountingRunnable();
         final AtomicReference<Runnable> runnableRef = new AtomicReference<>();
-        RxJavaPlugins.setScheduleHandler(new Function<Runnable, Runnable>() {
-            @Override public Runnable apply(Runnable runnable) {
-                runnableRef.set(runnable);
-                return newCounter;
-            }
+        RxJavaPlugins.setScheduleHandler(runnable -> {
+            runnableRef.set(runnable);
+            return newCounter;
         });
 
         Worker worker = scheduler.createWorker();
@@ -396,11 +388,9 @@ public final class HandlerSchedulerTest {
     public void workerScheduleOnceWithDelayUsesHook() {
         final CountingRunnable newCounter = new CountingRunnable();
         final AtomicReference<Runnable> runnableRef = new AtomicReference<>();
-        RxJavaPlugins.setScheduleHandler(new Function<Runnable, Runnable>() {
-            @Override public Runnable apply(Runnable runnable) {
-                runnableRef.set(runnable);
-                return newCounter;
-            }
+        RxJavaPlugins.setScheduleHandler(runnable -> {
+            runnableRef.set(runnable);
+            return newCounter;
         });
 
         Worker worker = scheduler.createWorker();
@@ -462,11 +452,9 @@ public final class HandlerSchedulerTest {
 
         final CountingRunnable newCounter = new CountingRunnable();
         final AtomicReference<Runnable> runnableRef = new AtomicReference<>();
-        RxJavaPlugins.setScheduleHandler(new Function<Runnable, Runnable>() {
-            @Override public Runnable apply(Runnable runnable) {
-                runnableRef.set(runnable);
-                return newCounter;
-            }
+        RxJavaPlugins.setScheduleHandler(runnable -> {
+            runnableRef.set(runnable);
+            return newCounter;
         });
 
         CountingRunnable counter = new CountingRunnable();
@@ -592,12 +580,10 @@ public final class HandlerSchedulerTest {
     @Test
     public void workerUnsubscriptionDuringSchedulingCancelsScheduledAction() {
         final AtomicReference<Worker> workerRef = new AtomicReference<>();
-        RxJavaPlugins.setScheduleHandler(new Function<Runnable, Runnable>() {
-            @Override public Runnable apply(Runnable runnable) {
-                // Purposefully unsubscribe in an asinine point after the normal unsubscribed check.
-                workerRef.get().dispose();
-                return runnable;
-            }
+        RxJavaPlugins.setScheduleHandler(runnable -> {
+            // Purposefully unsubscribe in an asinine point after the normal unsubscribed check.
+            workerRef.get().dispose();
+            return runnable;
         });
 
         Worker worker = scheduler.createWorker();
@@ -664,21 +650,13 @@ public final class HandlerSchedulerTest {
 
         try {
             final AtomicReference<Throwable> throwableRef = new AtomicReference<>();
-            RxJavaPlugins.setErrorHandler(new Consumer<Throwable>() {
-                @Override
-                public void accept(Throwable throwable) throws Exception {
-                    throwableRef.set(throwable);
-                }
-            });
+            RxJavaPlugins.setErrorHandler(throwableRef::set);
 
             Worker worker = scheduler.createWorker();
 
             final NullPointerException npe = new NullPointerException();
-            Runnable action = new Runnable() {
-                @Override
-                public void run() {
-                    throw npe;
-                }
+            Runnable action = () -> {
+                throw npe;
             };
             worker.schedule(action);
 
@@ -783,9 +761,7 @@ public final class HandlerSchedulerTest {
     public void directScheduleSetAsync() {
         ShadowMessageQueue mainMessageQueue = shadowOf(Looper.getMainLooper().getQueue());
 
-        scheduler.scheduleDirect(new Runnable() {
-            @Override public void run() {
-            }
+        scheduler.scheduleDirect(() -> {
         });
 
         Message message = mainMessageQueue.getHead();
@@ -797,9 +773,7 @@ public final class HandlerSchedulerTest {
         ShadowMessageQueue mainMessageQueue = shadowOf(Looper.getMainLooper().getQueue());
 
         Worker worker = scheduler.createWorker();
-        worker.schedule(new Runnable() {
-            @Override public void run() {
-            }
+        worker.schedule(() -> {
         });
 
         Message message = mainMessageQueue.getHead();
@@ -811,9 +785,7 @@ public final class HandlerSchedulerTest {
         ShadowMessageQueue mainMessageQueue = shadowOf(Looper.getMainLooper().getQueue());
 
         Worker worker = scheduler.createWorker();
-        worker.schedulePeriodically(new Runnable() {
-            @Override public void run() {
-            }
+        worker.schedulePeriodically(() -> {
         }, 1, 1, MINUTES);
 
         Message message = mainMessageQueue.getHead();
@@ -822,6 +794,6 @@ public final class HandlerSchedulerTest {
 
     private static void idleMainLooper(long amount, TimeUnit unit) {
         // TODO delete this when https://github.com/robolectric/robolectric/pull/2592 is released.
-        ShadowLooper.idleMainLooper(unit.toMillis(amount));
+        ShadowLooper.idleMainLooper(unit.toMillis(amount), TimeUnit.MILLISECONDS);
     }
 }

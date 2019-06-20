@@ -45,11 +45,9 @@ public final class RxAndroidPluginsTest {
     public void mainThreadHandlerCalled() {
         final AtomicReference<Scheduler> schedulerRef = new AtomicReference<>();
         final Scheduler newScheduler = new EmptyScheduler();
-        RxAndroidPlugins.setMainThreadSchedulerHandler(new Function<Scheduler, Scheduler>() {
-            @Override public Scheduler apply(Scheduler scheduler) {
-                schedulerRef.set(scheduler);
-                return newScheduler;
-            }
+        RxAndroidPlugins.setMainThreadSchedulerHandler(scheduler -> {
+            schedulerRef.set(scheduler);
+            return newScheduler;
         });
 
         Scheduler scheduler = new EmptyScheduler();
@@ -60,10 +58,8 @@ public final class RxAndroidPluginsTest {
 
     @Test
     public void resetClearsMainThreadHandler() {
-        RxAndroidPlugins.setMainThreadSchedulerHandler(new Function<Scheduler, Scheduler>() {
-            @Override public Scheduler apply(Scheduler scheduler) {
-                throw new AssertionError();
-            }
+        RxAndroidPlugins.setMainThreadSchedulerHandler(scheduler -> {
+            throw new AssertionError();
         });
         RxAndroidPlugins.reset();
 
@@ -77,17 +73,13 @@ public final class RxAndroidPluginsTest {
         final AtomicReference<Callable<Scheduler>> schedulerRef = new AtomicReference<>();
         final Scheduler newScheduler = new EmptyScheduler();
         RxAndroidPlugins
-                .setInitMainThreadSchedulerHandler(new Function<Callable<Scheduler>, Scheduler>() {
-                    @Override public Scheduler apply(Callable<Scheduler> scheduler) {
-                        schedulerRef.set(scheduler);
-                        return newScheduler;
-                    }
+                .setInitMainThreadSchedulerHandler(scheduler -> {
+                    schedulerRef.set(scheduler);
+                    return newScheduler;
                 });
 
-        Callable<Scheduler> scheduler = new Callable<Scheduler>() {
-            @Override public Scheduler call() throws Exception {
-                throw new AssertionError();
-            }
+        Callable<Scheduler> scheduler = () -> {
+            throw new AssertionError();
         };
         Scheduler actual = RxAndroidPlugins.initMainThreadScheduler(scheduler);
         assertSame(newScheduler, actual);
@@ -97,18 +89,12 @@ public final class RxAndroidPluginsTest {
     @Test
     public void resetClearsInitMainThreadHandler() throws Exception {
         RxAndroidPlugins
-                .setInitMainThreadSchedulerHandler(new Function<Callable<Scheduler>, Scheduler>() {
-                    @Override public Scheduler apply(Callable<Scheduler> scheduler) {
-                        throw new AssertionError();
-                    }
+                .setInitMainThreadSchedulerHandler(scheduler -> {
+                    throw new AssertionError();
                 });
 
         final Scheduler scheduler = new EmptyScheduler();
-        Callable<Scheduler> schedulerCallable = new Callable<Scheduler>() {
-            @Override public Scheduler call() throws Exception {
-                return scheduler;
-            }
-        };
+        Callable<Scheduler> schedulerCallable = () -> scheduler;
 
         RxAndroidPlugins.reset();
 
@@ -119,15 +105,9 @@ public final class RxAndroidPluginsTest {
     @Test
     public void defaultMainThreadSchedulerIsInitializedLazily() {
         Function<Callable<Scheduler>, Scheduler> safeOverride =
-                new Function<Callable<Scheduler>, Scheduler>() {
-            @Override public Scheduler apply(Callable<Scheduler> scheduler) {
-                return new EmptyScheduler();
-            }
-        };
-        Callable<Scheduler> unsafeDefault = new Callable<Scheduler>() {
-            @Override public Scheduler call() throws Exception {
-                throw new AssertionError();
-            }
+                scheduler -> new EmptyScheduler();
+        Callable<Scheduler> unsafeDefault = () -> {
+            throw new AssertionError();
         };
 
        RxAndroidPlugins.setInitMainThreadSchedulerHandler(safeOverride);
@@ -146,11 +126,7 @@ public final class RxAndroidPluginsTest {
 
     @Test
     public void overrideInitMainSchedulerThrowsWhenSchedulerCallableReturnsNull() {
-        Callable<Scheduler> nullResultCallable = new Callable<Scheduler>() {
-            @Override public Scheduler call() throws Exception {
-                return null;
-            }
-        };
+        Callable<Scheduler> nullResultCallable = () -> null;
 
         try {
             RxAndroidPlugins.initMainThreadScheduler(nullResultCallable);
@@ -162,22 +138,14 @@ public final class RxAndroidPluginsTest {
 
     @Test
     public void getInitMainThreadSchedulerHandlerReturnsHandler() {
-        Function<Callable<Scheduler>, Scheduler> handler = new Function<Callable<Scheduler>, Scheduler>() {
-            @Override public Scheduler apply(Callable<Scheduler> schedulerCallable) throws Exception {
-                return Schedulers.trampoline();
-            }
-        };
+        Function<Callable<Scheduler>, Scheduler> handler = schedulerCallable -> Schedulers.trampoline();
         RxAndroidPlugins.setInitMainThreadSchedulerHandler(handler);
         assertSame(handler, RxAndroidPlugins.getInitMainThreadSchedulerHandler());
     }
 
     @Test
     public void getMainThreadSchedulerHandlerReturnsHandler() {
-        Function<Scheduler, Scheduler> handler = new Function<Scheduler, Scheduler>() {
-            @Override public Scheduler apply(Scheduler scheduler) {
-                return Schedulers.trampoline();
-            }
-        };
+        Function<Scheduler, Scheduler> handler = scheduler -> Schedulers.trampoline();
         RxAndroidPlugins.setMainThreadSchedulerHandler(handler);
         assertSame(handler, RxAndroidPlugins.getOnMainThreadSchedulerHandler());
     }

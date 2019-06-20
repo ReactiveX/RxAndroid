@@ -34,11 +34,7 @@ public class MainActivity extends Activity {
     @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
-        findViewById(R.id.button_run_scheduler).setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
-                onRunSchedulerExampleButtonClicked();
-            }
-        });
+        findViewById(R.id.button_run_scheduler).setOnClickListener(v -> onRunSchedulerExampleButtonClicked());
     }
 
     @Override protected void onDestroy() {
@@ -68,12 +64,10 @@ public class MainActivity extends Activity {
     }
 
     static Observable<String> sampleObservable() {
-        return Observable.defer(new Callable<ObservableSource<? extends String>>() {
-          @Override public ObservableSource<? extends String> call() throws Exception {
-                // Do some long running operation
-                SystemClock.sleep(5000);
-                return Observable.just("one", "two", "three", "four", "five");
-            }
-        });
+        return Observable.defer(() -> {
+              // Do some long running operation
+              SystemClock.sleep(5000);
+              return Observable.just("one", "two", "three", "four", "five");
+          });
     }
 }
