@@ -15,7 +15,7 @@ package io.reactivex.android;
 
 import android.os.Looper;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
+import io.reactivex.rxjava3.disposables.Disposable;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**

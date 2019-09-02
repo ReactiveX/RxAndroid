@@ -14,10 +14,9 @@
 package io.reactivex.android.plugins;
 
 import java.util.concurrent.Callable;
-
-import io.reactivex.Scheduler;
-import io.reactivex.exceptions.Exceptions;
-import io.reactivex.functions.Function;
+import io.reactivex.rxjava3.core.Scheduler;
+import io.reactivex.rxjava3.exceptions.Exceptions;
+import io.reactivex.rxjava3.functions.Function;
 
 /**
  * Utility class to inject handlers to certain standard RxAndroid operations.

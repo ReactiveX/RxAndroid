@@ -23,10 +23,10 @@ import org.robolectric.annotation.Config;
 import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicReference;
 
-import io.reactivex.Scheduler;
 import io.reactivex.android.testutil.EmptyScheduler;
-import io.reactivex.functions.Function;
-import io.reactivex.schedulers.Schedulers;
+import io.reactivex.rxjava3.core.Scheduler;
+import io.reactivex.rxjava3.functions.Function;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
 import static junit.framework.TestCase.fail;
 import static org.junit.Assert.assertEquals;

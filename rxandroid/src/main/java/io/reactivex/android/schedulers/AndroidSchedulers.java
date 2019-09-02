@@ -18,8 +18,8 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import io.reactivex.Scheduler;
 import io.reactivex.android.plugins.RxAndroidPlugins;
+import io.reactivex.rxjava3.core.Scheduler;
 import java.util.concurrent.Callable;
 
 /** Android-specific Schedulers. */

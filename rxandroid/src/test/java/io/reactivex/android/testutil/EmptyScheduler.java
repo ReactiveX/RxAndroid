@@ -13,11 +13,11 @@
  */
 package io.reactivex.android.testutil;
 
-import io.reactivex.Scheduler;
+import io.reactivex.rxjava3.core.Scheduler;
 
 public final class EmptyScheduler extends Scheduler {
     @Override
     public Worker createWorker() {
-      throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException();
     }
 }
