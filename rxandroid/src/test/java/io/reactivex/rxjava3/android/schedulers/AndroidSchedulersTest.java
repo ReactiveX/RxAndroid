@@ -11,14 +11,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.reactivex.android.schedulers;
+package io.reactivex.rxjava3.android.schedulers;
 
 import android.os.Build;
 import android.os.Looper;
 import android.os.Message;
 
-import io.reactivex.android.plugins.RxAndroidPlugins;
-import io.reactivex.android.testutil.EmptyScheduler;
+import io.reactivex.rxjava3.android.plugins.RxAndroidPlugins;
+import io.reactivex.rxjava3.android.testutil.EmptyScheduler;
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Scheduler;
 import io.reactivex.rxjava3.functions.Function;
 

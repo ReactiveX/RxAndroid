@@ -11,8 +11,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.reactivex.android;
+package io.reactivex.rxjava3.android;
 
+import io.reactivex.rxjava3.android.MainThreadDisposable;
 import io.reactivex.rxjava3.disposables.Disposable;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;

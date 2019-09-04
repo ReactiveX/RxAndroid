@@ -11,7 +11,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.reactivex.android.plugins;
+package io.reactivex.rxjava3.android.plugins;
 
 import java.util.concurrent.Callable;
 import io.reactivex.rxjava3.core.Scheduler;

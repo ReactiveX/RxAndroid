@@ -11,14 +11,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.reactivex.android.schedulers;
+package io.reactivex.rxjava3.android.schedulers;
 
 import android.annotation.SuppressLint;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import io.reactivex.android.plugins.RxAndroidPlugins;
+import io.reactivex.rxjava3.android.plugins.RxAndroidPlugins;
 import io.reactivex.rxjava3.core.Scheduler;
 import java.util.concurrent.Callable;
 

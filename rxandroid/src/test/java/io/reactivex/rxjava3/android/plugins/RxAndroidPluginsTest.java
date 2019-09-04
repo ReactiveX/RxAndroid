@@ -11,7 +11,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.reactivex.android.plugins;
+package io.reactivex.rxjava3.android.plugins;
 
 import org.junit.After;
 import org.junit.Before;
@@ -23,7 +23,8 @@ import org.robolectric.annotation.Config;
 import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicReference;
 
-import io.reactivex.android.testutil.EmptyScheduler;
+import io.reactivex.rxjava3.android.testutil.EmptyScheduler;
+import io.reactivex.rxjava3.android.plugins.RxAndroidPlugins;
 import io.reactivex.rxjava3.core.Scheduler;
 import io.reactivex.rxjava3.functions.Function;
 import io.reactivex.rxjava3.schedulers.Schedulers;
