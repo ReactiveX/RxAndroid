@@ -11,13 +11,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.reactivex.android.testutil;
+package io.reactivex.rxjava3.android.testutil;
 
-import java.util.concurrent.atomic.AtomicInteger;
+import io.reactivex.rxjava3.core.Scheduler;
 
-public class CountingRunnable extends AtomicInteger implements Runnable {
+public final class EmptyScheduler extends Scheduler {
     @Override
-    public void run() {
-        getAndIncrement();
+    public Worker createWorker() {
+        throw new UnsupportedOperationException();
     }
 }
