@@ -27,7 +27,7 @@ public final class AndroidSchedulers {
 
     private static final class MainHolder {
         static final Scheduler DEFAULT
-            = new HandlerScheduler(new Handler(Looper.getMainLooper()), false);
+            = new HandlerScheduler(new Handler(Looper.getMainLooper()), true);
     }
 
     private static final Scheduler MAIN_THREAD = RxAndroidPlugins.initMainThreadScheduler(
@@ -37,14 +37,26 @@ public final class AndroidSchedulers {
                 }
             });
 
-    /** A {@link Scheduler} which executes actions on the Android main thread. */
+    /**
+     * A {@link Scheduler} which executes actions on the Android main thread.
+     * <p>
+     * The returned scheduler will post asynchronous messages to the looper by default.
+     *
+     * @see #from(Looper, boolean)
+     */
     public static Scheduler mainThread() {
         return RxAndroidPlugins.onMainThreadScheduler(MAIN_THREAD);
     }
 
-    /** A {@link Scheduler} which executes actions on {@code looper}. */
+    /**
+     * A {@link Scheduler} which executes actions on {@code looper}.
+     * <p>
+     * The returned scheduler will post asynchronous messages to the looper by default.
+     *
+     * @see #from(Looper, boolean)
+     */
     public static Scheduler from(Looper looper) {
-        return from(looper, false);
+        return from(looper, true);
     }
 
     /**
