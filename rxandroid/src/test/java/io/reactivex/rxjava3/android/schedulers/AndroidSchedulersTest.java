@@ -38,6 +38,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.robolectric.Shadows.shadowOf;
 
@@ -91,6 +92,38 @@ public final class AndroidSchedulersTest {
     @Test
     public void fromReturnsUsableScheduler() {
         assertNotNull(AndroidSchedulers.from(Looper.getMainLooper()));
+    }
+
+    @Test
+    public void mainThreadAsyncMessagesByDefault() {
+        ShadowLooper mainLooper = ShadowLooper.getShadowMainLooper();
+        mainLooper.pause();
+        ShadowMessageQueue mainMessageQueue = shadowOf(Looper.getMainLooper().getQueue());
+
+        Scheduler main = AndroidSchedulers.mainThread();
+        main.scheduleDirect(new Runnable() {
+            @Override public void run() {
+            }
+        });
+
+        Message message = mainMessageQueue.getHead();
+        assertTrue(message.isAsynchronous());
+    }
+
+    @Test
+    public void fromAsyncMessagesByDefault() {
+        ShadowLooper mainLooper = ShadowLooper.getShadowMainLooper();
+        mainLooper.pause();
+        ShadowMessageQueue mainMessageQueue = shadowOf(Looper.getMainLooper().getQueue());
+
+        Scheduler main = AndroidSchedulers.from(Looper.getMainLooper());
+        main.scheduleDirect(new Runnable() {
+            @Override public void run() {
+            }
+        });
+
+        Message message = mainMessageQueue.getHead();
+        assertTrue(message.isAsynchronous());
     }
 
     @Test
