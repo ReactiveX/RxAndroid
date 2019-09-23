@@ -70,7 +70,7 @@ public final class AndroidSchedulers {
     public static Scheduler from(Looper looper, boolean async) {
         if (looper == null) throw new NullPointerException("looper == null");
 
-        // Below code exists in Androidx-core as well, but is left here rather than include an
+        // Below code exists in androidx-core as well, but is left here rather than include an
         // entire extra dependency.
         // https://developer.android.com/reference/kotlin/androidx/core/os/MessageCompat?hl=en#setAsynchronous(android.os.Message,%20kotlin.Boolean)
         if (Build.VERSION.SDK_INT < 16) {
