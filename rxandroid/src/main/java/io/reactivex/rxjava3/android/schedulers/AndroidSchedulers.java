@@ -30,12 +30,8 @@ public final class AndroidSchedulers {
             = new HandlerScheduler(new Handler(Looper.getMainLooper()), true);
     }
 
-    private static final Scheduler MAIN_THREAD = RxAndroidPlugins.initMainThreadScheduler(
-            new Callable<Scheduler>() {
-                @Override public Scheduler call() throws Exception {
-                    return MainHolder.DEFAULT;
-                }
-            });
+    private static final Scheduler MAIN_THREAD =
+        RxAndroidPlugins.initMainThreadScheduler(() -> MainHolder.DEFAULT);
 
     /**
      * A {@link Scheduler} which executes actions on the Android main thread.
