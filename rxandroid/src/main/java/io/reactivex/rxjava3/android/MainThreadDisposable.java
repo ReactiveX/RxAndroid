@@ -72,11 +72,7 @@ public abstract class MainThreadDisposable implements Disposable {
             if (Looper.myLooper() == Looper.getMainLooper()) {
                 onDispose();
             } else {
-                AndroidSchedulers.mainThread().scheduleDirect(new Runnable() {
-                    @Override public void run() {
-                        onDispose();
-                    }
-                });
+                AndroidSchedulers.mainThread().scheduleDirect(this::onDispose);
             }
         }
     }
