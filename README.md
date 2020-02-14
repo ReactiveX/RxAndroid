@@ -27,17 +27,17 @@ allprojects {
 }
 
 dependencies {
-    implementation 'io.reactivex.rxjava3:rxandroid:3.0.0-SNAPSHOT'
+    implementation 'io.reactivex.rxjava3:rxandroid:3.0.0'
     // Because RxAndroid releases are few and far between, it is recommended you also
     // explicitly depend on RxJava's latest version for bug fixes and new features.
     // (see https://github.com/ReactiveX/RxJava/releases for latest 3.x.x version)
-    implementation 'io.reactivex.rxjava3:rxjava:3.0.0-RC2'
+    implementation 'io.reactivex.rxjava3:rxjava:3.0.0'
 ```
 
-* RxAndroid: <a href='http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22io.reactivex.rxjava2%22%20a%3A%22rxandroid%22'><img src='http://img.shields.io/maven-central/v/io.reactivex.rxjava3/rxandroid.svg'></a>
-* RxJava: <a href='http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22io.reactivex.rxjava2%22%20a%3A%22rxjava%22'><img src='http://img.shields.io/maven-central/v/io.reactivex.rxjava3/rxjava.svg'></a>
+* RxAndroid: <a href='http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22io.reactivex.rxjava3%22%20a%3A%22rxandroid%22'><img src='http://img.shields.io/maven-central/v/io.reactivex.rxjava3/rxandroid.svg'></a>
+* RxJava: <a href='http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22io.reactivex.rxjava3%22%20a%3A%22rxjava%22'><img src='http://img.shields.io/maven-central/v/io.reactivex.rxjava3/rxjava.svg'></a>
 
-Additional binaries and dependency information for can be found at [http://search.maven.org](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22io.reactivex.rxjava3%22%20a%3A%22rxandroid%22).
+Additional binaries and dependency information for can be found at [search.maven.org](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22io.reactivex.rxjava3%22%20a%3A%22rxandroid%22).
 
 
 ## Build
@@ -67,9 +67,9 @@ result or outcome on the main thread. Using vanilla Android, this would typicall
 
 ```java
 Observable.just("one", "two", "three", "four", "five")
-        .subscribeOn(Schedulers.newThread())
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(/* an Observer */);
+    .subscribeOn(Schedulers.newThread())
+    .observeOn(AndroidSchedulers.mainThread())
+    .subscribe(/* an Observer */);
 ```
 
 This will execute the `Observable` on a new thread, and emit results through `onNext` on the main thread.
@@ -83,8 +83,8 @@ communication to an Android message loop, or `Looper`. In order to observe an `O
 ```java
 Looper backgroundLooper = // ...
 Observable.just("one", "two", "three", "four", "five")
-        .observeOn(AndroidSchedulers.from(backgroundLooper))
-        .subscribe(/* an Observer */)
+    .observeOn(AndroidSchedulers.from(backgroundLooper))
+    .subscribe(/* an Observer */)
 ```
 
 This will execute the Observable on a new thread and emit results through `onNext` on whatever thread is
