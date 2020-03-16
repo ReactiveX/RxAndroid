@@ -4,7 +4,7 @@
 
 General availability of RxAndroid 3.0 for use with RxJava 3.0!
 
-The Maven groupId has changed to `io.reactivex.rxandroid3` and the package is now `io.reactivex.rxjava3.android`.
+The Maven groupId has changed to `io.reactivex.rxjava3` and the package is now `io.reactivex.rxjava3.android`.
 
 The APIs and behavior of RxAndroid 3.0.0 is otherwise exactly the same as RxAndroid 2.1.1 with one notable exception:
 
