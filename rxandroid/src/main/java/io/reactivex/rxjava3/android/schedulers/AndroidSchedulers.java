@@ -20,7 +20,6 @@ import android.os.Looper;
 import android.os.Message;
 import io.reactivex.rxjava3.android.plugins.RxAndroidPlugins;
 import io.reactivex.rxjava3.core.Scheduler;
-import java.util.concurrent.Callable;
 
 /** Android-specific Schedulers. */
 public final class AndroidSchedulers {
