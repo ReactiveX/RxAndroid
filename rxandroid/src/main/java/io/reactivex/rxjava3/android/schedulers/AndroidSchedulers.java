@@ -24,13 +24,8 @@ import io.reactivex.rxjava3.core.Scheduler;
 /** Android-specific Schedulers. */
 public final class AndroidSchedulers {
 
-    private static final class MainHolder {
-        static final Scheduler DEFAULT
-            = new HandlerScheduler(new Handler(Looper.getMainLooper()), true);
-    }
-
     private static final Scheduler MAIN_THREAD =
-        RxAndroidPlugins.initMainThreadScheduler(() -> MainHolder.DEFAULT);
+        RxAndroidPlugins.initMainThreadScheduler(() -> new HandlerScheduler(new Handler(Looper.getMainLooper()), true));
 
     /**
      * A {@link Scheduler} which executes actions on the Android main thread.
