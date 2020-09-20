@@ -11,15 +11,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.reactivex.android.schedulers;
+package io.reactivex.rxjava3.android.schedulers;
 
 import android.os.Build;
 import android.os.Looper;
 import android.os.Message;
-import io.reactivex.Scheduler;
-import io.reactivex.android.plugins.RxAndroidPlugins;
-import io.reactivex.android.testutil.EmptyScheduler;
-import io.reactivex.functions.Function;
+
+import io.reactivex.rxjava3.android.plugins.RxAndroidPlugins;
+import io.reactivex.rxjava3.android.testutil.EmptyScheduler;
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.Scheduler;
+import io.reactivex.rxjava3.functions.Function;
+
 import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.After;
 import org.junit.Before;
@@ -35,6 +38,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.robolectric.Shadows.shadowOf;
 
@@ -88,6 +92,38 @@ public final class AndroidSchedulersTest {
     @Test
     public void fromReturnsUsableScheduler() {
         assertNotNull(AndroidSchedulers.from(Looper.getMainLooper()));
+    }
+
+    @Test
+    public void mainThreadAsyncMessagesByDefault() {
+        ShadowLooper mainLooper = ShadowLooper.getShadowMainLooper();
+        mainLooper.pause();
+        ShadowMessageQueue mainMessageQueue = shadowOf(Looper.getMainLooper().getQueue());
+
+        Scheduler main = AndroidSchedulers.mainThread();
+        main.scheduleDirect(new Runnable() {
+            @Override public void run() {
+            }
+        });
+
+        Message message = mainMessageQueue.getHead();
+        assertTrue(message.isAsynchronous());
+    }
+
+    @Test
+    public void fromAsyncMessagesByDefault() {
+        ShadowLooper mainLooper = ShadowLooper.getShadowMainLooper();
+        mainLooper.pause();
+        ShadowMessageQueue mainMessageQueue = shadowOf(Looper.getMainLooper().getQueue());
+
+        Scheduler main = AndroidSchedulers.from(Looper.getMainLooper());
+        main.scheduleDirect(new Runnable() {
+            @Override public void run() {
+            }
+        });
+
+        Message message = mainMessageQueue.getHead();
+        assertTrue(message.isAsynchronous());
     }
 
     @Test

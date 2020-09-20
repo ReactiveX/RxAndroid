@@ -11,40 +11,47 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.reactivex.android.schedulers;
+package io.reactivex.rxjava3.android.schedulers;
 
 import android.annotation.SuppressLint;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import io.reactivex.Scheduler;
-import io.reactivex.android.plugins.RxAndroidPlugins;
-import java.util.concurrent.Callable;
+import io.reactivex.rxjava3.android.plugins.RxAndroidPlugins;
+import io.reactivex.rxjava3.core.Scheduler;
 
 /** Android-specific Schedulers. */
 public final class AndroidSchedulers {
 
     private static final class MainHolder {
         static final Scheduler DEFAULT
-            = new HandlerScheduler(new Handler(Looper.getMainLooper()), false);
+            = new HandlerScheduler(new Handler(Looper.getMainLooper()), true);
     }
 
-    private static final Scheduler MAIN_THREAD = RxAndroidPlugins.initMainThreadScheduler(
-            new Callable<Scheduler>() {
-                @Override public Scheduler call() throws Exception {
-                    return MainHolder.DEFAULT;
-                }
-            });
+    private static final Scheduler MAIN_THREAD =
+        RxAndroidPlugins.initMainThreadScheduler(() -> MainHolder.DEFAULT);
 
-    /** A {@link Scheduler} which executes actions on the Android main thread. */
+    /**
+     * A {@link Scheduler} which executes actions on the Android main thread.
+     * <p>
+     * The returned scheduler will post asynchronous messages to the looper by default.
+     *
+     * @see #from(Looper, boolean)
+     */
     public static Scheduler mainThread() {
         return RxAndroidPlugins.onMainThreadScheduler(MAIN_THREAD);
     }
 
-    /** A {@link Scheduler} which executes actions on {@code looper}. */
+    /**
+     * A {@link Scheduler} which executes actions on {@code looper}.
+     * <p>
+     * The returned scheduler will post asynchronous messages to the looper by default.
+     *
+     * @see #from(Looper, boolean)
+     */
     public static Scheduler from(Looper looper) {
-        return from(looper, false);
+        return from(looper, true);
     }
 
     /**
@@ -57,6 +64,10 @@ public final class AndroidSchedulers {
     @SuppressLint("NewApi") // Checking for an @hide API.
     public static Scheduler from(Looper looper, boolean async) {
         if (looper == null) throw new NullPointerException("looper == null");
+
+        // Below code exists in androidx-core as well, but is left here rather than include an
+        // entire extra dependency.
+        // https://developer.android.com/reference/kotlin/androidx/core/os/MessageCompat?hl=en#setAsynchronous(android.os.Message,%20kotlin.Boolean)
         if (Build.VERSION.SDK_INT < 16) {
             async = false;
         } else if (async && Build.VERSION.SDK_INT < 22) {
