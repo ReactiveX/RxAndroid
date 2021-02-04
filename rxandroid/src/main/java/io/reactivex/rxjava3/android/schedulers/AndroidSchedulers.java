@@ -26,7 +26,7 @@ public final class AndroidSchedulers {
 
     private static final class MainHolder {
         static final Scheduler DEFAULT
-            = new HandlerScheduler(new Handler(Looper.getMainLooper()), true);
+            = from(Looper.getMainLooper());
     }
 
     private static final Scheduler MAIN_THREAD =
