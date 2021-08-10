@@ -19,7 +19,6 @@ import android.os.Message;
 
 import io.reactivex.rxjava3.android.plugins.RxAndroidPlugins;
 import io.reactivex.rxjava3.android.testutil.EmptyScheduler;
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Scheduler;
 import io.reactivex.rxjava3.functions.Function;
 
@@ -96,7 +95,7 @@ public final class AndroidSchedulersTest {
 
     @Test
     public void mainThreadAsyncMessagesByDefault() {
-        ShadowLooper mainLooper = ShadowLooper.getShadowMainLooper();
+        ShadowLooper mainLooper = shadowOf(Looper.getMainLooper());
         mainLooper.pause();
         ShadowMessageQueue mainMessageQueue = shadowOf(Looper.getMainLooper().getQueue());
 
@@ -112,7 +111,7 @@ public final class AndroidSchedulersTest {
 
     @Test
     public void fromAsyncMessagesByDefault() {
-        ShadowLooper mainLooper = ShadowLooper.getShadowMainLooper();
+        ShadowLooper mainLooper = shadowOf(Looper.getMainLooper());
         mainLooper.pause();
         ShadowMessageQueue mainMessageQueue = shadowOf(Looper.getMainLooper().getQueue());
 
@@ -130,7 +129,7 @@ public final class AndroidSchedulersTest {
     public void asyncIgnoredPre16() {
         ReflectionHelpers.setStaticField(Build.VERSION.class, "SDK_INT", 14);
 
-        ShadowLooper mainLooper = ShadowLooper.getShadowMainLooper();
+        ShadowLooper mainLooper = shadowOf(Looper.getMainLooper());
         mainLooper.pause();
         ShadowMessageQueue mainMessageQueue = shadowOf(Looper.getMainLooper().getQueue());
 
