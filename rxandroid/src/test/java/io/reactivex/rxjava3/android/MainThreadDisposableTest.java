@@ -13,7 +13,6 @@
  */
 package io.reactivex.rxjava3.android;
 
-import io.reactivex.rxjava3.android.MainThreadDisposable;
 import io.reactivex.rxjava3.disposables.Disposable;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
