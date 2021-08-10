@@ -18,7 +18,6 @@ import android.os.Looper;
 import android.os.Message;
 
 import io.reactivex.rxjava3.android.testutil.CountingRunnable;
-import io.reactivex.rxjava3.android.schedulers.HandlerScheduler;
 import io.reactivex.rxjava3.core.Scheduler;
 import io.reactivex.rxjava3.core.Scheduler.Worker;
 import io.reactivex.rxjava3.disposables.Disposable;
@@ -66,8 +65,8 @@ public final class HandlerSchedulerTest {
         });
     }
 
-    private Scheduler scheduler;
-    private boolean async;
+    private final Scheduler scheduler;
+    private final boolean async;
 
     public HandlerSchedulerTest(boolean async) {
         this.scheduler = new HandlerScheduler(new Handler(Looper.getMainLooper()), async);
@@ -145,7 +144,7 @@ public final class HandlerSchedulerTest {
         runUiThreadTasks();
         assertEquals(0, counter.get());
 
-        idleMainLooper(1, MINUTES);
+        ShadowLooper.idleMainLooper(1, MINUTES);
         runUiThreadTasks();
         assertEquals(1, counter.get());
     }
@@ -167,7 +166,7 @@ public final class HandlerSchedulerTest {
         // Verify our runnable was passed to the schedulers hook.
         assertSame(counter, runnableRef.get());
 
-        idleMainLooper(1, MINUTES);
+        ShadowLooper.idleMainLooper(1, MINUTES);
         runUiThreadTasks();
         // Verify the scheduled runnable was the one returned from the hook.
         assertEquals(1, newCounter.get());
@@ -179,10 +178,10 @@ public final class HandlerSchedulerTest {
         CountingRunnable counter = new CountingRunnable();
         Disposable disposable = scheduler.scheduleDirect(counter, 1, MINUTES);
 
-        idleMainLooper(30, SECONDS);
+        ShadowLooper.idleMainLooper(30, SECONDS);
         disposable.dispose();
 
-        idleMainLooper(30, SECONDS);
+        ShadowLooper.idleMainLooper(30, SECONDS);
         runUiThreadTasks();
         assertEquals(0, counter.get());
     }
@@ -195,15 +194,15 @@ public final class HandlerSchedulerTest {
         runUiThreadTasks();
         assertEquals(0, counter.get());
 
-        idleMainLooper(1, MINUTES);
+        ShadowLooper.idleMainLooper(1, MINUTES);
         runUiThreadTasks();
         assertEquals(1, counter.get());
 
-        idleMainLooper(1, MINUTES);
+        ShadowLooper.idleMainLooper(1, MINUTES);
         runUiThreadTasks();
         assertEquals(2, counter.get());
 
-        idleMainLooper(1, MINUTES);
+        ShadowLooper.idleMainLooper(1, MINUTES);
         runUiThreadTasks();
         assertEquals(3, counter.get());
     }
@@ -226,7 +225,7 @@ public final class HandlerSchedulerTest {
         assertSame(counter, runnableRef.get());
         runnableRef.set(null);
 
-        idleMainLooper(1, MINUTES);
+        ShadowLooper.idleMainLooper(1, MINUTES);
         runUiThreadTasks();
         // Verify the scheduled action was the one returned from the hook.
         assertEquals(1, newCounter.get());
@@ -244,17 +243,17 @@ public final class HandlerSchedulerTest {
         runUiThreadTasks();
         assertEquals(0, counter.get());
 
-        idleMainLooper(1, MINUTES);
+        ShadowLooper.idleMainLooper(1, MINUTES);
         runUiThreadTasks();
         assertEquals(1, counter.get());
 
-        idleMainLooper(1, MINUTES);
+        ShadowLooper.idleMainLooper(1, MINUTES);
         runUiThreadTasks();
         assertEquals(2, counter.get());
 
         disposable.dispose();
 
-        idleMainLooper(1, MINUTES);
+        ShadowLooper.idleMainLooper(1, MINUTES);
         runUiThreadTasks();
         assertEquals(2, counter.get());
     }
@@ -276,17 +275,17 @@ public final class HandlerSchedulerTest {
         runUiThreadTasks();
         assertEquals(0, counter.get());
 
-        idleMainLooper(1, MINUTES);
+        ShadowLooper.idleMainLooper(1, MINUTES);
         runUiThreadTasks();
         assertEquals(1, counter.get());
 
-        idleMainLooper(1, MINUTES);
+        ShadowLooper.idleMainLooper(1, MINUTES);
         runUiThreadTasks();
         assertEquals(2, counter.get());
 
         // Dispose will have happened here during the last run() execution.
 
-        idleMainLooper(1, MINUTES);
+        ShadowLooper.idleMainLooper(1, MINUTES);
         runUiThreadTasks();
         assertEquals(2, counter.get());
     }
@@ -306,17 +305,17 @@ public final class HandlerSchedulerTest {
         runUiThreadTasks();
         assertEquals(0, counter.get());
 
-        idleMainLooper(1, MINUTES);
+        ShadowLooper.idleMainLooper(1, MINUTES);
         runUiThreadTasks();
         assertEquals(1, counter.get());
 
-        idleMainLooper(1, MINUTES);
+        ShadowLooper.idleMainLooper(1, MINUTES);
         runUiThreadTasks();
         assertEquals(2, counter.get());
 
         // Exception will have happened here during the last run() execution.
 
-        idleMainLooper(1, MINUTES);
+        ShadowLooper.idleMainLooper(1, MINUTES);
         runUiThreadTasks();
         assertEquals(2, counter.get());
     }
@@ -390,7 +389,7 @@ public final class HandlerSchedulerTest {
         runUiThreadTasks();
         assertEquals(0, counter.get());
 
-        idleMainLooper(1, MINUTES);
+        ShadowLooper.idleMainLooper(1, MINUTES);
         runUiThreadTasks();
         assertEquals(1, counter.get());
     }
@@ -414,7 +413,7 @@ public final class HandlerSchedulerTest {
         // Verify our runnable was passed to the schedulers hook.
         assertSame(counter, runnableRef.get());
 
-        idleMainLooper(1, MINUTES);
+        ShadowLooper.idleMainLooper(1, MINUTES);
         runUiThreadTasks();
         // Verify the scheduled runnable was the one returned from the hook.
         assertEquals(1, newCounter.get());
@@ -428,10 +427,10 @@ public final class HandlerSchedulerTest {
         CountingRunnable counter = new CountingRunnable();
         Disposable disposable = worker.schedule(counter, 1, MINUTES);
 
-        idleMainLooper(30, SECONDS);
+        ShadowLooper.idleMainLooper(30, SECONDS);
         disposable.dispose();
 
-        idleMainLooper(30, SECONDS);
+        ShadowLooper.idleMainLooper(30, SECONDS);
         runUiThreadTasks();
         assertEquals(0, counter.get());
     }
@@ -446,15 +445,15 @@ public final class HandlerSchedulerTest {
         runUiThreadTasks();
         assertEquals(0, counter.get());
 
-        idleMainLooper(1, MINUTES);
+        ShadowLooper.idleMainLooper(1, MINUTES);
         runUiThreadTasks();
         assertEquals(1, counter.get());
 
-        idleMainLooper(1, MINUTES);
+        ShadowLooper.idleMainLooper(1, MINUTES);
         runUiThreadTasks();
         assertEquals(2, counter.get());
 
-        idleMainLooper(1, MINUTES);
+        ShadowLooper.idleMainLooper(1, MINUTES);
         runUiThreadTasks();
         assertEquals(3, counter.get());
     }
@@ -479,7 +478,7 @@ public final class HandlerSchedulerTest {
         assertSame(counter, runnableRef.get());
         runnableRef.set(null);
 
-        idleMainLooper(1, MINUTES);
+        ShadowLooper.idleMainLooper(1, MINUTES);
         runUiThreadTasks();
         // Verify the scheduled action was the one returned from the hook.
         assertEquals(1, newCounter.get());
@@ -499,17 +498,17 @@ public final class HandlerSchedulerTest {
         runUiThreadTasks();
         assertEquals(0, counter.get());
 
-        idleMainLooper(1, MINUTES);
+        ShadowLooper.idleMainLooper(1, MINUTES);
         runUiThreadTasks();
         assertEquals(1, counter.get());
 
-        idleMainLooper(1, MINUTES);
+        ShadowLooper.idleMainLooper(1, MINUTES);
         runUiThreadTasks();
         assertEquals(2, counter.get());
 
         disposable.dispose();
 
-        idleMainLooper(1, MINUTES);
+        ShadowLooper.idleMainLooper(1, MINUTES);
         runUiThreadTasks();
         assertEquals(2, counter.get());
     }
@@ -533,17 +532,17 @@ public final class HandlerSchedulerTest {
         runUiThreadTasks();
         assertEquals(0, counter.get());
 
-        idleMainLooper(1, MINUTES);
+        ShadowLooper.idleMainLooper(1, MINUTES);
         runUiThreadTasks();
         assertEquals(1, counter.get());
 
-        idleMainLooper(1, MINUTES);
+        ShadowLooper.idleMainLooper(1, MINUTES);
         runUiThreadTasks();
         assertEquals(2, counter.get());
 
         // Dispose will have happened here during the last run() execution.
 
-        idleMainLooper(1, MINUTES);
+        ShadowLooper.idleMainLooper(1, MINUTES);
         runUiThreadTasks();
         assertEquals(2, counter.get());
     }
@@ -565,17 +564,17 @@ public final class HandlerSchedulerTest {
         runUiThreadTasks();
         assertEquals(0, counter.get());
 
-        idleMainLooper(1, MINUTES);
+        ShadowLooper.idleMainLooper(1, MINUTES);
         runUiThreadTasks();
         assertEquals(1, counter.get());
 
-        idleMainLooper(1, MINUTES);
+        ShadowLooper.idleMainLooper(1, MINUTES);
         runUiThreadTasks();
         assertEquals(2, counter.get());
 
         // Exception will have happened here during the last run() execution.
 
-        idleMainLooper(1, MINUTES);
+        ShadowLooper.idleMainLooper(1, MINUTES);
         runUiThreadTasks();
         assertEquals(2, counter.get());
     }
@@ -821,10 +820,5 @@ public final class HandlerSchedulerTest {
 
         Message message = mainMessageQueue.getHead();
         assertEquals(async, message.isAsynchronous());
-    }
-
-    private static void idleMainLooper(long amount, TimeUnit unit) {
-        // TODO delete this when https://github.com/robolectric/robolectric/pull/2592 is released.
-        ShadowLooper.idleMainLooper(unit.toMillis(amount));
     }
 }
