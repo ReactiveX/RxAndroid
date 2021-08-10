@@ -22,6 +22,6 @@ allprojects {
 
 ext {
     minSdkVersion = 9
-    compileSdkVersion = 30
+    compileSdkVersion = 31
     sourceCompatibility = JavaVersion.VERSION_1_8
 }
