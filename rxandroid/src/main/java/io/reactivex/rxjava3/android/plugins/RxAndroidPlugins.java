@@ -13,6 +13,7 @@
  */
 package io.reactivex.rxjava3.android.plugins;
 
+import java.util.Objects;
 import java.util.concurrent.Callable;
 import io.reactivex.rxjava3.core.Scheduler;
 import io.reactivex.rxjava3.exceptions.Exceptions;
@@ -22,7 +23,6 @@ import io.reactivex.rxjava3.functions.Function;
  * Utility class to inject handlers to certain standard RxAndroid operations.
  */
 public final class RxAndroidPlugins {
-
     private static volatile Function<Callable<Scheduler>, Scheduler> onInitMainThreadHandler;
     private static volatile Function<Scheduler, Scheduler> onMainThreadHandler;
 
@@ -31,14 +31,12 @@ public final class RxAndroidPlugins {
     }
 
     public static Scheduler initMainThreadScheduler(Callable<Scheduler> scheduler) {
-        if (scheduler == null) {
-            throw new NullPointerException("scheduler == null");
-        }
+        Objects.requireNonNull(scheduler, "scheduler == null");
         Function<Callable<Scheduler>, Scheduler> f = onInitMainThreadHandler;
         if (f == null) {
             return callRequireNonNull(scheduler);
         }
-        return applyRequireNonNull(f, scheduler);
+        return Objects.requireNonNull(apply(f, scheduler), "Scheduler Callable returned null");
     }
 
     public static void setMainThreadSchedulerHandler(Function<Scheduler, Scheduler> handler) {
@@ -46,9 +44,7 @@ public final class RxAndroidPlugins {
     }
 
     public static Scheduler onMainThreadScheduler(Scheduler scheduler) {
-        if (scheduler == null) {
-            throw new NullPointerException("scheduler == null");
-        }
+        Objects.requireNonNull(scheduler, "scheduler == null");
         Function<Scheduler, Scheduler> f = onMainThreadHandler;
         if (f == null) {
             return scheduler;
@@ -82,22 +78,10 @@ public final class RxAndroidPlugins {
 
     static Scheduler callRequireNonNull(Callable<Scheduler> s) {
         try {
-            Scheduler scheduler = s.call();
-            if (scheduler == null) {
-                throw new NullPointerException("Scheduler Callable returned null");
-            }
-            return scheduler;
+            return Objects.requireNonNull(s.call(), "Scheduler Callable returned null");
         } catch (Throwable ex) {
             throw Exceptions.propagate(ex);
         }
-    }
-
-    static Scheduler applyRequireNonNull(Function<Callable<Scheduler>, Scheduler> f, Callable<Scheduler> s) {
-        Scheduler scheduler = apply(f,s);
-        if (scheduler == null) {
-            throw new NullPointerException("Scheduler Callable returned null");
-        }
-        return scheduler;
     }
 
     static <T, R> R apply(Function<T, R> f, T t) {

@@ -19,6 +19,8 @@ import android.os.Message;
 import io.reactivex.rxjava3.core.Scheduler;
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.plugins.RxJavaPlugins;
+
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 final class HandlerScheduler extends Scheduler {
@@ -33,8 +35,8 @@ final class HandlerScheduler extends Scheduler {
     @Override
     @SuppressLint("NewApi") // Async will only be true when the API is available to call.
     public Disposable scheduleDirect(Runnable run, long delay, TimeUnit unit) {
-        if (run == null) throw new NullPointerException("run == null");
-        if (unit == null) throw new NullPointerException("unit == null");
+        Objects.requireNonNull(run, "run == null");
+        Objects.requireNonNull(unit, "unit == null");
 
         run = RxJavaPlugins.onSchedule(run);
         ScheduledRunnable scheduled = new ScheduledRunnable(handler, run);
@@ -65,8 +67,8 @@ final class HandlerScheduler extends Scheduler {
         @Override
         @SuppressLint("NewApi") // Async will only be true when the API is available to call.
         public Disposable schedule(Runnable run, long delay, TimeUnit unit) {
-            if (run == null) throw new NullPointerException("run == null");
-            if (unit == null) throw new NullPointerException("unit == null");
+            Objects.requireNonNull(run, "run == null");
+            Objects.requireNonNull(unit, "unit == null");
 
             if (disposed) {
                 return Disposable.disposed();

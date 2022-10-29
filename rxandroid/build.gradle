@@ -1,5 +1,4 @@
 apply plugin: 'com.android.library'
-apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
 apply plugin: 'com.jfrog.artifactory'
 
@@ -44,45 +43,6 @@ dependencies {
 
 // Create source/javadoc artifacts for publishing
 apply from: "$rootDir/gradle/artifacts.gradle"
-
-// Configure android-maven-gradle-plugin
-install {
-    repositories.mavenInstaller.pom.project {
-        name POM_NAME
-        description POM_DESCRIPTION
-        packaging POM_PACKAGING
-        url POM_URL
-
-        licenses {
-            license {
-                name POM_LICENCE_NAME
-                url POM_LICENCE_URL
-                distribution POM_LICENCE_DIST
-            }
-        }
-
-        scm {
-            url POM_SCM_URL
-            connection POM_SCM_CONNECTION
-            developerConnection POM_SCM_DEV_CONNECTION
-        }
-
-        developers {
-            developer {
-                id 'JakeWharton'
-                name 'Jake Wharton'
-            }
-            developer {
-                id 'mttkay'
-                name 'Matthias Käppler'
-            }
-            developer {
-                id 'dlew'
-                name 'Dan Lew'
-            }
-        }
-    }
-}
 
 // Configure artifactory (for publishing snapshots)
 //

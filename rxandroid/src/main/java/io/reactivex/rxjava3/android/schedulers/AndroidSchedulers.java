@@ -18,6 +18,9 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+
+import java.util.Objects;
+
 import io.reactivex.rxjava3.android.plugins.RxAndroidPlugins;
 import io.reactivex.rxjava3.core.Scheduler;
 
@@ -63,7 +66,7 @@ public final class AndroidSchedulers {
      */
     @SuppressLint("NewApi") // Checking for an @hide API.
     public static Scheduler from(Looper looper, boolean async) {
-        if (looper == null) throw new NullPointerException("looper == null");
+        Objects.requireNonNull(looper, "looper == null");
 
         // Below code exists in androidx-core as well, but is left here rather than include an
         // entire extra dependency.
