@@ -1,5 +1,11 @@
 # RxAndroid Releases #
 
+### Version 3.0.2 - November, 9 2022 ###
+
+Fixed:
+- Ensure the main scheduler can be replaced in unit tests without needing Robolectric.
+
+
 ### Version 3.0.1 - November, 8 2022 ###
 
 Fixed:
