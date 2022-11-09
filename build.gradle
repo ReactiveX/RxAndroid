@@ -2,13 +2,10 @@ buildscript {
     repositories {
         google()
         mavenCentral()
-        jcenter()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:4.2.2'
-        classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.5'
-        classpath 'org.jfrog.buildinfo:build-info-extractor-gradle:4.7.5'
+        classpath 'com.vanniktech:gradle-maven-publish-plugin:0.18.0'
     }
 }
 
@@ -16,7 +13,15 @@ allprojects {
     repositories {
         google()
         mavenCentral()
-        jcenter()
+    }
+
+    tasks.withType(Test).configureEach {
+        testLogging {
+            if (System.getenv("CI") == "true") {
+                events = ["failed", "skipped", "passed"]
+            }
+            exceptionFormat "full"
+        }
     }
 }
 

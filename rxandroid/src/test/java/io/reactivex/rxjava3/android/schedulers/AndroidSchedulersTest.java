@@ -127,19 +127,23 @@ public final class AndroidSchedulersTest {
 
     @Test
     public void asyncIgnoredPre16() {
+        int oldValue = Build.VERSION.SDK_INT;
         ReflectionHelpers.setStaticField(Build.VERSION.class, "SDK_INT", 14);
+        try {
+            ShadowLooper mainLooper = shadowOf(Looper.getMainLooper());
+            mainLooper.pause();
+            ShadowMessageQueue mainMessageQueue = shadowOf(Looper.getMainLooper().getQueue());
 
-        ShadowLooper mainLooper = shadowOf(Looper.getMainLooper());
-        mainLooper.pause();
-        ShadowMessageQueue mainMessageQueue = shadowOf(Looper.getMainLooper().getQueue());
+            Scheduler main = AndroidSchedulers.from(Looper.getMainLooper(), true);
+            main.scheduleDirect(new Runnable() {
+                @Override public void run() {
+                }
+            });
 
-        Scheduler main = AndroidSchedulers.from(Looper.getMainLooper(), true);
-        main.scheduleDirect(new Runnable() {
-            @Override public void run() {
-            }
-        });
-
-        Message message = mainMessageQueue.getHead();
-        assertFalse(message.isAsynchronous());
+            Message message = mainMessageQueue.getHead();
+            assertFalse(message.isAsynchronous());
+        } finally {
+            ReflectionHelpers.setStaticField(Build.VERSION.class, "SDK_INT", oldValue);
+        }
     }
 }
