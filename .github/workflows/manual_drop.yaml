@@ -1,4 +1,4 @@
-name: Manual Release
+name: 'Sonatype: manual close+release'
 
 on:
   workflow_dispatch:
@@ -8,7 +8,7 @@ on:
         type: string
 
 jobs:
-  release:
+  close_and_release:
     runs-on: macos-latest
 
     steps:
