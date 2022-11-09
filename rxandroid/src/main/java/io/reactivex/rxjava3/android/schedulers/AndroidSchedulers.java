@@ -25,8 +25,7 @@ import io.reactivex.rxjava3.core.Scheduler;
 public final class AndroidSchedulers {
 
     private static final class MainHolder {
-        static final Scheduler DEFAULT
-            = from(Looper.getMainLooper());
+        static final Scheduler DEFAULT = internalFrom(Looper.getMainLooper(), true);
     }
 
     private static final Scheduler MAIN_THREAD =
@@ -61,10 +60,13 @@ public final class AndroidSchedulers {
      *              locking. On API < 16 this value is ignored.
      * @see Message#setAsynchronous(boolean)
      */
-    @SuppressLint("NewApi") // Checking for an @hide API.
     public static Scheduler from(Looper looper, boolean async) {
         if (looper == null) throw new NullPointerException("looper == null");
+        return internalFrom(looper, async);
+    }
 
+    @SuppressLint("NewApi") // Checking for an @hide API.
+    private static Scheduler internalFrom(Looper looper, boolean async) {
         // Below code exists in androidx-core as well, but is left here rather than include an
         // entire extra dependency.
         // https://developer.android.com/reference/kotlin/androidx/core/os/MessageCompat?hl=en#setAsynchronous(android.os.Message,%20kotlin.Boolean)
