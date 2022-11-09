@@ -1,0 +1,26 @@
+name: release
+
+on:
+  workflow_dispatch:
+    inputs:
+      repository_name:
+        description: 'Name of staged repository on Sonatype'
+        type: string
+
+jobs:
+  release:
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: gradle/wrapper-validation-action@v1.0.5
+
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: 8
+
+      - run: ./gradlew closeAndReleaseRepository --repository={{ inputs.repository_name }}
+        env:
+          ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.SONATYPE_USER }}
+          ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.SONATYPE_PASSWORD }}
