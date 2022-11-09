@@ -18,7 +18,7 @@ jobs:
           distribution: 'zulu'
           java-version: 8
 
-      - run: ./gradlew publish
+      - run: ./gradlew publish closeAndReleaseRepository
         env:
           ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.SONATYPE_USER }}
           ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.SONATYPE_PASSWORD }}
