@@ -1,21 +1,5 @@
 apply plugin: 'com.android.library'
-apply plugin: 'com.github.dcendents.android-maven'
-apply plugin: 'com.jfrog.bintray'
-apply plugin: 'com.jfrog.artifactory'
-
-group = GROUP
-
-// Both the artifactory and bintray plugins depend on this singular
-// global `version` variable. As such, we need to configure it based
-// on which task we're running.
-//
-// The solution here is brittle; it just checks whether 'bintrayUpload'
-// was called for execution, otherwise it assumes SNAPSHOT. If we
-// were to wait until the task graph was built, we'd be too late
-// (the plugins would already have used `version`).
-boolean isReleaseBuild = gradle.startParameter.taskNames.contains('bintrayUpload')
-version = isReleaseBuild ? VERSION_NAME : "$VERSION_NAME-SNAPSHOT"
-logger.info("RxAndroid using version=$project.version")
+apply plugin: 'com.vanniktech.maven.publish'
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -28,11 +12,6 @@ android {
         sourceCompatibility rootProject.ext.sourceCompatibility
         targetCompatibility rootProject.ext.sourceCompatibility
     }
-
-    // TODO replace with https://issuetracker.google.com/issues/72050365 once released.
-    libraryVariants.all {
-        it.generateBuildConfig.enabled = false
-    }
 }
 
 dependencies {
@@ -42,96 +21,8 @@ dependencies {
     testImplementation 'org.robolectric:robolectric:4.2.1'
 }
 
-// Create source/javadoc artifacts for publishing
-apply from: "$rootDir/gradle/artifacts.gradle"
-
-// Configure android-maven-gradle-plugin
-install {
-    repositories.mavenInstaller.pom.project {
-        name POM_NAME
-        description POM_DESCRIPTION
-        packaging POM_PACKAGING
-        url POM_URL
-
-        licenses {
-            license {
-                name POM_LICENCE_NAME
-                url POM_LICENCE_URL
-                distribution POM_LICENCE_DIST
-            }
-        }
-
-        scm {
-            url POM_SCM_URL
-            connection POM_SCM_CONNECTION
-            developerConnection POM_SCM_DEV_CONNECTION
-        }
-
-        developers {
-            developer {
-                id 'JakeWharton'
-                name 'Jake Wharton'
-            }
-            developer {
-                id 'mttkay'
-                name 'Matthias Käppler'
-            }
-            developer {
-                id 'dlew'
-                name 'Dan Lew'
-            }
-        }
-    }
-}
-
-// Configure artifactory (for publishing snapshots)
-//
-// Based on NebulaOJOPublishingPlugin (from nebula-bintray-plugin)
-artifactory {
-    contextUrl = 'https://oss.jfrog.org'
-
-    publish {
-        repository {
-            repoKey = 'oss-snapshot-local'
-
-            if (project.hasProperty('bintrayUser')) {
-                username = project.property('bintrayUser')
-                password = project.property('bintrayKey')
-            }
-        }
-
-        defaults {
-            publishConfigs('archives')
-        }
-    }
-}
-
-// Configure gradle-bintray-plugin (for publishing releases)
-bintray {
-    configurations = ['archives']
-
-    publish = true
-
-    pkg {
-        repo = 'RxJava'
-        name = 'RxAndroid'
-        userOrg = 'reactivex'
-        licenses = ['Apache-2.0']
-        labels = ['rxjava', 'reactivex']
-        websiteUrl = 'https://github.com/ReactiveX/RxAndroid/'
-        issueTrackerUrl = 'https://github.com/ReactiveX/RxAndroid/issues'
-        vcsUrl = 'https://github.com/ReactiveX/RxAndroid.git'
-    }
-}
-
-if (project.hasProperty('bintrayUser') && project.hasProperty('bintrayKey')) {
-    bintray.user = project.bintrayUser
-    bintray.key = project.bintrayKey
-}
-
-if (project.hasProperty('sonatypeUsername') && project.hasProperty('sonatypePassword')) {
-    def sync = bintray.pkg.version.mavenCentralSync
-    sync.sync = true
-    sync.user = project.sonatypeUsername
-    sync.password = project.sonatypePassword
+signing {
+    def signingKey = findProperty('signingKey')
+    def signingPassword = findProperty('signingPassword')
+    useInMemoryPgpKeys(signingKey, signingPassword)
 }
