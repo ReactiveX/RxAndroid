@@ -20,18 +20,12 @@ Since RxAndroid is part of the RxJava family the communication channels are simi
 # Binaries
 
 ```groovy
-allprojects {
-    repositories {
-        maven { url "https://oss.jfrog.org/libs-snapshot" }
-    }
-}
-
 dependencies {
-    implementation 'io.reactivex.rxjava3:rxandroid:3.0.0'
+    implementation 'io.reactivex.rxjava3:rxandroid:3.0.1'
     // Because RxAndroid releases are few and far between, it is recommended you also
     // explicitly depend on RxJava's latest version for bug fixes and new features.
     // (see https://github.com/ReactiveX/RxJava/releases for latest 3.x.x version)
-    implementation 'io.reactivex.rxjava3:rxjava:3.0.0'
+    implementation 'io.reactivex.rxjava3:rxjava:3.1.5'
 }
 ```
 
@@ -39,6 +33,26 @@ dependencies {
 * RxJava: <a href='http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22io.reactivex.rxjava3%22%20a%3A%22rxjava%22'><img src='http://img.shields.io/maven-central/v/io.reactivex.rxjava3/rxjava.svg'></a>
 
 Additional binaries and dependency information for can be found at [search.maven.org](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22io.reactivex.rxjava3%22%20a%3A%22rxandroid%22).
+
+<details>
+<summary>Snapshots of the development version are available in Sonatype's snapshots repository.</summary>
+<p>
+
+```groovy
+repositories {
+    mavenCentral()
+    maven {
+        url 'https://oss.sonatype.org/content/repositories/snapshots/'
+    }
+}
+
+dependencies {
+    implementation 'io.reactivex.rxjava3:rxandroid:3.1.0-SNAPSHOT'
+}
+```
+
+</p>
+</details>
 
 
 ## Build
@@ -52,8 +66,6 @@ $ ./gradlew build
 ```
 
 Further details on building can be found on the RxJava [Getting Started][start] page of the wiki.
-
-<a href='https://travis-ci.org/ReactiveX/RxAndroid/builds'><img src='https://api.travis-ci.org/ReactiveX/RxAndroid.svg?branch=3.x'></a>
 
 # Sample usage
 
