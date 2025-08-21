@@ -15,7 +15,7 @@ jobs:
       - uses: actions/checkout@v5
       - uses: gradle/actions/wrapper-validation@v4
 
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v5
         with:
           distribution: 'zulu'
           java-version: 8
