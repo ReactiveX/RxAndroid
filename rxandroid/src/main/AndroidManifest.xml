@@ -12,4 +12,4 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<manifest package="io.reactivex.android" />
+<manifest package="io.reactivex.rxjava3.android" />

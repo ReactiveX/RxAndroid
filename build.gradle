@@ -1,27 +1,32 @@
-subprojects {
-    buildscript {
-        repositories {
-            google()
-            mavenCentral()
-            jcenter()
-        }
-        dependencies {
-            classpath 'com.android.tools.build:gradle:3.4.1'
-            classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
-            classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4'
-            classpath 'org.jfrog.buildinfo:build-info-extractor-gradle:4.7.5'
-        }
-    }
-
+buildscript {
     repositories {
         google()
         mavenCentral()
-        jcenter()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:4.2.2'
+        classpath 'com.vanniktech:gradle-maven-publish-plugin:0.18.0'
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+    }
+
+    tasks.withType(Test).configureEach {
+        testLogging {
+            if (System.getenv("CI") == "true") {
+                events = ["failed", "skipped", "passed"]
+            }
+            exceptionFormat "full"
+        }
     }
 }
 
 ext {
     minSdkVersion = 9
-    compileSdkVersion = 28
-    sourceCompatibility = JavaVersion.VERSION_1_7
+    compileSdkVersion = 31
+    sourceCompatibility = JavaVersion.VERSION_1_8
 }

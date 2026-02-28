@@ -11,20 +11,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.reactivex.android.samples;
+package io.reactivex.rxjava3.android.samples;
 
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.util.Log;
 import android.view.View;
-import io.reactivex.Observable;
-import io.reactivex.ObservableSource;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.observers.DisposableObserver;
-import io.reactivex.schedulers.Schedulers;
-import java.util.concurrent.Callable;
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.core.ObservableSource;
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import io.reactivex.rxjava3.functions.Supplier;
+import io.reactivex.rxjava3.observers.DisposableObserver;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class MainActivity extends Activity {
     private static final String TAG = "RxAndroidSamples";
@@ -68,8 +68,8 @@ public class MainActivity extends Activity {
     }
 
     static Observable<String> sampleObservable() {
-        return Observable.defer(new Callable<ObservableSource<? extends String>>() {
-          @Override public ObservableSource<? extends String> call() throws Exception {
+        return Observable.defer(new Supplier<ObservableSource<? extends String>>() {
+            @Override public ObservableSource<? extends String> get() throws Throwable {
                 // Do some long running operation
                 SystemClock.sleep(5000);
                 return Observable.just("one", "two", "three", "four", "five");
